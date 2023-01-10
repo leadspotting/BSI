@@ -1,1 +1,155 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  min-height: 100vh;
+  height: auto;
+  margin: 0;
+  background-color: var(--content);
+}
+
+//ROOT
+:root {
+  --alice: #f0f8ff;
+  --primary: #166aa9;
+  --primaryLight: #65b0d8;
+  --secondary: #93ca5a;
+  --secondaryLight: #94ca5aaf;
+
+  --text: #142848;
+  --white: #fff;
+  --content: #eaf2f9;
+  --placeHoldersColors: rgba(111, 110, 111, 1);
+  --borderColor: rgba(184, 184, 184, 1);
+  --contentGreyBackground: #f9fafd;
+  --placeholder: rgba(0, 0, 0, 0.85);
+  --borderColor: #d9d9d9;
+}
+
+//FONTS
+@font-face {
+  font-family: poppinsRegular;
+  src: url(assets/Poppins/Poppins-Regular.ttf);
+}
+@font-face {
+  font-family: poppinsMedium;
+  src: url(assets/Poppins/Poppins-Medium.ttf);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: poppinsRegular !important;
+}
+
+body,
+div,
+// span,
+p {
+  font-family: poppinsMedium !important;
+  color: var(--text) !important;
+}
+span {
+  color: #fff;
+}
+//ANT COLLAPSE
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: #fff !important;
+  background-color: var(--primary);
+  span {
+    color: #fff !important;
+  }
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header:hover {
+  color: var(--text) !important;
+  background-color: var(--secondaryLight);
+  span {
+    color: var(--text) !important;
+  }
+}
+.ant-collapse > .ant-collapse-item-active > .ant-collapse-header {
+  color: #fff !important;
+  background-color: var(--secondary);
+  span {
+    color: #fff !important;
+  }
+}
+
+div.ant-collapse-header.ng-tns-c54-0 > div:nth-child(1) > span {
+  vertical-align: 2px !important;
+  color: #fff !important;
+}
+
+.ant-collapse {
+  border-radius: 7px 7px 4px 4px;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+  vertical-align: 2px !important;
+}
+
+.ant-collapse > .ant-collapse-item:last-child,
+.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+  border-radius: 5px 5px 0px 0px !important;
+}
+.ant-collapse-content {
+  border-top: none;
+}
+
+//ANT SELECT
+.ant-select-multiple .ant-select-selection-item {
+  background-color: var(--secondary) !important;
+  color: #fff !important;
+  height: 30px;
+  border-radius: 5px;
+}
+.ant-select-multiple .ant-select-selection-item-content {
+  margin: auto;
+}
+
+nz-option-container
+  > div
+  > cdk-virtual-scroll-viewport
+  > div.cdk-virtual-scroll-content-wrapper
+  > nz-option-item.ant-select-item.ant-select-item-option.ng-star-inserted.ant-select-item-option-selected {
+  color: #fff !important;
+  font-weight: 600;
+  background-color: var(--secondary) !important;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: var(--secondaryLight);
+  color: #fff !important;
+  // border-radius: 5px;
+}
+
+nz-option-container
+  > div
+  > cdk-virtual-scroll-viewport
+  > div.cdk-virtual-scroll-content-wrapper
+  > nz-option-item
+  > div.ant-select-item-option-state.ng-star-inserted
+  > span
+  > svg {
+  color: #fff !important;
+}
+.ant-select-multiple .ant-select-selection-item-remove {
+  margin-left: 2px;
+  margin-top: 1px;
+}
+.ant-select-multiple .ant-select-selection-item-remove:hover {
+  color: var(--primary) !important;
+  // font-size: larger;
+}
+
+//ANT SWITCH
+.ant-switch-checked {
+  background-color: var(--secondary) !important;
+}
+.ant-switch-inner {
+  span {
+    vertical-align: 0px !important;
+  }
+}

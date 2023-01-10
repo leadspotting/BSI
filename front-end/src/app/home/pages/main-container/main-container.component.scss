@@ -1,0 +1,14 @@
+nz-content {
+  padding: 0 50px;
+}
+
+nz-layout {
+  background-color: var(--content);
+}
+.inner-content {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 5px;
+  margin: 0px 0 25px 0;
+  min-height: calc(100vh - 506px);
+}

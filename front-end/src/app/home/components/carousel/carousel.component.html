@@ -1,0 +1,16 @@
+<nz-carousel
+  nzAutoPlay
+  [nzEffect]="effect"
+  [nzAutoPlaySpeed]="10000"
+  [nzDots]="false"
+  class="mb-4"
+  style="height: 175px"
+>
+  <div nz-carousel-content *ngFor="let title of titles">
+    <h2 class="mt-2">{{ title.title1 }}</h2>
+    <h3 class="mt-2">{{ title.title2 }}</h3>
+
+    <h5 class="mt-2">{{ title.text1 }}</h5>
+    <h5 class="mt-2">{{ title.text2 }}</h5>
+  </div>
+</nz-carousel>

@@ -1,0 +1,106 @@
+<nz-collapse nzExpandIconPosition="left">
+  <nz-collapse-panel
+    nzHeader="Filter By"
+    nzActive="panel.active"
+    [nzExtra]="extraTpl"
+  >
+    <div class="row filters-row">
+      <div class="col">
+        <h4 nz-typography class="title">Industry</h4>
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzMode="multiple"
+          nzPlaceHolder="Select..."
+          [nzOptions]="listOfIndustryOption"
+          [(ngModel)]="selectedIndustryValue"
+        >
+        </nz-select>
+      </div>
+      <div class="col">
+        <h4 nz-typography class="title">Location</h4>
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzMode="multiple"
+          nzPlaceHolder="Select..."
+          [nzOptions]="listOfLocationOption"
+          [(ngModel)]="selectedLocationValue"
+        >
+          <!-- <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
+      <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
+      <nz-option nzLabel="Tom" nzValue="tom"></nz-option> -->
+        </nz-select>
+      </div>
+      <div class="col">
+        <h4 nz-typography class="title">Type</h4>
+        <!-- <ng-container> -->
+        <button
+          nz-button
+          nz-dropdown
+          class="width-100 alignLeft placeholder"
+          [nzDropdownMenu]="menu"
+        >
+          Select...
+          <!-- <span nz-icon nzType="down"></span> -->
+        </button>
+        <nz-dropdown-menu #menu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item class="li-type" (click)="companiesTypeClicked()">
+              <div class="type">
+                <span>Companies</span>
+                <nz-switch
+                  [ngModel]="CompaniesType"
+                  [nzCheckedChildren]="checkedTemplate"
+                  [nzUnCheckedChildren]="unCheckedTemplate"
+                ></nz-switch>
+                <ng-template #checkedTemplate
+                  ><span nz-icon nzType="check"></span
+                ></ng-template>
+                <ng-template #unCheckedTemplate
+                  ><span nz-icon nzType="close"></span
+                ></ng-template>
+              </div>
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item class="li-type" (click)="emailsTypeClicked()">
+              <div class="type">
+                <span>Email's</span>
+                <nz-switch
+                  [ngModel]="EmailsType"
+                  [nzCheckedChildren]="checkedTemplate"
+                  [nzUnCheckedChildren]="unCheckedTemplate"
+                ></nz-switch>
+                <ng-template #checkedTemplate
+                  ><span nz-icon nzType="check"></span
+                ></ng-template>
+                <ng-template #unCheckedTemplate
+                  ><span nz-icon nzType="close"></span
+                ></ng-template>
+              </div>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+        <!-- </ng-container> -->
+      </div>
+    </div>
+  </nz-collapse-panel>
+</nz-collapse>
+<ng-template #extraTpl>
+  <!-- You can use stopPropagation if you don't want the panel to toggle -->
+  <span
+    nz-icon
+    nzType="filter"
+    (click)="$event.stopPropagation()"
+    class="filter-icon"
+  ></span>
+  <!-- <span nz-icon nzType="filter" nzTheme="outline"></span> -->
+</ng-template>
+
+<nz-content class="mt-4">
+  <div class="row">
+    <div class="col" *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
+      <app-list-card></app-list-card>
+    </div>
+  </div>
+</nz-content>

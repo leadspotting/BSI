@@ -1,0 +1,51 @@
+<nz-card
+  nzHoverable
+  class="card"
+  [nzCover]="coverTemplate"
+  [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
+>
+  <nz-card-meta
+    nzTitle="Europe Street beat"
+    nzDescription="www.instagram.com"
+  ></nz-card-meta>
+</nz-card>
+<ng-template #coverTemplate>
+  <div class="img-div">
+    <img
+      alt="example"
+      src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+    />
+  </div>
+</ng-template>
+<ng-template #actionSetting>
+  <span nz-icon nzType="shopping-cart"></span>
+</ng-template>
+<ng-template #actionEdit>
+  <a
+    nz-tooltip
+    [nzTooltipTitle]="titleTemplate"
+    [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
+    nzTooltipColor="#93ca5a"
+    nzTooltipPlacement="bottom"
+  >
+    <span nz-icon nzType="download" nzTooltipTitle="download 5 samples"></span
+  ></a>
+  <ng-template #titleTemplate let-thing>
+    <span>
+      <span nz-icon nzType="file" style="vertical-align: 2px"></span> download 5
+      samples</span
+    >
+  </ng-template>
+
+  <!-- <span
+    nz-icon
+    nzType="download"
+    nzTooltipTitle="download 5 samples"
+    nzTooltipPlacement="bottom"
+    nzTooltipColor="#93ca5a"
+    nz-tooltip
+  ></span> -->
+</ng-template>
+<ng-template #actionEllipsis>
+  <span nz-icon nzType="ellipsis"></span>
+</ng-template>

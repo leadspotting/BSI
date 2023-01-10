@@ -1,0 +1,19 @@
+.card {
+  border-radius: 4px;
+}
+
+.img-div {
+  overflow: hidden; /* [1.2] Hide the overflowing of child elements */
+  height: auto;
+  img {
+    transition: 1s ease all;
+    object-fit: cover;
+    overflow: hidden;
+    width: inherit;
+  }
+}
+.card:hover {
+  img {
+    transform: scale(1.25);
+  }
+}
