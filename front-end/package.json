@@ -26,7 +26,10 @@
     "monaco-editor": "^0.34.1",
     "ng-zorro-antd": "^14.0.0",
     "rxjs": "~7.5.0",
+    "stream": "^0.0.2",
+    "timers": "^0.1.1",
     "tslib": "^2.3.0",
+    "xml2js": "^0.4.23",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

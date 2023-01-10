@@ -11,9 +11,9 @@ body {
 :root {
   --alice: #f0f8ff;
   --primary: #166aa9;
-  --primaryLight: #65b0d8;
+  --primaryLight: #1669a9bb;
   --secondary: #93ca5a;
-  --secondaryLight: #94ca5aaf;
+  --secondaryLight: #94ca5acd;
 
   --text: #142848;
   --white: #fff;
@@ -49,11 +49,11 @@ div,
 // span,
 p {
   font-family: poppinsMedium !important;
-  color: var(--text) !important;
+  color: var(--text);
 }
-span {
-  color: #fff;
-}
+// span {
+//   color: #fff;
+// }
 //ANT COLLAPSE
 .ant-collapse > .ant-collapse-item > .ant-collapse-header {
   color: #fff !important;
@@ -63,23 +63,23 @@ span {
   }
 }
 .ant-collapse > .ant-collapse-item > .ant-collapse-header:hover {
-  color: var(--text) !important;
-  background-color: var(--secondaryLight);
-  span {
-    color: var(--text) !important;
-  }
+  // color: var(--text) !important;
+  // background-color: var(--secondaryLight);
+  // span {
+  //   color: var(--text) !important;
+  // }
 }
 .ant-collapse > .ant-collapse-item-active > .ant-collapse-header {
-  color: #fff !important;
-  background-color: var(--secondary);
-  span {
-    color: #fff !important;
-  }
+  // color: #fff !important;
+  background-color: var(--primary);
+  // span {
+  //   color: #fff !important;
+  // }
 }
 
 div.ant-collapse-header.ng-tns-c54-0 > div:nth-child(1) > span {
   vertical-align: 2px !important;
-  color: #fff !important;
+  // color: #fff !important;
 }
 
 .ant-collapse {
@@ -101,7 +101,9 @@ div.ant-collapse-header.ng-tns-c54-0 > div:nth-child(1) > span {
 //ANT SELECT
 .ant-select-multiple .ant-select-selection-item {
   background-color: var(--secondary) !important;
-  color: #fff !important;
+  .ant-select-selection-item-content {
+    color: #fff !important;
+  }
   height: 30px;
   border-radius: 5px;
 }
@@ -114,14 +116,18 @@ nz-option-container
   > cdk-virtual-scroll-viewport
   > div.cdk-virtual-scroll-content-wrapper
   > nz-option-item.ant-select-item.ant-select-item-option.ng-star-inserted.ant-select-item-option-selected {
-  color: #fff !important;
+  .ant-select-item-option-content {
+    color: #fff !important;
+  }
   font-weight: 600;
   background-color: var(--secondary) !important;
 }
 
 .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-  background-color: var(--secondaryLight);
-  color: #fff !important;
+  background-color: var(--primaryLight);
+  .ant-select-item-option-content {
+    color: #fff !important;
+  }
   // border-radius: 5px;
 }
 
@@ -140,7 +146,7 @@ nz-option-container
   margin-top: 1px;
 }
 .ant-select-multiple .ant-select-selection-item-remove:hover {
-  color: var(--primary) !important;
+  color: var(--primaryLight) !important;
   // font-size: larger;
 }
 
@@ -152,4 +158,39 @@ nz-option-container
   span {
     vertical-align: 0px !important;
   }
+}
+
+//ANT ICON
+
+.ant-card-actions > li > span > .anticon {
+  font-size: 25px;
+  line-height: 25px;
+}
+.anticon {
+  font-size: 25px;
+  line-height: 25px;
+}
+
+.anticon-file,
+.anticon-close,
+.anticon-check {
+  font-size: 14px !important;
+  line-height: 0 !important;
+}
+.ant-select-close-icon {
+  font-size: 14px !important;
+  line-height: 0 !important;
+}
+
+.anticon-star {
+  font-size: 14px !important;
+  line-height: 0 !important;
+  // color: #fadb14 !important;
+}
+.ant-rate-star-half .ant-rate-star-first,
+.ant-rate-star-full .ant-rate-star-second {
+  color: #fadb14 !important;
+}
+.ant-select-close-icon:hover {
+  color: var(--primaryLight) !important;
 }

@@ -12,3 +12,9 @@ nz-layout {
   margin: 0px 0 25px 0;
   min-height: calc(100vh - 506px);
 }
+
+@media screen and (max-width: 500px) {
+  nz-content {
+    padding: 0 25px;
+  }
+}

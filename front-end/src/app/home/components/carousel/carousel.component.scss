@@ -6,10 +6,13 @@
   overflow: hidden;
   padding: 20px;
 }
-
+h1,
 h2,
 h3,
-h5 {
+h4,
+h5,
+h6,
+p {
   color: var(--alice);
   margin-bottom: 0;
   user-select: none;
