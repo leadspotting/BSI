@@ -1,6 +1,7 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FinalList } from 'src/app/shared/Models/FinalList-Model';
 
 @Component({
   selector: 'app-list-card',
@@ -13,6 +14,7 @@ export class ListCardComponent implements OnInit {
     private notification: NzNotificationService
   ) {}
 
+  @Input() list: any;
   ngOnInit(): void {
     this.randomLike = Math.trunc(Math.random() * (542 - 1128 + 1) + 1128);
     this.randomStar = (Math.random() * (5 - 3.5) + 3.5).toFixed(1);
@@ -20,7 +22,9 @@ export class ListCardComponent implements OnInit {
       this.randomStar =
         Math.random() < 0.85 ? this.randomStar - 0.5 : this.randomStar + 0.5;
     }
+    console.log(this.list);
   }
+
   randomStar: any;
   randomLike: any;
   clicked = false;
@@ -30,6 +34,7 @@ export class ListCardComponent implements OnInit {
       this.clicked = true;
     }
   }
+
   // successModal(): void {
   //   this.modal.success({
   //     nzTitle: 'This is a success message',

@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Country } from 'src/app/shared/Models/Country-Model';
+import { FinalList } from 'src/app/shared/Models/FinalList-Model';
+import { Industry } from 'src/app/shared/Models/Industry-Model';
+import {
+  ReadyList,
+  ReadyListServer,
+} from 'src/app/shared/Models/ReadyList-Model';
+import { Region } from 'src/app/shared/Models/Region-Model';
+import { State } from 'src/app/shared/Models/State-Model';
 import { BackEndService } from 'src/app/shared/services/back-end-service';
 @Component({
   selector: 'app-list-container',
@@ -21,6 +30,13 @@ export class ListContainerComponent implements OnInit {
   currentPage = 1;
   currentPageSize = 10;
   totalPages = -1;
+  totalLists = 0;
+  finalListss: FinalList[] = [];
+
+  ngOnInit(): void {
+    this.callAndLog();
+  }
+
   async callAndLog() {
     await this.getCRMConfig().then((res) => {
       this.getReadyLists();
@@ -42,6 +58,7 @@ export class ListContainerComponent implements OnInit {
         this.crmConfig = crmConfig;
         this.getLocations(crmConfig);
         this.getIndustries(crmConfig);
+        this.getIndustryPhrases();
       });
     });
   }
@@ -57,10 +74,7 @@ export class ListContainerComponent implements OnInit {
           console.error(err);
           return;
         }
-
         let readyLists: ReadyListServer[] = result.LSResponse.ReadyList;
-        // console.log('readyLists', readyLists);
-        //  = readyLists;
         this.readyLists = readyLists.map(
           ({
             creationTime: [creationTime],
@@ -76,14 +90,6 @@ export class ListContainerComponent implements OnInit {
             jobCategoryId: jobCategoryId,
             leads: leads,
             locationId: locationId,
-            // let newArr = industries.map(({ id: [id], name: [name] }) => ({
-            //   value: id,
-            //   label: name,
-            // }));
-
-            // let region = regions.find(({ id: [id] }) => id === regionId);
-            // if (region === undefined) return { id, name };
-            // return Object.assign({}, { id, name: `${name}, ${region.name[0]}` });
           })
         );
         console.log('ready Lists', this.readyLists);
@@ -135,29 +141,7 @@ export class ListContainerComponent implements OnInit {
         this.finalLists = final;
         this.totalPages = this.finalLists.length;
         this.finalListss = this.getList(this.currentPage, this.currentPageSize);
-      });
-    });
-  }
-  finalListss: FinalList[] = [];
-
-  getList(currentPage: any, currentPageSize: any) {
-    return this.finalLists.slice(0, currentPageSize);
-  }
-  ngOnInit(): void {
-    this.callAndLog();
-
-    this.api.getIndustryPhrases().subscribe((res) => {
-      // console.log(res);
-
-      this.xml2js.parseString(res, (err: any, result: any) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-
-        let industryPhrases = result.LSResponse.IndustryPhrases;
-        console.log('industryPhrases', industryPhrases);
-        this.industryPhrases = industryPhrases;
+        this.totalLists = this.finalLists.length - this.currentPageSize;
       });
     });
   }
@@ -175,6 +159,21 @@ export class ListContainerComponent implements OnInit {
       return 0;
     });
     console.log('listOfIndustryOption', this.listOfIndustryOption);
+  }
+
+  getIndustryPhrases() {
+    this.api.getIndustryPhrases().subscribe((res) => {
+      this.xml2js.parseString(res, (err: any, result: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        let industryPhrases = result.LSResponse.IndustryPhrases;
+        console.log('industryPhrases', industryPhrases);
+        this.industryPhrases = industryPhrases;
+      });
+    });
   }
 
   getLocations(model: any) {
@@ -284,91 +283,26 @@ export class ListContainerComponent implements OnInit {
     return parseInt(firstNum + zeros);
   }
 
-  onPageIndexChange(event: any) {}
-  onPageSizeChange(event: any) {}
-}
+  onPageIndexChange(event: any) {
+    console.log(event);
+    this.currentPage = event;
+    this.finalListss = this.getList(this.currentPage, this.currentPageSize);
+  }
+  onPageSizeChange(event: any) {
+    console.log(event);
+    this.currentPageSize = event;
+    this.finalListss = this.getList(this.currentPage, this.currentPageSize);
+    this.totalLists = this.finalLists.length - this.currentPageSize;
+  }
 
-export interface ListPost {
-  name: string;
-  quantity: number;
-  description: string;
-  img: string;
-}
-
-export interface Industry {
-  id: Array<string>;
-  name: Array<string>;
-}
-
-export interface ReadyListServer {
-  creationTime: Array<string>;
-  id: Array<string>;
-  industryId: Array<string>;
-  jobCategoryId: Array<string>;
-  leads: Array<string>;
-  locationId: Array<string>;
-}
-export interface CrmConfig {
-  campaigns: Array<any>;
-  countries: Array<any>;
-  customerSources: Array<any>;
-  defaultTemplates: Array<any>;
-  industries: Array<any>;
-  linkedinMapping: Array<any>;
-  plans: Array<any>;
-  positions: Array<any>;
-  products: Array<any>;
-  regions: Array<any>;
-  states: Array<any>;
-  statuses: Array<any>;
-  tags: Array<any>;
-  templates: Array<any>;
-  templatesPlaceholders: Array<any>;
-}
-export interface FinalList {
-  name: string;
-  location: FinalLocation;
-  originReadyList: {
-    creationTime: string;
-    id: string;
-    industryId: string;
-    jobCategoryId: string;
-    leads: string;
-    locationId: string;
-  };
-}
-
-export interface FinalLocation {
-  country: { id: string; name: string };
-  region: { id: string; name: string };
-  state: { id: string; name: string };
-}
-
-export interface ReadyList {
-  creationTime: string;
-  id: string;
-  industryId: string;
-  jobCategoryId: string;
-  leads: string;
-  locationId: string;
-}
-
-export interface Country {
-  id: Array<string>;
-  name: Array<string>;
-  regionId: Array<string>;
-}
-
-export interface Region {
-  id: Array<string>;
-  name: Array<string>;
-}
-export interface Size {
-  id: Array<string>;
-  name: Array<string>;
-}
-
-export interface State {
-  id: Array<string>;
-  name: Array<string>;
+  getList(currentPage: any, currentPageSize: any) {
+    let list: FinalList[];
+    currentPage == 1
+      ? (list = this.finalLists.slice(0, currentPageSize))
+      : (list = this.finalLists.slice(
+          currentPage * currentPageSize,
+          currentPage * currentPageSize + currentPageSize
+        ));
+    return list;
+  }
 }

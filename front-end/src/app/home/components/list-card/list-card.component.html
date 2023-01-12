@@ -8,8 +8,16 @@
   </nz-card-meta> -->
   <!-- <div class="card-body"> -->
   <div class="row">
-    <div class="col ant-card-meta-title ng-star-inserted">
-      Europe Street beat
+    <div class="col ant-card-meta-title ng-star-inserted list-name">
+      {{ list.name }}
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div
+      class="col"
+      class="ant-card-meta-description ng-star-inserted list-leads-title-div"
+    >
+      <span class="list-leads-title"># of leads</span>
     </div>
     <div class="col" style="text-align: end">
       <nz-rate [ngModel]="randomStar" nzDisabled style="line-height: 25px">
@@ -17,21 +25,26 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col" class="ant-card-meta-description ng-star-inserted">
-      www.instagram.com
-    </div>
-  </div>
-  <div class="row" style="text-align: end">
+  <div class="row" style="margin-top: -10px">
     <!-- [nzTitle]="'Feedback'" -->
+    <div class="col list-leads-number" style="text-align: start">
+      <nz-statistic
+        class="statistics"
+        nzValue="{{ list.leads }}"
+      ></nz-statistic>
+    </div>
+    <div class="col" style="text-align: end">
+      <ng-template #prefixTpl
+        ><span nz-icon nzType="like" style="vertical-align: 2px"></span
+      ></ng-template>
 
-    <nz-statistic
-      class="statistics"
-      [nzValue]="randomLike"
-      [nzPrefix]="prefixTpl"
-      (click)="cardLiked()"
-    ></nz-statistic>
-    <ng-template #prefixTpl><span nz-icon nzType="like"></span></ng-template>
+      <nz-statistic
+        class="statistics"
+        [nzValue]="randomLike"
+        [nzPrefix]="prefixTpl"
+        (click)="cardLiked()"
+      ></nz-statistic>
+    </div>
   </div>
 
   <!-- </div> -->

@@ -1,5 +1,6 @@
 .card {
   border-radius: 4px;
+  min-height: 321px;
 }
 
 .img-div {
@@ -36,33 +37,28 @@
   // display: flex;
 }
 
-// .statistics {
-//   transition: 1s ease all;
+.list-name {
+  white-space: normal;
+  text-transform: capitalize;
+}
 
-//   transition: 2s 1 linear;
-// }
-// .statistics:active {
-//   animation: press 0.2s 1 linear;
-//   animation: bounce 0.2s 1 linear;
-// }
-// @keyframes press {
-//   0% {
-//     transform: scale(1);
-//   }
-//   50% {
-//     transform: scale(0.92);
-//   }
-//   to {
-//     transform: scale(1);
+.list-leads-title-div {
+  width: auto;
+  // transition: 0.3s ease-in-out 0s;
+}
+
+.list-leads-title {
+  color: var(--primaryLight);
+}
+
+// .list-leads-title-div:hover {
+//   .list-leads-title {
+//     color: var(--primary);
 //   }
 // }
-// @keyframes bounce {
-//   50% {
-//     transform: rotate(5deg) translate(20px, -50px);
-//   }
-//   to {
-//     transform: scale(0.9) rotate(10deg) translate(50px, -80px);
-//     opacity: 0;
+// .list-leads-number:hover {
+//   nz-statistic-number {
+//     color: var(--primary) !important;
 //   }
 // }
 @media screen and (max-width: 500px) {

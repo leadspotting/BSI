@@ -194,3 +194,39 @@ nz-option-container
 .ant-select-close-icon:hover {
   color: var(--primaryLight) !important;
 }
+nz-statistic-number {
+  // transition: 500ms ease-in-out;
+  span {
+    transition: 200ms ease-in-out;
+  }
+}
+// .list-leads-title-div:hover {
+//   // .list-leads-title {
+//   //   color: var(--primary);
+//   // }
+//   .list-leads-number {
+//     nz-statistic-number {
+//       color: var(--primary) !important;
+//     }
+//   }
+// }
+
+.list-leads-number:hover {
+  nz-statistic-number {
+    color: var(--primary) !important;
+    span {
+      scale: calc(1.1) !important;
+    }
+  }
+}
+
+nz-pagination {
+  .anticon {
+    font-size: initial !important;
+    vertical-align: 0px !important;
+  }
+  .ant-select-arrow {
+    height: auto !important;
+    right: 9px !important;
+  }
+}

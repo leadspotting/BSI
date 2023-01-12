@@ -129,17 +129,21 @@
     data-aos-delay="2000"
   >
     <div class="col" *ngFor="let list of finalListss">
-      <app-list-card></app-list-card>
+      <app-list-card [list]="list"></app-list-card>
     </div>
   </div>
   <div
     style="display: flex !important; justify-content: center !important"
     class="mt-4"
     *ngIf="finalListss"
+    data-aos="fade-zoom-in"
+    data-aos-easing="ease-in-sine"
+    data-aos-duration="1000"
+    data-aos-delay="2000"
   >
     <nz-pagination
       [(nzPageIndex)]="currentPage"
-      [nzTotal]="349"
+      [nzTotal]="totalLists"
       nzShowQuickJumper
       (nzPageIndexChange)="onPageIndexChange($event)"
       (nzPageSizeChange)="onPageSizeChange($event)"
