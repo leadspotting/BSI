@@ -135,11 +135,7 @@
   <div
     style="display: flex !important; justify-content: center !important"
     class="mt-4"
-    *ngIf="finalListss"
-    data-aos="fade-zoom-in"
-    data-aos-easing="ease-in-sine"
-    data-aos-duration="1000"
-    data-aos-delay="2000"
+    *ngIf="finalListss.length>0"
   >
     <nz-pagination
       [(nzPageIndex)]="currentPage"
