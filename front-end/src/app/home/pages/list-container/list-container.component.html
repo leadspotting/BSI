@@ -46,16 +46,11 @@
             nzTheme="fill"
             nzType="close-circle"
             *ngIf="inputValue"
-            (click)="inputValue = ''; onOptionClicked('')"
+            (click)="inputValue = ''; filter()"
           ></span>
         </ng-template>
         <ng-template #suffixIconButton>
-          <button
-            nz-button
-            nzType="primary"
-            nzSearch
-            (click)="onSearchClicked()"
-          >
+          <button nz-button nzType="primary" nzSearch (click)="filter()">
             <span nz-icon nzType="search" nzTheme="outline"></span>
           </button>
         </ng-template>

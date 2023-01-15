@@ -458,6 +458,8 @@ export class ListContainerComponent implements OnInit {
       this.selectedLocationValue?.length > 0 ||
       this.inputValue.length > 0
     ) {
+      console.log('hi');
+
       list = this.backUpListss.filter(
         (item: FinalList) =>
           // this.selectedIndustryValue.length > 0
@@ -489,13 +491,29 @@ export class ListContainerComponent implements OnInit {
       this.backUpListss = list;
       this.currentPage = 1;
       this.finalListss = this.getList(1, this.currentPageSize, list);
-      this.totalLists = list.length - this.currentPageSize;
+      if (list.length < this.currentPageSize) {
+        this.totalLists = list.length;
+      } else {
+        this.totalLists = list.length - this.currentPageSize;
+      }
       this.options = this.finalListss;
       if (this.finalListss.length == 0) {
         this.empty = true;
       } else {
         this.empty = false;
       }
+    } else {
+      this.empty = false;
+
+      this.currentPage = 1;
+      this.finalListss = this.getList(
+        1,
+        this.currentPageSize,
+        this.backUpListss2
+      );
+      this.totalLists = this.backUpListss2.length - this.currentPageSize;
+
+      this.backUpListss = this.backUpListss2;
     }
     // if (this.selectedIndustryValue.length == 0) {
     //   this.currentPage = 1;
