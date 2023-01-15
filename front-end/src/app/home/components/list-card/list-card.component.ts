@@ -13,7 +13,7 @@ export class ListCardComponent implements OnInit {
     private modal: NzModalService,
     private notification: NzNotificationService
   ) {}
-
+  skelatonActive = true;
   @Input() list: any;
   ngOnInit(): void {
     this.randomLike = Math.trunc(Math.random() * (542 - 1128 + 1) + 1128);
@@ -22,6 +22,9 @@ export class ListCardComponent implements OnInit {
       this.randomStar =
         Math.random() < 0.85 ? this.randomStar - 0.5 : this.randomStar + 0.5;
     }
+    setTimeout(() => {
+      this.skelatonActive = false;
+    }, 3000);
   }
 
   randomStar: any;

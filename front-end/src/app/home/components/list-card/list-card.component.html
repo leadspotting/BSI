@@ -1,5 +1,19 @@
 <nz-card
   nzHoverable
+  class="card skelaton"
+  [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
+  *ngIf="skelatonActive == true"
+>
+  <nz-skeleton-element
+    nzType="image"
+    [nzActive]="skelatonActive"
+  ></nz-skeleton-element>
+  <nz-skeleton [nzActive]="skelatonActive"></nz-skeleton>
+</nz-card>
+
+<nz-card
+  *ngIf="skelatonActive == false"
+  nzHoverable
   class="card"
   [nzCover]="coverTemplate"
   [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
@@ -7,6 +21,7 @@
   <!-- <nz-card-meta nzTitle="Europe Street beat" nzDescription="www.instagram.com">
   </nz-card-meta> -->
   <!-- <div class="card-body"> -->
+
   <div class="row">
     <div class="col ant-card-meta-title ng-star-inserted list-name">
       {{ list.name }}
@@ -68,8 +83,17 @@
   </div>
 </ng-template>
 <ng-template #actionSetting>
+  <nz-skeleton-element
+    nzType="button"
+    [nzActive]="skelatonActive"
+    [nzSize]="'small'"
+    [nzShape]="'default'"
+    *ngIf="skelatonActive == true"
+  ></nz-skeleton-element>
+
   <!-- <span nz-icon nzType="shopping-cart"></span> -->
   <button
+    *ngIf="skelatonActive == false"
     id="buy-btn action-btn"
     nz-button
     nzType="primary"
@@ -81,7 +105,15 @@
   </button>
 </ng-template>
 <ng-template #actionEdit>
+  <nz-skeleton-element
+    *ngIf="skelatonActive == true"
+    nzType="button"
+    [nzActive]="skelatonActive"
+    [nzSize]="'small'"
+    [nzShape]="'default'"
+  ></nz-skeleton-element>
   <button
+    *ngIf="skelatonActive == false"
     id="action-btn"
     nz-button
     nzType="primary"
@@ -114,7 +146,20 @@
 </ng-template>
 <ng-template #actionEllipsis>
   <!-- <span nz-icon nzType="ellipsis"></span> -->
-  <button nz-button nzType="primary" nzSize="large" id="action-btn">
+  <nz-skeleton-element
+    *ngIf="skelatonActive == true"
+    nzType="button"
+    [nzActive]="skelatonActive"
+    [nzSize]="'small'"
+    [nzShape]="'default'"
+  ></nz-skeleton-element>
+  <button
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    id="action-btn"
+    *ngIf="skelatonActive == false"
+  >
     <span nz-icon nzType="ellipsis"></span>
   </button>
 </ng-template>

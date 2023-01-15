@@ -3,8 +3,13 @@
   min-height: 321px;
   max-width: 387px;
   max-height: 470px;
+  transition: 1s ease all;
 }
-
+.skelaton {
+  min-width: 370px;
+  // min-width: 275px;
+  transition: 1s ease all;
+}
 .img-div {
   overflow: hidden; /* [1.2] Hide the overflowing of child elements */
   height: auto;
