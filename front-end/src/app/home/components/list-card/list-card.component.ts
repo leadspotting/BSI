@@ -22,7 +22,6 @@ export class ListCardComponent implements OnInit {
       this.randomStar =
         Math.random() < 0.85 ? this.randomStar - 0.5 : this.randomStar + 0.5;
     }
-    console.log(this.list);
   }
 
   randomStar: any;

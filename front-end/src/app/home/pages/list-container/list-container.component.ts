@@ -21,10 +21,10 @@ export class ListContainerComponent implements OnInit {
   readyLists: ReadyList[] = [];
   crmConfig: any;
   listOfIndustryOption: Array<{ value: string; label: string }> = [];
-  selectedIndustryValue = null;
+  selectedIndustryValue: string[] = [];
   industryPhrases = [];
   industries = [];
-  selectedLocationValue = null;
+  selectedLocationValue = [];
   listOfLocationOption: Array<{ value: string; label: string }> = [];
   finalLists: FinalList[] = [];
   currentPage = 1;
@@ -32,6 +32,9 @@ export class ListContainerComponent implements OnInit {
   totalPages = -1;
   totalLists = 0;
   finalListss: FinalList[] = [];
+  backUpListss: FinalList[] = [];
+  backUpListss2: FinalList[] = [];
+  options: FinalList[] = [];
 
   ngOnInit(): void {
     this.callAndLog();
@@ -117,8 +120,6 @@ export class ListContainerComponent implements OnInit {
               ? (namee += ', ' + location.state.name)
               : '';
 
-            console.log(namee);
-
             return Object.assign(
               {},
               {
@@ -139,9 +140,18 @@ export class ListContainerComponent implements OnInit {
         );
         console.log('FinalList', final);
         this.finalLists = final;
+        // this.options = final;
+
         this.totalPages = this.finalLists.length;
-        this.finalListss = this.getList(this.currentPage, this.currentPageSize);
+        this.finalListss = this.getList(
+          this.currentPage,
+          this.currentPageSize,
+          final
+        );
+        this.backUpListss = final;
+        this.backUpListss2 = final;
         this.totalLists = this.finalLists.length - this.currentPageSize;
+        this.options = this.uniqueArr(this.finalListss);
       });
     });
   }
@@ -184,7 +194,10 @@ export class ListContainerComponent implements OnInit {
       ({ id: [id], name: [name], regionId: [regionId] }) => {
         let region = regions.find(({ id: [id] }) => id === regionId);
         if (region === undefined) return { id, name };
-        return Object.assign({}, { id, name: `${name}, ${region.name[0]}` });
+        return Object.assign(
+          {},
+          { id: `${id},${regionId}`, name: `${name}, ${region.name[0]}` }
+        );
       }
     );
 
@@ -286,23 +299,264 @@ export class ListContainerComponent implements OnInit {
   onPageIndexChange(event: any) {
     console.log(event);
     this.currentPage = event;
-    this.finalListss = this.getList(this.currentPage, this.currentPageSize);
+    this.finalListss = this.getList(
+      this.currentPage,
+      this.currentPageSize,
+      this.backUpListss
+    );
   }
   onPageSizeChange(event: any) {
     console.log(event);
     this.currentPageSize = event;
-    this.finalListss = this.getList(this.currentPage, this.currentPageSize);
+    this.finalListss = this.getList(
+      this.currentPage,
+      this.currentPageSize,
+      this.backUpListss
+    );
     this.totalLists = this.finalLists.length - this.currentPageSize;
   }
 
-  getList(currentPage: any, currentPageSize: any) {
+  getList(currentPage: any, currentPageSize: any, arr: FinalList[]) {
     let list: FinalList[];
     currentPage == 1
-      ? (list = this.finalLists.slice(0, currentPageSize))
-      : (list = this.finalLists.slice(
+      ? (list = arr.slice(0, currentPageSize))
+      : (list = arr.slice(
           currentPage * currentPageSize,
           currentPage * currentPageSize + currentPageSize
         ));
     return list;
   }
+
+  inputValue: string = '';
+  // options: Array<{ value: string; category: string; count: number }> = [];
+  empty: boolean = false;
+  onChange(e: Event): void {
+    const value = (e.target as HTMLInputElement).value;
+    console.log(value);
+    if (value != '') {
+      let list: FinalList[];
+      list = this.backUpListss2.filter((list) => {
+        return list.name.toLowerCase().includes(value.toLowerCase());
+      });
+      this.backUpListss = list;
+      this.currentPage = 1;
+
+      this.finalListss = this.getList(1, this.currentPageSize, list);
+      this.totalLists = list.length - this.currentPageSize;
+      this.currentPage;
+      this.options = this.finalListss;
+      console.log(this.finalListss);
+
+      if (this.finalListss.length == 0) {
+        this.empty = true;
+      } else {
+        this.empty = false;
+      }
+      // this.options = this.uniqueArr(this.finalListss);
+    } else {
+      this.currentPage = 1;
+      this.empty = false;
+
+      this.finalListss = this.getList(
+        1,
+        this.currentPageSize,
+        this.backUpListss2
+      );
+      this.totalLists = this.finalListss.length - this.currentPageSize;
+
+      this.options = this.backUpListss;
+      this.backUpListss = this.backUpListss2;
+    }
+  }
+
+  onOptionClicked(e: string) {
+    console.log(e);
+    if (e != '') {
+      let list: FinalList[];
+      list = this.backUpListss.filter((list) => {
+        return list.name.toLowerCase() == e.toLowerCase();
+      });
+      this.backUpListss = list;
+      this.currentPage = 1;
+
+      this.finalListss = this.getList(1, this.currentPageSize, list);
+      this.totalLists = list.length - this.currentPageSize;
+      if (this.finalListss.length == 0) {
+        this.empty = true;
+      } else {
+        this.empty = false;
+      }
+    } else {
+      this.empty = false;
+
+      this.currentPage = 1;
+      this.finalListss = this.getList(
+        1,
+        this.currentPageSize,
+        this.backUpListss2
+      );
+      this.totalLists = this.backUpListss2.length;
+
+      this.backUpListss = this.backUpListss2;
+    }
+  }
+
+  onSearchClicked() {
+    let searchInput = this.inputValue;
+    if (searchInput != '' && searchInput) {
+      let list: FinalList[];
+      list = this.backUpListss.filter((list) => {
+        return list.name.toLowerCase().includes(searchInput.toLowerCase());
+      });
+      this.backUpListss = list;
+      this.currentPage = 1;
+
+      this.finalListss = this.getList(1, this.currentPageSize, list);
+      this.totalLists = list.length - this.currentPageSize;
+    } else {
+      this.currentPage = 1;
+      this.finalListss = this.getList(
+        1,
+        this.currentPageSize,
+        this.backUpListss2
+      );
+      this.totalLists = this.backUpListss2.length;
+
+      this.backUpListss = this.backUpListss2;
+    }
+  }
+
+  uniqueArr(array: any) {
+    return array.filter((obj: any, pos: any, arr: any) => {
+      return arr.map((mapObj: any) => mapObj.name).indexOf(obj.name) === pos;
+    });
+  }
+
+  // industrySelected() {
+  //   console.log(this.selectedIndustryValue);
+  //   if (this.selectedIndustryValue?.length > 0) {
+  //     // this.finalListss = this.backUpListss.filter((list) => {
+  //     //   return list.originReadyList.industryId;
+  //     // });
+  //     let list: FinalList[] = this.backUpListss.filter((item: FinalList) =>
+  //       this.selectedIndustryValue.includes(item.originReadyList.industryId)
+  //     );
+  //     this.currentPage = 1;
+
+  //     this.finalListss = this.getList(1, this.currentPageSize, list);
+  //     this.totalLists = list.length - this.currentPageSize;
+  //   }
+  // }
+  filter() {
+    console.log(this.selectedLocationValue);
+    console.log(this.inputValue);
+    console.log(this.selectedIndustryValue);
+    this.backUpListss = this.backUpListss2;
+    let list: FinalList[] = [];
+    if (
+      this.selectedIndustryValue?.length > 0 ||
+      this.selectedLocationValue?.length > 0 ||
+      this.inputValue.length > 0
+    ) {
+      list = this.backUpListss.filter(
+        (item: FinalList) =>
+          // this.selectedIndustryValue.length > 0
+          //   ? this.selectedIndustryValue.includes(item.originReadyList.industryId)
+          //   : true && this.selectedLocationValue.length > 0
+          //   ? this.selectedLocationValue.some((name) => item.name.includes(name))
+          //   : true && this.inputValue.length > 0
+          //   ? item.name.toLowerCase().includes(this.inputValue.toLowerCase())
+          //   : true
+          (this.inputValue.length > 0
+            ? item.name.toLowerCase().includes(this.inputValue.toLowerCase())
+            : true) &&
+          (this.selectedIndustryValue.length > 0
+            ? // ? this.selectedIndustryValue.includes(item.originReadyList.industryId)
+              this.selectedIndustryValue.some((name: string) => {
+                return item.originReadyList.industryId == name;
+              })
+            : true) &&
+          (this.selectedLocationValue.length > 0
+            ? this.selectedLocationValue.some((name: string) => {
+                return (
+                  item.location.country.id == name.split(',')[0] &&
+                  item.location.region.id == name.split(',')[1]
+                );
+              })
+            : true)
+      );
+      console.log(list);
+      this.backUpListss = list;
+      this.currentPage = 1;
+      this.finalListss = this.getList(1, this.currentPageSize, list);
+      this.totalLists = list.length - this.currentPageSize;
+      this.options = this.finalListss;
+      if (this.finalListss.length == 0) {
+        this.empty = true;
+      } else {
+        this.empty = false;
+      }
+    }
+    // if (this.selectedIndustryValue.length == 0) {
+    //   this.currentPage = 1;
+    //   this.empty = false;
+
+    //   this.finalListss = this.getList(
+    //     1,
+    //     this.currentPageSize,
+    //     this.backUpListss2
+    //   );
+    //   this.totalLists = this.finalListss.length - this.currentPageSize;
+
+    //   this.options = this.backUpListss;
+    //   this.backUpListss = this.backUpListss2;
+    //   this.filter();
+    // }
+    // if (this.selectedLocationValue.length == 0) {
+    //   this.currentPage = 1;
+    //   this.empty = false;
+
+    //   this.finalListss = this.getList(
+    //     1,
+    //     this.currentPageSize,
+    //     this.backUpListss2
+    //   );
+    //   this.totalLists = this.finalListss.length - this.currentPageSize;
+
+    //   this.options = this.backUpListss;
+    //   this.backUpListss = this.backUpListss2;
+    //   this.filter();
+    // }
+
+    // else {
+    //   this.currentPage = 1;
+    //   this.empty = false;
+
+    //   this.finalListss = this.getList(
+    //     1,
+    //     this.currentPageSize,
+    //     this.backUpListss2
+    //   );
+    //   this.totalLists = this.finalListss.length - this.currentPageSize;
+
+    //   this.options = this.backUpListss;
+    //   this.backUpListss = this.backUpListss2;
+    // }
+
+    // this.backUpListss = list;
+    // this.currentPage = 1;
+    // this.finalListss = this.getList(1, this.currentPageSize, list);
+    // this.totalLists = list.length - this.currentPageSize;
+    // this.options = this.finalListss;
+    // console.log(this.finalListss);
+
+    // if (this.finalListss.length == 0) {
+    //   this.empty = true;
+    // } else {
+    //   this.empty = false;
+    // }
+  }
+  // private getRandomInt(max: number, min: number = 0): number {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
 }

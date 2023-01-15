@@ -52,7 +52,21 @@ nz-collapse-panel {
   text-align: left;
 }
 
-@media (max-width: 485px) {
+.global-search-item-desc {
+  flex: auto;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.global-search-item-count {
+  flex: none;
+}
+.center {
+  justify-content: center !important;
+  display: flex !important;
+}
+// @media (max-width: 485px) {
+@media (max-width: 735px) {
   .row {
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   }

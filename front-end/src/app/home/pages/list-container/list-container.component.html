@@ -17,14 +17,88 @@
         data-aos-duration="1000"
         data-aos-easing="ease-in-sine"
       >
+        <h4 nz-typography class="title">Free Search</h4>
+        <nz-input-group
+          nzSearch
+          nzSize="large"
+          [nzAddOnAfter]="suffixIconButton"
+          [nzSuffix]="inputClearTpl"
+        >
+          <!-- <input
+            placeholder="input here"
+            nz-input
+            [(ngModel)]="inputValue"
+            (input)="onChange($event)"
+            [nzAutocomplete]="auto"
+          /> -->
+          <input
+            placeholder="input here"
+            nz-input
+            [(ngModel)]="inputValue"
+            (input)="filter()"
+            [nzAutocomplete]="auto"
+          />
+        </nz-input-group>
+        <ng-template #inputClearTpl>
+          <span
+            nz-icon
+            class="ant-input-clear-icon"
+            nzTheme="fill"
+            nzType="close-circle"
+            *ngIf="inputValue"
+            (click)="inputValue = ''; onOptionClicked('')"
+          ></span>
+        </ng-template>
+        <ng-template #suffixIconButton>
+          <button
+            nz-button
+            nzType="primary"
+            nzSearch
+            (click)="onSearchClicked()"
+          >
+            <span nz-icon nzType="search" nzTheme="outline"></span>
+          </button>
+        </ng-template>
+        <nz-autocomplete #auto nzBackfill="true">
+          <nz-auto-option
+            class="global-search-item"
+            *ngFor="let option of options"
+            [nzValue]="option.name"
+            (click)="onOptionClicked(option.name)"
+            nz-tooltip
+            [nzTooltipTitle]="titleTemplate"
+            [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
+            nzTooltipColor="var(--primaryLight)"
+            nzTooltipPlacement="right"
+          >
+            {{ option.name }}
+            <ng-template #titleTemplate let-thing>
+              <span>
+                <span nz-icon nzType="file" style="vertical-align: 2px"></span>
+                {{ option.name }}</span
+              >
+            </ng-template>
+          </nz-auto-option>
+        </nz-autocomplete>
+      </div>
+
+      <div
+        class="col"
+        data-aos="fade-up"
+        data-aos-delay="400"
+        data-aos-duration="1000"
+        data-aos-easing="ease-in-sine"
+      >
         <h4 nz-typography class="title">Industry</h4>
         <nz-select
           nzShowSearch
+          nzSize="large"
           nzAllowClear
           nzMode="multiple"
           nzPlaceHolder="Select..."
           [nzOptions]="listOfIndustryOption"
           [(ngModel)]="selectedIndustryValue"
+          (ngModelChange)="filter()"
         >
         </nz-select>
       </div>
@@ -37,12 +111,14 @@
       >
         <h4 nz-typography class="title">Location</h4>
         <nz-select
+          nzSize="large"
           nzShowSearch
           nzAllowClear
           nzMode="multiple"
           nzPlaceHolder="Select..."
           [nzOptions]="listOfLocationOption"
           [(ngModel)]="selectedLocationValue"
+          (ngModelChange)="filter()"
         >
           <!-- <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
       <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
@@ -59,6 +135,7 @@
         <h4 nz-typography class="title">Type</h4>
         <!-- <ng-container> -->
         <button
+          nzSize="large"
           nz-button
           nz-dropdown
           class="width-100 alignLeft placeholder"
@@ -128,14 +205,21 @@
     data-aos-duration="1000"
     data-aos-delay="2000"
   >
-    <div class="col" *ngFor="let list of finalListss">
+    <!-- nzXs="12"
+    nzSm="12"
+    nzMd="12"
+    nzLg="8"
+    nzXl="10" -->
+    <nz-empty *ngIf="empty == true"></nz-empty>
+
+    <div class="col center" *ngFor="let list of finalListss">
       <app-list-card [list]="list"></app-list-card>
     </div>
   </div>
   <div
     style="display: flex !important; justify-content: center !important"
     class="mt-4"
-    *ngIf="finalListss.length>0"
+    *ngIf="finalListss.length > 0"
   >
     <nz-pagination
       [(nzPageIndex)]="currentPage"

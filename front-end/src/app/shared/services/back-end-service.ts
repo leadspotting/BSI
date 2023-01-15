@@ -37,6 +37,12 @@ export class BackEndService {
     });
   }
 
+  getNewContactBookList() {
+    return this.http.get(`${environment.BASE_URL2}Command=IndustryPhrases`, {
+      responseType: 'text',
+    });
+  }
+
   // buyList(model: any) {
   //   let params = new HttpParams()
   //     .set('industryId', model.industryId)
