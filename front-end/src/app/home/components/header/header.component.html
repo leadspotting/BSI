@@ -1,0 +1,448 @@
+<nz-header>
+  <div
+    class="logo"
+    (click)="HomeClicked()"
+    data-aos="fade-right"
+    data-aos-duration="1500"
+    data-aos-easing="ease-in-sine"
+    data-aos-once="true"
+  >
+    <!-- <img class="logo-img" src="/assets/leadspot_logo.png" alt="" /> -->
+    <img class="logo-img" src="/assets/leadspotting-logo-gif.gif" alt="" />
+  </div>
+  <div
+    class="regular-menu"
+    data-aos="fade-left"
+    data-aos-duration="1500"
+    data-aos-easing="ease-in-sine"
+    data-aos-once="true"
+  >
+    <span class="btn" (click)="isVisibleAbout = true">About </span>
+
+    <span class="btn" (click)="isVisibleContactUs = true">Contact us </span>
+
+    <span class="btn" (click)="isVisibleBookADemo = true; bookADemo()"
+      >Book a demo
+    </span>
+
+    <span class="btn" (click)="isVisibleVideoTutorial = true; bookADemo()">Video tutorial</span>
+
+    <nz-badge
+      [nzCount]="cart.length"
+      [nzOverflowCount]="10"
+      [nzStyle]="{ backgroundColor: 'var(--secondary)', color: '#fff' }"
+    >
+      <button
+        nz-button
+        nzType="primary"
+        (click)="openTemplate()"
+        style="margin-left: 1rem"
+      >
+        <span>Cart </span>
+
+        <!-- <span *ngIf="cart.length > 0">{{ cart.length }} Items</span> -->
+      </button>
+    </nz-badge>
+  </div>
+  <div
+    class="mobile-menu"
+    data-aos="fade-left"
+    data-aos-duration="1500"
+    data-aos-easing="ease-in-sine"
+    data-aos-once="true"
+  >
+    <a nz-dropdown [nzDropdownMenu]="menu">
+      <span nz-icon nzType="menu" nzTheme="outline"></span>
+      <!-- <span nz-icon nzType="down"></span> -->
+    </a>
+    <nz-dropdown-menu #menu="nzDropdownMenu">
+      <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="isVisibleAbout = true">
+          <span class="">About </span>
+        </li>
+        <li nz-menu-item (click)="isVisibleContactUs = true">
+          <span class="">Contact us </span>
+        </li>
+        <li nz-menu-item (click)="isVisibleBookADemo = true">
+          <span class="">Book a demo</span>
+        </li>
+        <li nz-menu-item (click)="isVisibleVideoTutorial = true">
+          <span class="">Video tutorial</span>
+        </li>
+        <li nz-menu-item (click)="openTemplate()">
+          <!-- <nz-badge
+            [nzCount]="cart.length"
+            [nzOverflowCount]="10"
+            [nzStyle]="{ backgroundColor: 'var(--secondary)', color: '#fff' }"
+          > -->
+          <!-- <button
+              nz-button
+              nzType="primary"
+              (click)="openTemplate()"
+              style="margin-left: 1rem"
+            > -->
+          <span>Cart </span>
+
+          <!-- <span *ngIf="cart.length > 0">{{ cart.length }} Items</span> -->
+          <!-- </button> -->
+          <!-- </nz-badge> -->
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+  </div>
+</nz-header>
+
+<ng-template #drawerTemplate let-data let-drawerRef="drawerRef">
+  <nz-empty
+    style="
+      height: calc(100% - 120px);
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      justify-content: center;
+    "
+    [nzNotFoundContent]="'No Items in cart'"
+    *ngIf="cart.length == 0"
+  ></nz-empty>
+  <div class="items-div" *ngIf="cart.length > 0">
+    <div *ngFor="let item of cart">
+      <app-cart-item-card
+        [list]="item"
+        (removeItemEvent)="removeItemFromCart($event)"
+      ></app-cart-item-card>
+    </div>
+  </div>
+
+  <br />
+  <br />
+  <div class="row mb-3" *ngIf="cart.length > 0">
+    <div class="col">Total</div>
+    <div class="col">{{ getTotalCartPrice() }}$</div>
+  </div>
+  <app-paypal
+    *ngIf="cart.length > 0"
+    [price]="getTotalCartPrice()"
+    (newPaymentEvent)="paymentDone($event)"
+  ></app-paypal>
+  <br />
+  <br />
+  <button nz-button nzType="primary" (click)="drawerRef.close()">close</button>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="isVisibleAbout"
+  nzTitle="About ReadyLists"
+  (nzOnCancel)="handleCancelAbout()"
+  (nzOnOk)="handleOkAbout()"
+>
+  <ng-container *nzModalContent>
+    <p>
+      Welcome to readyLists, your go-to source for high-quality leads lists! We
+      understand the importance of targeted leads for growing your business, and
+      our portal is designed to provide you with the perfect lists to boost your
+      sales.
+    </p>
+    <div>
+      <span class="modal-title">High-Quality Leads for Your Business </span>
+      <p>
+        At readyLists, we believe in making the process of finding the perfect
+        leads list easy and efficient. Our platform allows you to filter with
+        ease, ensuring that you find the leads list that aligns perfectly with
+        your business requirements. Whether you need leads from a specific
+        industry or location, our comprehensive filters will help you find
+        exactly what you're looking for.
+      </p>
+    </div>
+    <div>
+      <span class="modal-title">Customized Lists and Secure Payments </span>
+      <p>
+        In addition to our pre-made lists, we also offer the option to create
+        custom lists tailored specifically to your business needs. Just let us
+        know your requirements, and we'll deliver a high-quality list right to
+        your inbox.
+      </p>
+      <p>
+        We understand the importance of security when it comes to online
+        transactions. That's why we've partnered with PayPal to provide you with
+        a safe and secure payment method. With PayPal, you can complete your
+        purchases with ease, knowing that your financial information is
+        protected.
+      </p>
+    </div>
+    <div>
+      <span class="modal-title">Instant Access, No Registration Required </span>
+      <p>
+        At readyLists, we believe in providing a seamless user experience. You
+        can access our targeted leads lists instantly, without the hassle of
+        login or registration. Simply find the list you need, make your purchase
+        through LeadSpot, and start leveraging the power of high-quality leads
+        right away.
+      </p>
+    </div>
+    <div>
+      <span class="modal-title">Try Before You Commit </span>
+      <p>
+        We want you to feel confident in your decision to purchase leads from
+        readyLists. That's why we offer a free sample download of 5 leads. This
+        way, you can evaluate the quality and relevance of our lists firsthand
+        before making a commitment.
+      </p>
+      <p>
+        Start growing your business today with readyLists. Browse our
+        comprehensive collection of ready companies and ready emails, and take
+        advantage of our advanced filtering options to find the perfect leads
+        for your industry, location, and business type. With our secure payment
+        system and instant access, you're just a few clicks away from boosting
+        your sales.
+      </p>
+    </div>
+  </ng-container>
+</nz-modal>
+<!-- (nzOnCancel)="handleCancelContactUs()" -->
+
+<nz-modal
+  [(nzVisible)]="isVisibleContactUs"
+  nzTitle="Contact us ReadyLists"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancelContactUs()"
+>
+  <ng-container *nzModalContent>
+    <div *ngIf="sentError == true">
+      <h5>Error!</h5>
+      <p>We apologize, but there was an issue sending your contact message.</p>
+
+      <p>
+        Please double-check the form fields and try again. If the problem
+        persists, please contact us directly for assistance. We apologize for
+        any inconvenience caused.
+      </p>
+    </div>
+    <p>
+      Please fill out the form below with your name, email, and phone number,
+      message and we'll get back to you as soon as possible.
+    </p>
+    <form
+      nz-form
+      [formGroup]="validateForm"
+      (ngSubmit)="submitForm()"
+      *ngIf="sentSuccessfully == false"
+    >
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
+          <span>First name</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your First name!"
+        >
+          <input
+            nz-input
+            id="firstName"
+            formControlName="firstName"
+            placeholder="first name"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="lastName" nzRequired>
+          <span>Last name</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your Last name!"
+        >
+          <input
+            nz-input
+            id="lastName"
+            formControlName="lastName"
+            placeholder="last name"
+          />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email"
+          >E-mail</nz-form-label
+        >
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="The input is not valid E-mail!"
+        >
+          <input
+            nz-input
+            formControlName="email"
+            id="email"
+            placeholder="email"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber">
+          <span>Phone number</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your Phone number!"
+        >
+          <input
+            nz-input
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="phone number"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <!-- <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber"
+          >Phone number</nz-form-label
+        >
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your phone number!"
+        >
+          <nz-input-group>
+            <input
+              formControlName="phoneNumber"
+              id="phoneNumber"
+              placeholder="phone number"
+              nz-input
+            />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item> -->
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="message" nzRequired
+          >Message</nz-form-label
+        >
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your message!"
+        >
+          <!-- <input
+            nz-input
+            id="message"
+            formControlName="message"
+            placeholder="message"
+          /> -->
+          <textarea
+            nz-input
+            id="message"
+            formControlName="message"
+            placeholder="message"
+            [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+          ></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- <nz-form-item nz-row class="register-area">
+        <nz-form-control [nzSpan]="14" [nzOffset]="6">
+          <button nz-button nzType="primary">Submit</button>
+        </nz-form-control>
+      </nz-form-item> -->
+    </form>
+    <div *ngIf="sentSuccessfully == true">
+      <h5>Congratulations!</h5>
+      <p>
+        Your message has been successfully sent. We appreciate you reaching out
+        to us through our contact form. Our team will review your message and
+        get back to you as soon as possible.
+      </p>
+
+      <p>
+        Thank you for choosing us and for your interest in our services. We
+        value your feedback and look forward to assisting you further.
+      </p>
+    </div>
+  </ng-container>
+  <ng-template #modalFooter>
+    <!-- <button nz-button nzType="default" (click)="handleCancel()">
+      Custom Callback
+    </button> -->
+    <button
+      *ngIf="sentSuccessfully == false"
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+      (click)="submitForm()"
+      [nzLoading]="isConfirmLoading"
+    >
+      Submit
+    </button>
+    <button
+      *ngIf="sentSuccessfully == true"
+      nz-button
+      nzType="primary"
+      (click)="handleCancelContactUs()"
+      [nzLoading]="isConfirmLoading"
+    >
+      Cancel
+    </button>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleBookADemo"
+  nzTitle="Book A Demo"
+  nzClosable="true"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancelBookADemo()"
+>
+  <ng-container *nzModalContent>
+    <!-- <p>
+Choose a day and save time by scheduling your appointment. Fill in your details, and we'll be ready to assist you.    </p> -->
+    <div>
+      <span class="modal-title">Schedule a Meeting now </span>
+      <p>
+        Please select a convenient day and time for your appointment. By
+        scheduling in advance, you can save valuable time. Simply choose a
+        suitable date from the calendar and fill in your details. We look
+        forward to meeting with you and providing our assistance.
+      </p>
+    </div>
+
+    <app-bookademo-dialog></app-bookademo-dialog>
+  </ng-container>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisibleVideoTutorial"
+  nzTitle="Video tutorial"
+  nzClosable="true"
+  [nzFooter]="null"
+  (nzOnCancel)="handleCancelVideoTutorial()"
+  [nzWidth]="'70%'"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+>
+  <ng-container *nzModalContent>
+    <div
+      style="
+              position: relative;
+              padding-bottom: 56.25%;
+              height: 0;
+              text-align: center;
+            "
+    >
+      <iframe
+        src="https://www.loom.com/embed/11c77ea6491a48a29221c93027051678?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
+        frameborder="0"
+        webkitallowfullscreen
+        mozallowfullscreen
+        allowfullscreen
+        style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100% !important;
+                border-radius: 5px;
+                width: 100% !important;
+              "
+      ></iframe>
+    </div>
+  </ng-container>
+</nz-modal>

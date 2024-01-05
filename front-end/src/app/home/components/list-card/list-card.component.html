@@ -1,0 +1,617 @@
+<!-- <nz-card
+  nzHoverable
+  class="card skelaton"
+  [nzActions]="[actionSetting, actionEdit, actionEllipsis]"
+  *ngIf="skelatonActive == true"
+>
+  <nz-skeleton-element
+    nzType="image"
+    [nzActive]="skelatonActive"
+  ></nz-skeleton-element>
+  <nz-skeleton [nzActive]="skelatonActive"></nz-skeleton>
+</nz-card> -->
+
+<nz-card
+  nzHoverable
+  class="card"
+  [ngStyle]="{
+    'max-height': firstTime == true ? 'max-content' : '',
+    width: firstTime == true ? '320px' : ''
+  }"
+  [nzCover]="firstTime == true ? coverTemplateSkelaton : coverTemplate"
+  [nzActions]="
+    firstTime == true
+      ? [actionSettingSkelaton, actionEditSkelaton, actionEllipsisSkelaton, actionShare]
+      : [actionSetting, actionEdit, actionEllipsis, actionShare]
+  "
+>
+  <nz-card-meta
+    *ngIf="firstTime == false"
+    nzTitle="{{ list.originReadyList.name }}"
+    nzDescription="{{ list.originReadyList.description }}"
+  ></nz-card-meta>
+
+  <div class="row">
+    <!-- <div
+      class="col ant-card-meta-title ng-star-inserted list-name"
+      *ngIf="firstTime == false"
+    >
+      {{ list.originReadyList.name }}
+    </div> -->
+
+    <nz-skeleton
+      *ngIf="firstTime == true"
+      [nzActive]="firstTime"
+      [nzParagraph]="{ rows: 2 }"
+    ></nz-skeleton>
+  </div>
+
+  <div>
+    <!-- <div class="row mt-2" *ngIf="firstTime == false">
+      <div class="col list-leads-title-div" style="text-align: start">
+        <span
+          class="list-leads-title"
+          style="white-space: nowrap"
+          *ngIf="firstTime == false && email == false"
+          ># of leads</span
+        >
+      </div>
+      <div class="col" style="text-align: end">
+        <span class="list-leads-title" style="white-space: nowrap"
+          ># of downloads</span
+        >
+      </div>
+    </div> -->
+    <div class="row mt-2" *ngIf="firstTime == false">
+      <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <!-- <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+        *ngIf="email == false"
+      > -->
+        <span
+          class="list-leads-title leadsTitle"
+          style="white-space: nowrap"
+          *ngIf="firstTime == false"
+          id="leadsTitle"
+          ># of {{ list.type }}</span
+        >
+        <nz-statistic
+          class="statistics leadsTitle"
+          nzValue="{{ list.originReadyList.roundCount }}"
+        ></nz-statistic>
+        <!-- <span
+          class="list-leads-title downloadsTitle"
+          style="white-space: nowrap"
+          id="downloadsTitle"
+          ># of downloads</span
+        >
+        <nz-statistic class="statistics downloadsTitle" [nzValue]="randomLike">
+        </nz-statistic> -->
+      </div>
+      <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <span
+          class="list-leads-title downloadsTitle"
+          style="white-space: nowrap"
+          id="downloadsTitle"
+          ># of downloads</span
+        >
+        <nz-statistic
+          id="Down{{ list.originReadyList.id }}"
+          class="statistics downloadsTitle"
+          [nzValue]="list.originReadyList.downloads"
+        >
+        </nz-statistic>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="firstTime == true">
+    <div class="col list-leads-title-div" style="text-align: start">
+      <nz-skeleton
+        *ngIf="firstTime == true"
+        [nzActive]="firstTime"
+        [nzParagraph]="{ rows: 1 }"
+      ></nz-skeleton>
+    </div>
+    <div class="col" style="text-align: end">
+      <nz-skeleton
+        style="text-align: end"
+        *ngIf="firstTime == true"
+        [nzActive]="firstTime"
+        [nzParagraph]="{ rows: 1 }"
+      ></nz-skeleton>
+    </div>
+  </div>
+</nz-card>
+
+<ng-template #coverTemplate>
+  <div class="img-div">
+    <img
+      alt="example"
+      onerror="this.onerror=null;this.src='/assets/small-logo.png'"
+      [src]="
+        list!.originReadyList.mediaUrl
+          ? list!.originReadyList.mediaUrl
+          : '/assets/small-logo.png'
+      "
+    />
+  </div>
+</ng-template>
+<ng-template #coverTemplateSkelaton>
+  <div class="img-div mt-4">
+    <nz-skeleton-element
+      class="image-skelaton"
+      nzType="image"
+      [nzActive]="firstTime"
+    ></nz-skeleton-element>
+  </div>
+</ng-template>
+<ng-template #actionSetting>
+  <button
+    id="buy-btn action-btn"
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    style="background-color: var(--secondary); border-color: var(--secondary)"
+    (click)="showModal()"
+    nz-tooltip
+    [nzTooltipColor]="'var(--secondaryLight)'"
+    nzTooltipTitle="Buy now"
+  >
+    <!-- getFullList(list.leads); -->
+    <span nz-icon nzType="shopping"></span>
+  </button>
+</ng-template>
+<ng-template #actionSettingSkelaton>
+  <nz-skeleton-element
+    nzType="button"
+    [nzActive]="firstTime"
+    [nzSize]="'default'"
+    [nzShape]="'default'"
+  ></nz-skeleton-element>
+</ng-template>
+<ng-template #actionEdit>
+  <button
+    id="action-btn"
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    nz-tooltip
+    [nzTooltipTitle]="titleTemplate"
+    [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
+    nzTooltipColor="var(--primaryLight)"
+    nzTooltipPlacement="bottom"
+    (click)="getFiveSamplesList(); showModalSample()"
+    *ngIf="list.type != 'opportunities'"
+  >
+    <span nz-icon nzType="download" nzTooltipTitle="Download 5 samples"></span>
+  </button>
+  <button
+    id="action-btn"
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    nz-tooltip
+    [nzTooltipTitle]="titleTemplate"
+    [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
+    nzTooltipColor="var(--primaryLight)"
+    nzTooltipPlacement="bottom"
+    (click)="getFiveSamplesListOpp(); showModalSample()"
+    *ngIf="list.type == 'opportunities'"
+  >
+    <span nz-icon nzType="download" nzTooltipTitle="Download 5 samples"></span>
+  </button>
+
+  <ng-template #titleTemplate let-thing>
+    <span>
+      <span nz-icon nzType="file" style="vertical-align: 2px"></span> download 5
+      samples</span
+    >
+  </ng-template>
+</ng-template>
+<ng-template #actionEditSkelaton>
+  <nz-skeleton-element
+    nzType="button"
+    [nzActive]="firstTime"
+    [nzSize]="'default'"
+    [nzShape]="'default'"
+  ></nz-skeleton-element>
+  <ng-template #titleTemplate let-thing>
+    <span>
+      <span nz-icon nzType="file" style="vertical-align: 2px"></span> download 5
+      samples</span
+    >
+  </ng-template>
+</ng-template>
+<ng-template #actionEllipsis>
+  <button
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    id="action-btn"
+    nz-tooltip
+    [nzTooltipColor]="'var(--primaryLight)'"
+    nzTooltipTitle="Add to cart"
+    (click)="addToCart()"
+  >
+    <span nz-icon nzType="shopping-cart"></span>
+  </button>
+</ng-template>
+<ng-template #actionEllipsisSkelaton>
+  <nz-skeleton-element
+    nzType="button"
+    [nzActive]="firstTime"
+    [nzSize]="'default'"
+    [nzShape]="'default'"
+  ></nz-skeleton-element>
+</ng-template>
+
+<ng-template #actionShare>
+  <button
+    nzSize="large"
+    nz-button
+    nz-dropdown
+    [nzDropdownMenu]="menu"
+    nzType="primary"
+    id="action-btn-share"
+    (click)="addToCart()"
+  >
+    <span nz-icon nzType="share-alt"></span>
+  </button>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu>
+      <li nz-menu-item class="li-type" (click)="shareEmail()">
+        <div class="type">
+          <span nz-icon nzType="mail"></span>
+          <span style="padding-left: 15px;">Email</span>
+        </div>
+      </li>
+      <li nz-menu-item class="li-type" (click)="shareWhatsapp()">
+        <div class="type">
+          <span nz-icon nzType="message"></span>
+          <span style="padding-left: 15px;">Whatsapp</span>
+        </div>
+      </li>
+    </ul>
+  </nz-dropdown-menu>
+</ng-template>
+
+<ng-template #notification>
+  <div class="ant-notification-notice-content">
+    <div class="ant-notification-notice-with-icon">
+      <span class="ant-notification-notice-icon">
+        <span nz-icon nzType="smile" style="color: rgb(16, 142, 233)"></span>
+      </span>
+      <div class="ant-notification-notice-message">
+        Sample Pack Download Successful!
+      </div>
+      <div class="ant-notification-notice-description">
+        <p>
+          Congratulations! You have successfully downloaded a sample pack of 5
+          leads.
+        </p>
+        <p>
+          We're confident that these leads will be valuable to your business,
+          and we hope you'll take the next step and upgrade to a full list.
+        </p>
+        <p>
+          If you have any questions or need help with anything, don't hesitate
+          to reach out to our support team.
+        </p>
+        <p>Thanks for choosing our service!</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<nz-modal
+  [(nzVisible)]="isVisibleSample"
+  [nzTitle]="modalTitleSample"
+  [nzContent]="modalContentSample"
+  [nzFooter]="modalFooterSample"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitleSample>
+    <span *ngIf="showSpinnerSample == false" class="modal-title-span">
+      <nz-result nzStatus="success" class="modal-title-res"> </nz-result> Sample
+      Pack Download Successful!</span
+    >
+    <span *ngIf="showSpinnerSample == true">Loading...</span>
+  </ng-template>
+
+  <ng-template #modalContentSample>
+    <div class="spinner-div" *ngIf="showSpinnerSample == true">
+      <nz-spin nzSimple [nzSize]="'large'"></nz-spin>
+    </div>
+
+    <div
+      *ngIf="showSpinnerSample == false"
+      style="text-align: center"
+      id="p-divs"
+    >
+      <p id="p-title">Congratulations!</p>
+      <p id="regular-p">
+        You have successfully downloaded a sample pack of 5 leads.
+      </p>
+      <!-- <nz-result nzStatus="success" style="padding: 0"> </nz-result> -->
+      <p id="regular-p">
+        We're confident that these leads will be valuable to your business, and
+        we hope you'll take the next step and upgrade to a full list.
+      </p>
+      <p id="regular-p">
+        If you have any questions or need help with anything, don't hesitate to
+        reach out to our support team.
+      </p>
+      <p id="regular-p">
+        <span id="ending-p"> Thank you </span>for choosing our service!
+      </p>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooterSample>
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <button
+          nz-button
+          nzType="primary"
+          style="width: auto !important"
+          (click)="handleCancel()"
+          [nzLoading]="showSpinnerSample"
+        >
+          Close
+        </button>
+      </div>
+      <!-- <div class="col" style="text-align: center">
+        <button
+          style="width: auto !important"
+          nz-button
+          nzType="primary"
+          (click)="handleOk()"
+          [nzLoading]="isConfirmLoading"
+        >
+          Custom Submit
+        </button>
+      </div> -->
+    </div>
+  </ng-template>
+</nz-modal>
+
+<!-- <nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <span *ngIf="showSpinner == false" class="modal-title-span">
+      <nz-result nzStatus="success" class="modal-title-res"> </nz-result> Full
+      List Purchase Successful!</span
+    >
+
+    <span *ngIf="showSpinner == true">Loading...</span>
+  </ng-template>
+
+  <ng-template #modalContent>
+    <div class="spinner-div" *ngIf="showSpinner == true">
+    </div>
+
+    <div *ngIf="showSpinner == false" style="text-align: center" id="p-divs">
+      <p id="p-title">Congratulations!</p>
+
+      <p id="regulear-p">
+        You have successfully purchased a full list of leads.
+      </p>
+      <p id="regulear-p">
+        If you have any questions or need help with anything, don't hesitate to
+        reach out to our support team.
+      </p>
+      <p id="regulear-p">
+        <span id="ending-p"> Thank you</span> for choosing our service!
+      </p>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <button
+          nz-button
+          nzType="primary"
+          style="width: auto !important"
+          (click)="handleCancel()"
+          [nzLoading]="showSpinner"
+        >
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </ng-template>
+</nz-modal> -->
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitle>
+    <div style="display: flex; justify-content: space-between">
+      <span class="modal-title-span">
+        <!-- <nz-result nzStatus="success" class="modal-title-res"> </nz-result> -->
+
+        Full List Purchase
+      </span>
+      <span
+        style="margin-right: 2rem"
+        nz-tooltip
+        [nzTooltipColor]="'var(--primaryLight)'"
+        nzTooltipTitle="Please make your payment via PayPal to access your download. Once your payment is confirmed, the download will start."
+        color="primary"
+        nz-icon
+        nzType="question-circle"
+        nzTheme="twotone"
+      ></span>
+    </div>
+
+    <!-- <span *ngIf="showSpinner == true">Loading...</span> -->
+  </ng-template>
+
+  <ng-template #modalContent>
+    <div id="p-divs">
+      <div class="row mb-2">
+        <div class="col payment-title">List</div>
+        <div class="col">
+          {{ list.originReadyList.description }}
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col payment-title">List id</div>
+        <div class="col">
+          {{ list.originReadyList.id }}
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col payment-title">Amount</div>
+        <div class="col">
+          {{ list.originReadyList.roundCount }}
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col payment-title">Total</div>
+        <div class="col">{{ list.originReadyList.price }}$</div>
+      </div>
+
+      <div class="row mb-2">
+        <div class="col payment-title">Payment</div>
+
+        <div class="col" style="display: flex; align-items: center">
+          <app-paypal
+            [price]="list.originReadyList.price"
+            (newPaymentEvent)="paymentDone($event)"
+          ></app-paypal>
+        </div>
+      </div>
+
+      <div class="row mb-2" *ngIf="paymentFailed == true">
+        <div class="col" style="color: var(--bs-danger)">
+          Sorry, there seems to be an error. Please try again or contact support
+          if the issue persists. Your payment may not have been processed.
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooter>
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <button
+          nz-button
+          nzType="primary"
+          style="width: auto !important"
+          (click)="handleCancel()"
+        >
+          <!-- [nzLoading]="showSpinner" -->
+          Cancel
+        </button>
+      </div>
+      <!-- <div class="col" style="text-align: center">
+        <button
+          style="width: auto !important"
+          nz-button
+          nzType="primary"
+          (click)="handleOk()"
+          [nzLoading]="isConfirmLoading"
+        >
+          Custom Submit
+        </button>
+      </div> -->
+    </div>
+  </ng-template>
+</nz-modal>
+
+<nz-modal
+  [(nzVisible)]="isVisiblePaymentSuccess"
+  [nzTitle]="modalTitlePayment"
+  [nzContent]="modalContentPayment"
+  [nzFooter]="modalFooterPayment"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-template #modalTitlePayment>
+    <span *ngIf="showSpinner == false" class="modal-title-span">
+      <nz-result nzStatus="success" class="modal-title-res"> </nz-result> Full
+      List Purchase Successful!</span
+    >
+
+    <span *ngIf="showSpinner == true">Loading...</span>
+
+    <!-- <span *ngIf="showSpinner == true">Loading...</span> -->
+  </ng-template>
+
+  <ng-template #modalContentPayment>
+    <div style="text-align: center" id="p-divs">
+      <p id="p-title">Congratulations!</p>
+
+      <p id="regulear-p">
+        You have successfully purchased a full list of leads.
+      </p>
+      <p id="regulear-p">
+        If you have any questions or need help with anything, don't hesitate to
+        reach out to our support team.
+      </p>
+      <p id="regulear-p">
+        <span id="ending-p"> Thank you</span> for choosing our service!
+      </p>
+    </div>
+  </ng-template>
+
+  <ng-template #modalFooterPayment>
+    <div class="row">
+      <div class="col" style="text-align: center">
+        <button
+          nz-button
+          nzType="primary"
+          style="width: auto !important"
+          (click)="handleCancel()"
+          [nzLoading]="showSpinner"
+        >
+          <!-- [nzLoading]="showSpinner" -->
+          Cancel
+        </button>
+      </div>
+      <!-- <div class="col" style="text-align: center">
+        <button
+          style="width: auto !important"
+          nz-button
+          nzType="primary"
+          (click)="handleOk()"
+          [nzLoading]="isConfirmLoading"
+        >
+          Custom Submit
+        </button>
+      </div> -->
+    </div>
+  </ng-template>
+</nz-modal>

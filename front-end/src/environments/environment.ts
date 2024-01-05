@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   BASE_URL:
-    'http://test-leadspottingapi-env.eba-mreepfyi.us-east-2.elasticbeanstalk.com/LeadSpottingApi.jsp?',
+    'https://api.leadspotting.com/LeadSpottingApi.jsp?',
   BASE_URL2:
-    'http://test-leadspottingapi-env.eba-mreepfyi.us-east-2.elasticbeanstalk.com/Leadspot.jsp?',
+    'https://api.leadspotting.com/Leadspot.jsp?',
 };
 
 /*

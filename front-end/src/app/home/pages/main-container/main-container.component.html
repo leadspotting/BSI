@@ -1,0 +1,18 @@
+<nz-layout id="main-layout">
+  <app-header [cart]="cart" [parentVar]="drawer"></app-header>
+
+  <app-carousel></app-carousel>
+  <nz-content>
+    <div class="inner-content">
+      <router-outlet
+        (activate)="onActivate($event)"
+        (addToCartEvent)="addToCart($event)"
+        (cartDrawerEvent)="drawerCart($event)"
+      ></router-outlet>
+    </div>
+  </nz-content>
+
+  <app-footer></app-footer>
+</nz-layout>
+
+<!-- <app-spinner id="main-spinner" style="display: none"></app-spinner> -->

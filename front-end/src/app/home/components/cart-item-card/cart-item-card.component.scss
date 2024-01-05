@@ -1,0 +1,45 @@
+.card {
+  display: flex;
+  padding: 5px;
+  border: 1px solid var(--text);
+
+  // flex-direction: row;
+  // justify-content: space-between;
+  .col-title {
+    flex: 0 0 0% !important;
+  }
+  .col-desc {
+    flex: 1 0 0 !important;
+  }
+  .product {
+    // display: flex;
+    // flex-direction: column;
+  }
+  .price {
+    // display: flex;
+    // flex-direction: column;
+  }
+
+  .total {
+    // display: flex;
+    // flex-direction: column;
+  }
+  .remove {
+    text-align: end;
+    transition: 200ms ease-in-out;
+
+    span {
+      padding-right: 0.5rem;
+    }
+  }
+
+  .remove:hover {
+    span {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.row {
+  margin-left: 0;
+}

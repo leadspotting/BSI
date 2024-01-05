@@ -1,0 +1,36 @@
+<div class="card mb-3">
+  <div class="row product mb-1">
+    <div class="col-4">Name</div>
+    <div class="col-8 regular">{{ list.originReadyList.name }}</div>
+    <!-- <span>Name</span>
+    <span>{{ list.name }}</span> -->
+  </div>
+  <div
+    *ngIf="list.originReadyList.description.length > 0"
+    class="row leads mb-1"
+  >
+    <div class="col-4">Description</div>
+    <div class="col-8 regular">{{ list.originReadyList.description }}</div>
+  </div>
+  <div *ngIf="list.originReadyList.count.length > 0" class="row leads mb-1">
+    <div class="col-4">Amount</div>
+    <div class="col-8 regular">
+      {{ list.originReadyList.roundCount }} companies
+    </div>
+  </div>
+  <div class="row total mb-1">
+    <div class="col-4">Price</div>
+    <div class="col-8 regular">{{ list.originReadyList.price }}$</div>
+  </div>
+  <div class="remove mb-1" style="position: absolute; bottom: 5px; right: 5px">
+    <span
+      style="cursor: pointer"
+      nz-icon
+      nzType="delete"
+      nzTheme="twotone"
+      nz-tooltip="remove item"
+      nzTooltipColor="var(--primaryLight)"
+      (click)="removeItem()"
+    ></span>
+  </div>
+</div>

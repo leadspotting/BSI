@@ -1,0 +1,78 @@
+nz-header {
+  background-color: rgb(240, 248, 255);
+  // height: 84px;
+  // line-height: 84px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  float: left;
+  cursor: pointer;
+  // background: rgba(255, 255, 255, 0.2);
+  // background: rgba(218, 235, 250, 0.8);
+  // width: 120px;
+  transition: 0.3s ease-in-out 0s !important;
+
+  // transition: 500ms ease-in-out;
+  .logo-img {
+    // width: 150px;
+    width: 233px;
+    padding: 2px;
+  }
+}
+.logo:hover {
+  scale: calc(1.1);
+}
+.items-div {
+  overflow: auto;
+  height: calc(100vh - 452px);
+  overflow-x: hidden;
+}
+
+.btn {
+  margin: 1rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: var(--primaryLight);
+  transition: 0.3s ease-in-out 0s;
+  opacity: 0.9;
+}
+.btn:hover {
+  cursor: pointer;
+  opacity: 1;
+  transform: scale(1.05);
+}
+.modal-title {
+  font-size: initial;
+}
+
+[nz-form] {
+  max-width: 600px;
+}
+
+.phone-select {
+  width: 70px;
+}
+
+.register-are {
+  margin-bottom: 8px;
+}
+
+.ant-form-item-label {
+  text-align: left !important;
+  margin-right: 10px !important;
+}
+
+.mobile-menu {
+  display: none;
+}
+@media (max-width: 837px) {
+  .mobile-menu {
+    display: block;
+  }
+  .regular-menu {
+    display: none;
+  }
+}

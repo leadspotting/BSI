@@ -1,0 +1,396 @@
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  min-height: 100vh;
+  height: auto;
+  margin: 0;
+  background-color: var(--content);
+}
+
+#main-layout {
+  z-index: 3;
+}
+
+//ROOT
+:root {
+  --alice: #f0f8ff;
+  --primary: #166aa9;
+  --primaryLight: #1669a9bb;
+  --secondary: #93ca5a;
+  --secondaryLight: #94ca5acd;
+
+  --text: #142848;
+  --white: #fff;
+  --content: #eaf2f9;
+  --placeHoldersColors: rgba(111, 110, 111, 1);
+  --borderColor: rgba(184, 184, 184, 1);
+  --contentGreyBackground: #f9fafd;
+  --placeholder: rgba(0, 0, 0, 0.85);
+  --borderColor: #d9d9d9;
+}
+
+.regular {
+  font-family: poppinsRegular !important;
+}
+//FONTS
+@font-face {
+  font-family: poppinsRegular;
+  src: url(assets/Poppins/Poppins-Regular.ttf);
+}
+@font-face {
+  font-family: poppinsMedium;
+  src: url(assets/Poppins/Poppins-Medium.ttf);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: poppinsRegular !important;
+}
+
+body,
+div,
+// span,
+p {
+  font-family: poppinsMedium !important;
+  color: var(--text);
+}
+// span {
+//   color: #fff;
+// }
+//ANT COLLAPSE
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+  color: #fff !important;
+  background-color: var(--primary);
+  span {
+    color: #fff !important;
+  }
+}
+.ant-collapse > .ant-collapse-item > .ant-collapse-header:hover {
+  // color: var(--text) !important;
+  // background-color: var(--secondaryLight);
+  // span {
+  //   color: var(--text) !important;
+  // }
+}
+.ant-collapse > .ant-collapse-item-active > .ant-collapse-header {
+  // color: #fff !important;
+  background-color: var(--primary);
+  // span {
+  //   color: #fff !important;
+  // }
+}
+
+div.ant-collapse-header.ng-tns-c54-0 > div:nth-child(1) > span {
+  vertical-align: 2px !important;
+  // color: #fff !important;
+}
+
+.ant-collapse {
+  border-radius: 7px 7px 4px 4px;
+}
+
+.ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+  vertical-align: 2px !important;
+}
+
+.ant-collapse > .ant-collapse-item:last-child,
+.ant-collapse > .ant-collapse-item:last-child > .ant-collapse-header {
+  border-radius: 5px 5px 0px 0px !important;
+}
+.ant-collapse-content {
+  border-top: none;
+}
+
+//ANT SELECT
+.ant-select-multiple .ant-select-selection-item {
+  background-color: var(--secondary) !important;
+  .ant-select-selection-item-content {
+    color: #fff !important;
+  }
+  height: 30px;
+  border-radius: 5px;
+}
+.ant-select-multiple .ant-select-selection-item-content {
+  margin: auto;
+}
+
+nz-option-container
+  > div
+  > cdk-virtual-scroll-viewport
+  > div.cdk-virtual-scroll-content-wrapper
+  > nz-option-item.ant-select-item.ant-select-item-option.ng-star-inserted.ant-select-item-option-selected {
+  .ant-select-item-option-content {
+    color: #fff !important;
+  }
+  font-weight: 600;
+  background-color: var(--secondary) !important;
+  border-radius: 5px;
+  // background-color: var(--primary) !important;
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: var(--primaryLight);
+  border-radius: 5px;
+
+  .ant-select-item-option-content {
+    color: #fff !important;
+  }
+  // border-radius: 5px;
+}
+
+nz-option-container
+  > div
+  > cdk-virtual-scroll-viewport
+  > div.cdk-virtual-scroll-content-wrapper
+  > nz-option-item
+  > div.ant-select-item-option-state.ng-star-inserted
+  > span
+  > svg {
+  color: #fff !important;
+  // vertical-align: 0px;
+}
+.ant-select-multiple .ant-select-selection-item-remove {
+  margin-left: 2px;
+  margin-top: 1px;
+}
+.ant-select-multiple .ant-select-selection-item-remove:hover {
+  color: var(--primaryLight) !important;
+  // font-size: larger;
+}
+
+//ANT SWITCH
+.ant-switch-checked {
+  background-color: var(--secondary) !important;
+}
+.ant-switch-inner {
+  span {
+    vertical-align: 0px !important;
+  }
+}
+
+//ANT ICON
+
+.ant-card-actions > li > span > .anticon {
+  font-size: 25px;
+  line-height: 25px;
+}
+.anticon {
+  font-size: 25px;
+  line-height: 25px;
+}
+
+.anticon-file,
+.anticon-close,
+.anticon-check {
+  font-size: 14px !important;
+  line-height: 0 !important;
+  vertical-align: 0px !important;
+}
+.ant-select-close-icon {
+  font-size: 14px !important;
+  line-height: 0 !important;
+}
+
+// .anticon-star {
+//   font-size: 14px !important;
+//   line-height: 0 !important;
+//   // color: #fadb14 !important;
+// }
+// .ant-rate-star-half .ant-rate-star-first,
+// .ant-rate-star-full .ant-rate-star-second {
+//   color: #fadb14 !important;
+// }
+.ant-select-close-icon:hover {
+  color: var(--primaryLight) !important;
+}
+.anticon.ant-input-clear-icon:hover,
+.ant-input-clear-icon:hover {
+  color: var(--primaryLight) !important;
+}
+.anticon.ant-input-clear-icon,
+.ant-input-clear-icon {
+  font-size: 14px !important;
+  line-height: 0 !important;
+}
+nz-statistic-number {
+  // transition: 500ms ease-in-out;
+  span {
+    transition: 200ms ease-in-out;
+  }
+}
+
+#leadsTitle:hover {
+  color: var(--primary) !important;
+  scale: calc(1.1) !important;
+}
+#downloadsTitle:hover {
+  color: var(--primary) !important;
+  scale: calc(1.1) !important;
+}
+.leadsTitle:hover {
+  nz-statistic-number {
+    color: var(--primary) !important;
+    span {
+      scale: calc(1.1) !important;
+    }
+  }
+}
+.downloadsTitle:hover {
+  nz-statistic-number {
+    color: var(--primary) !important;
+    span {
+      scale: calc(1.1) !important;
+    }
+  }
+}
+
+nz-pagination {
+  .anticon {
+    font-size: initial !important;
+    vertical-align: 0px !important;
+  }
+  .ant-select-arrow {
+    height: auto !important;
+    right: 9px !important;
+  }
+}
+
+.img-div > .ant-skeleton.ant-skeleton-active .ant-skeleton-image {
+  width: 186px;
+  height: 207px;
+  transition: 1s ease all;
+  object-fit: cover;
+  overflow: hidden;
+  // width: inherit;
+  // width: auto;
+}
+
+.ant-skeleton-button {
+  width: 85px !important;
+  height: 40px !important;
+}
+
+nz-menu-item:hover {
+  background-color: var(--primaryLight) !important;
+}
+.ant-select-selection-placeholder {
+  color: rgba(0, 0, 0, 0.85) !important;
+  // color: var(--text) !important;
+}
+nz-select:hover {
+  nz-select-placeholder {
+    color: var(--primary) !important;
+  }
+  // color: var(--text) !important;
+}
+
+nz-input-group {
+  ::placeholder {
+    color: rgba(0, 0, 0, 0.85) !important;
+  }
+}
+
+nz-input-group:hover {
+  ::placeholder {
+    color: var(--primary) !important;
+  }
+}
+
+span.anticon.anticon-loading.ng-star-inserted {
+  font-size: 14px !important;
+  vertical-align: 0px !important;
+}
+
+//SUCCESS ALERT
+// #cdk-overlay-1 > nz-modal-container > div > div > div.ant-modal-header.ng-tns-c143-26.ng-star-inserted > div > span > nz-result > div > span > svg{
+#cdk-overlay-1
+  > nz-modal-container
+  > div.ant-modal-header
+  > nz-result
+  > div
+  > span
+  > svg {
+  width: 25px !important;
+
+  height: 25px !important;
+}
+#cdk-overlay-1 > nz-modal-container > div.ant-modal-header > nz-result > div {
+  margin-bottom: 0 !important;
+}
+
+// .ant-result-success .ant-result-icon {
+//   margin-bottom: 0 !important;
+// }
+// > .anticon {
+//   color: #52c41a;
+//   font-size: 25px !important ;
+// }
+.ant-result-icon > .anticon {
+  font-size: 25px !important ;
+}
+.ant-result-icon {
+  margin-bottom: 0 !important;
+}
+// .anticon-check-circle .ng-star-inserted {
+//   font-size: 25px !important ;
+// }
+#p-title {
+  font-weight: 600 !important;
+  font-size: 15.5px !important;
+}
+#p-divs {
+  #regular-p {
+    font-size: 15px !important;
+  }
+}
+p > #ending-p {
+  color: var(--secondary) !important;
+}
+.ant-card-body {
+  flex: 1 0 0;
+}
+nz-card {
+  height: 100% !important;
+}
+@media (max-width: 500px) {
+  .ant-modal {
+    width: 350px !important;
+  }
+}
+
+.anticon-question-circle {
+  path:nth-child(1) {
+    fill: var(--primary);
+  }
+  path:nth-child(2) {
+    fill: #fff;
+  }
+  path:nth-child(3) {
+    fill: var(--primary);
+  }
+}
+
+.ant-dropdown-trigger > .anticon.anticon-down,
+.ant-dropdown-link > .anticon.anticon-down,
+.ant-dropdown-button > .anticon.anticon-down {
+  font-size: 15px !important;
+  line-height: inherit !important;
+}
+.ant-scroll-number-only > p.ant-scroll-number-only-unit {
+  color: #fff;
+}
+
+.ant-card-meta-description {
+  min-height: 44px !important;
+}
+.ant-drawer-content-wrapper {
+  width: 400px !important;
+}
+
+#cal > iframe {
+  min-height: 50vh !important;
+}
