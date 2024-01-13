@@ -732,4 +732,8 @@ export class ListCardComponent implements OnInit {
       `mailto:?body=${link}&subject=${  "BINGO, check this great business opportunitiy discovered by LeadSpotting AI " +  this.list.originReadyList.name}`
     );
   }
+
+  openCompanyDetails($event: any){
+
+  }
 }

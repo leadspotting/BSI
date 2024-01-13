@@ -1,5 +1,5 @@
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import { FinalList2 } from './../../../shared/Models/FinalList-Model';
+import { CompanyListModel } from './../../../shared/Models/FinalList-Model';
 import {
   ReadyListServer2,
   ReadyList2,
@@ -13,13 +13,18 @@ import { Industry } from 'src/app/shared/Models/Industry-Model';
 import { Region } from 'src/app/shared/Models/Region-Model';
 import { State } from 'src/app/shared/Models/State-Model';
 import { BackEndService } from 'src/app/shared/services/back-end-service';
+import {UserServiceService} from "../../../shared/services/user.service.service";
 @Component({
   selector: 'app-list-container',
   templateUrl: './list-container.component.html',
   styleUrls: ['./list-container.component.scss'],
 })
 export class ListContainerComponent implements OnInit {
-  constructor(private api: BackEndService, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private api: BackEndService,
+    private activatedRoute: ActivatedRoute,
+    private userService: UserServiceService
+  ) {}
   @Output() addToCartEvent = new EventEmitter<any>();
   @Output() cartDrawerEvent = new EventEmitter<any>();
 
@@ -36,17 +41,18 @@ export class ListContainerComponent implements OnInit {
   selectedLocationValue = [];
   listOfLocationOption: Array<{ value: string; label: string }> = [];
   listOfLocationOptionBackup: Array<{ value: string; label: string }> = [];
-  finalLists: any[] = [];
   currentPage = 1;
   currentPageSize = 9;
   totalPages = -1;
   totalLists = 0;
-  finalListss: FinalList2[] = [];
-  backUpListss: FinalList2[] = [];
-  backUpListss2: FinalList2[] = [];
+  finalList: CompanyListModel[] = [];
+  filteredList: CompanyListModel[] = [];
   options: any[] = [];
   firstTime = true;
   loadingFinalListss = false;
+  selectedCompany: any;
+  isVisibleCompanyDetailsModal: boolean = false;
+  isVisibleUnauthorizedAccessModal: boolean = false;
   ngOnInit(): void {
     // this.callAndLog();
 
@@ -99,7 +105,7 @@ export class ListContainerComponent implements OnInit {
 
   async getReadyLists(postId: string | null = null) {
     let final: any;
-    this.api.getReadyLists2().subscribe((res) => {
+    this.api.getCompaniesList().subscribe((res) => {
       // console.log(res);
 
       this.xml2js.parseString(res, (err: any, result: any) => {
@@ -109,476 +115,9 @@ export class ListContainerComponent implements OnInit {
         }
         console.log('lists', result);
 
-        let readyLists: ReadyListServer2[] =
-          result.LSResponse.CompaniesReadyList;
-        this.readyLists = readyLists.map(
-          ({
-            // count: [count],
-            creationTime: [creationTime],
-            description: [description],
-            id: [id],
-            industryId: [industryId],
-            locationId: [locationId],
-            mediaUrl: [mediaUrl],
-            name: [name],
-            downloads: [downloads],
-            // price: [price],
-            readyListCalculations: [
-              {
-                count: [count],
-                price: [price],
-                roundCount: [roundCount],
-              },
-            ],
-          }) => ({
-            // count: count,
-            downloads: downloads,
-            creationTime: creationTime,
-            description: description,
-            id: id,
-            industryId: industryId,
-            locationId: locationId,
-            mediaUrl: mediaUrl,
-            name: name,
-            readyListCalculations: {
-              count: count,
-              price: price,
-              roundCount: roundCount,
-            },
-            // price: price,
-          })
-        );
-        // console.log('ready Lists', this.readyLists);
-        // let location = this.parseLocationIdToListName('62,73');
-
-        final = this.readyLists.map(
-          ({
-            // count: count,
-            downloads: downloads,
-            creationTime: creationTime,
-            description: description,
-            id: id,
-            industryId: industryId,
-            locationId: locationId,
-            mediaUrl: mediaUrl,
-            name: name,
-            readyListCalculations: {
-              count: count,
-              price: price,
-              roundCount: roundCount,
-            },
-
-            // price: price,
-          }) => {
-            let location = this.parseLocationIdToListName(locationId);
-            // let namee: any = this.listOfIndustryOption.find(
-            //   ({ value: value }) => value === industryId
-            // )?.label;
-            // location.country.name.length > 0
-            //   ? (namee += ', ' + location.country.name)
-            //   : '';
-            // location.region.name.length > 0
-            //   ? (namee += ', ' + location.region.name)
-            //   : '';
-            // location.state.name.length > 0
-            //   ? (namee += ', ' + location.state.name)
-            //   : '';
-
-            return Object.assign(
-              {},
-              {
-                // name: namee,
-                location: location,
-                type: 'companies',
-                // leads: this.getNumberOfLeads(leads),
-                originReadyList: {
-                  // count: count,
-                  downloads: downloads,
-                  creationTime: creationTime,
-                  description: description,
-                  id: id,
-                  industryId: industryId,
-                  locationId: locationId,
-                  mediaUrl: mediaUrl,
-                  name: name,
-                  count: count,
-                  price: price,
-                  roundCount: roundCount,
-
-                  // readyListCalculations: {
-                  //   count: count,
-                  //   price: price,
-                  //   roundCount: roundCount,
-                  // },
-                  // price: price,
-                },
-              }
-            );
-          }
-        );
-        let finall: any;
-
-        this.api.getReadyListEmails().subscribe((res) => {
-          this.xml2js.parseString(res, (err: any, result: any) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
-            console.log(result);
-
-            let emailListss: EmailListServer2[] =
-              result.LSResponse.EmailsReadyList;
-            this.emailLists = emailListss.map(
-              ({
-                campaignId: [campaignId],
-                clientId: [clientId],
-                downloads: [downloads],
-
-                // count: [count],
-                creationTime: [creationTime],
-                description: [description],
-                id: [id],
-                industryId: [industryId],
-                // jobCategoryId: [jobCategoryId],
-                locationId: [locationId],
-                mediaUrl: [mediaUrl],
-                name: [name],
-                readyListCalculations: [
-                  {
-                    count: [count],
-                    price: [price],
-                    roundCount: [roundCount],
-                  },
-                ],
-                // price: [price],
-              }) => ({
-                downloads: downloads,
-
-                campaignId: campaignId,
-                clientId: clientId,
-                // count: count,
-                creationTime: creationTime,
-                description: description,
-                id: id,
-                industryId: industryId,
-                // jobCategoryId: jobCategoryId,
-                locationId: locationId,
-                mediaUrl: mediaUrl,
-                name: name,
-                readyListCalculations: {
-                  count: count,
-                  price: price,
-                  roundCount: roundCount,
-                },
-                // price: price,
-              })
-            );
-            // let location = this.parseLocationIdToListName('62,73');
-          });
-          finall = this.emailLists.map(
-            ({
-              downloads: downloads,
-
-              campaignId: campaignId,
-              clientId: clientId,
-              // count: count,
-              creationTime: creationTime,
-              description: description,
-              id: id,
-              industryId: industryId,
-              // jobCategoryId: jobCategoryId,
-              locationId: locationId,
-              mediaUrl: mediaUrl,
-              name: name,
-              readyListCalculations: {
-                count: count,
-                price: price,
-                roundCount: roundCount,
-              },
-              // price: price,
-            }) => {
-              let location = this.parseLocationIdToListName(locationId);
-              // location.country.name.length > 0
-              //   ? (namee += ', ' + location.country.name)
-              //   : '';
-              // location.region.name.length > 0
-              //   ? (namee += ', ' + location.region.name)
-              //   : '';
-              // location.state.name.length > 0
-              //   ? (namee += ', ' + location.state.name)
-              //   : '';
-
-              return Object.assign(
-                {},
-                {
-                  campaignId: campaignId,
-                  clientId: clientId,
-                  // count: count,
-                  creationTime: creationTime,
-                  description: description,
-                  id: id,
-                  industryId: industryId,
-                  // jobCategoryId: jobCategoryId,
-                  locationId: locationId,
-                  mediaUrl: mediaUrl,
-                  name: name,
-                  price: price,
-                  location: location,
-                  type: 'leads',
-
-                  // roundCount: roundCount,
-                  originReadyList: {
-                    downloads: downloads,
-
-                    count: count,
-                    roundCount: roundCount,
-                    creationTime: creationTime,
-                    description: description,
-                    id: id,
-                    industryId: industryId,
-                    locationId: locationId,
-                    mediaUrl: mediaUrl,
-                    name: name,
-                    price: price,
-                  },
-                }
-              );
-            }
-          );
-
-          //////////////
-          let sectorsList: any[] = [];
-
-          this.api.getSectorPost().subscribe((res: any) => {
-            // this.xml2js.parseString(res, (err: any, result: any) => {
-            //   if (err) {
-            //     console.error(err);
-            //     return;
-            //   }
-            res.tags.forEach((element: any) => {
-              // element.forEach((post:any) => {
-
-              // });
-              let obj = {
-                campaignId: '',
-                clientId: '',
-                // count: count,
-                creationTime: '',
-                description: element.label,
-                id: element.id,
-                industryId: '',
-                // jobCategoryId: jobCategoryId,
-                locationId: '',
-                mediaUrl: '',
-                // mediaUrl: element.readyListPosts[1].mediaurl,
-                name: element.label,
-                price: '0',
-                location: '',
-                type: 'opportunities',
-                readyListPosts: element.readyListPosts,
-                // roundCount: roundCount,
-                originReadyList: {
-                  downloads: '0',
-
-                  count: element.readyListPosts.length,
-                  roundCount: element.readyListPosts.length,
-                  creationTime: '',
-                  description: 'Top 100 ' + element.label + ' Opportunities',
-                  id: element.id,
-                  industryId: '',
-                  locationId: '',
-                  mediaUrl: '',
-                  name: element.label,
-                  price: '0',
-                  readyListPosts: element.readyListPosts,
-                },
-              };
-              sectorsList.push(obj);
-            });
-
-            // let list = [...final, ...finall];
-            let list = [...sectorsList, ...finall, ...final];
-
-            if(postId != null){
-              list = list.filter(x => x.id == postId)
-            }
-
-            console.log('final list', list);
-            console.log('sectorss', sectorsList);
-
-            this.finalLists = list;
-            // this.options = final;
-
-            this.totalPages = this.finalLists.length;
-            this.finalListss = this.getList(
-              this.currentPage,
-              this.currentPageSize,
-              list
-            );
-            this.backUpListss = list;
-            this.backUpListss2 = list;
-            this.totalLists = this.finalLists.length - this.currentPageSize;
-            this.options = this.uniqueArr(this.finalListss);
-            this.loadingFinalListss = false;
-
-            //   let emailListss: EmailListServer2[] =
-            //     result.LSResponse.EmailsReadyList;
-            //   this.emailLists = emailListss.map(
-            //     ({
-            //       campaignId: [campaignId],
-            //       clientId: [clientId],
-            //       downloads: [downloads],
-
-            //       // count: [count],
-            //       creationTime: [creationTime],
-            //       description: [description],
-            //       id: [id],
-            //       industryId: [industryId],
-            //       // jobCategoryId: [jobCategoryId],
-            //       locationId: [locationId],
-            //       mediaUrl: [mediaUrl],
-            //       name: [name],
-            //       readyListCalculations: [
-            //         {
-            //           count: [count],
-            //           price: [price],
-            //           roundCount: [roundCount],
-            //         },
-            //       ],
-            //       // price: [price],
-            //     }) => ({
-            //       downloads: downloads,
-
-            //       campaignId: campaignId,
-            //       clientId: clientId,
-            //       // count: count,
-            //       creationTime: creationTime,
-            //       description: description,
-            //       id: id,
-            //       industryId: industryId,
-            //       // jobCategoryId: jobCategoryId,
-            //       locationId: locationId,
-            //       mediaUrl: mediaUrl,
-            //       name: name,
-            //       readyListCalculations: {
-            //         count: count,
-            //         price: price,
-            //         roundCount: roundCount,
-            //       },
-            //       // price: price,
-            //     })
-            //   );
-            // });
-            // let finall;
-            // finall = this.emailLists.map(
-            //   ({
-            //     downloads: downloads,
-
-            //     campaignId: campaignId,
-            //     clientId: clientId,
-            //     // count: count,
-            //     creationTime: creationTime,
-            //     description: description,
-            //     id: id,
-            //     industryId: industryId,
-            //     // jobCategoryId: jobCategoryId,
-            //     locationId: locationId,
-            //     mediaUrl: mediaUrl,
-            //     name: name,
-            //     readyListCalculations: {
-            //       count: count,
-            //       price: price,
-            //       roundCount: roundCount,
-            //     },
-            //     // price: price,
-            //   }) => {
-            //     let location = this.parseLocationIdToListName(locationId);
-            //     // location.country.name.length > 0
-            //     //   ? (namee += ', ' + location.country.name)
-            //     //   : '';
-            //     // location.region.name.length > 0
-            //     //   ? (namee += ', ' + location.region.name)
-            //     //   : '';
-            //     // location.state.name.length > 0
-            //     //   ? (namee += ', ' + location.state.name)
-            //     //   : '';
-
-            //     return Object.assign(
-            //       {},
-            //       {
-            //         campaignId: campaignId,
-            //         clientId: clientId,
-            //         // count: count,
-            //         creationTime: creationTime,
-            //         description: description,
-            //         id: id,
-            //         industryId: industryId,
-            //         // jobCategoryId: jobCategoryId,
-            //         locationId: locationId,
-            //         mediaUrl: mediaUrl,
-            //         name: name,
-            //         price: price,
-            //         location: location,
-            //         type: 'leads',
-
-            //         // roundCount: roundCount,
-            //         originReadyList: {
-            //           downloads: downloads,
-
-            //           count: count,
-            //           roundCount: roundCount,
-            //           creationTime: creationTime,
-            //           description: description,
-            //           id: id,
-            //           industryId: industryId,
-            //           locationId: locationId,
-            //           mediaUrl: mediaUrl,
-            //           name: name,
-            //           price: price,
-            //         },
-            //       }
-            //     );
-            //   }
-            // );
-
-            // let list = [...final, ...finall];
-            // console.log('final list', list);
-
-            // this.finalLists = list;
-            // // this.options = final;
-
-            // this.totalPages = this.finalLists.length;
-            // this.finalListss = this.getList(
-            //   this.currentPage,
-            //   this.currentPageSize,
-            //   list
-            // );
-            // this.backUpListss = list;
-            // this.backUpListss2 = list;
-            // this.totalLists = this.finalLists.length - this.currentPageSize;
-            // this.options = this.uniqueArr(this.finalListss);
-            // });
-          });
-          ////////////
-
-          // let list = [...sectorsList, ...final, ...finall];
-          // console.log('final list', list);
-          // console.log('sectorss', sectorsList);
-
-          // this.finalLists = list;
-          // // this.options = final;
-
-          // this.totalPages = this.finalLists.length;
-          // this.finalListss = this.getList(
-          //   this.currentPage,
-          //   this.currentPageSize,
-          //   list
-          // );
-          // this.backUpListss = list;
-          // this.backUpListss2 = list;
-          // this.totalLists = this.finalLists.length - this.currentPageSize;
-          // this.options = this.uniqueArr(this.finalListss);
-        });
+        this.finalList = result.LSResponse.BsiCompany;
+        this.filteredList = this.finalList;
+        this.loadingFinalListss = false;
       });
     });
   }
@@ -646,18 +185,18 @@ export class ListContainerComponent implements OnInit {
   }
 
   CompaniesType = true;
-  EmailsType = true;
-  OppType = true;
+  CompaniesFromOversea = true;
+  CompaniesFromIsrael = true;
   companiesTypeClicked() {
     this.CompaniesType = !this.CompaniesType;
     this.filter();
   }
-  emailsTypeClicked() {
-    this.EmailsType = !this.EmailsType;
+  companiesFromOverseaClicked() {
+    this.CompaniesFromOversea = !this.CompaniesFromOversea;
     this.filter();
   }
-  oppTypeClicked() {
-    this.OppType = !this.OppType;
+  companiesFromIsraelClicked() {
+    this.CompaniesFromIsrael = !this.CompaniesFromIsrael;
     this.filter();
   }
 
@@ -779,24 +318,24 @@ export class ListContainerComponent implements OnInit {
 
   onPageIndexChange(event: any) {
     this.currentPage = event;
-    this.finalListss = this.getList(
+    this.filteredList = this.getList(
       this.currentPage,
       this.currentPageSize,
-      this.backUpListss
+      this.finalList
     );
   }
   onPageSizeChange(event: any) {
     this.currentPageSize = event;
-    this.finalListss = this.getList(
+    this.filteredList = this.getList(
       this.currentPage,
       this.currentPageSize,
-      this.backUpListss
+      this.finalList
     );
-    this.totalLists = this.finalLists.length - this.currentPageSize;
+    this.totalLists = this.filteredList.length - this.currentPageSize;
   }
 
-  getList(currentPage: any, currentPageSize: any, arr: FinalList2[]) {
-    let list: FinalList2[];
+  getList(currentPage: any, currentPageSize: any, arr: CompanyListModel[]) {
+    let list: CompanyListModel[];
     currentPage == 1
       ? (list = arr.slice(0, currentPageSize))
       : (list = arr.slice(
@@ -809,12 +348,13 @@ export class ListContainerComponent implements OnInit {
   inputValue: string = '';
   // options: Array<{ value: string; category: string; count: number }> = [];
   empty: boolean = false;
+  /*
   onChange(e: Event): void {
     const value = (e.target as HTMLInputElement).value;
     if (value != '') {
-      let list: FinalList2[];
+      let list: CompanyListModel[];
       list = this.backUpListss2.filter((list) => {
-        return list.originReadyList.name
+        return list.name
           .toLowerCase()
           .includes(value.toLowerCase());
       });
@@ -831,7 +371,6 @@ export class ListContainerComponent implements OnInit {
       } else {
         this.empty = false;
       }
-      // this.options = this.uniqueArr(this.finalListss);
     } else {
       this.currentPage = 1;
       this.empty = false;
@@ -847,19 +386,21 @@ export class ListContainerComponent implements OnInit {
       this.backUpListss = this.backUpListss2;
     }
   }
+  */
 
   onOptionClicked(e: string) {
+    debugger;
     if (e != '') {
-      let list: FinalList2[];
-      list = this.backUpListss.filter((list) => {
-        return list.originReadyList.name.toLowerCase() == e.toLowerCase();
+      let list: CompanyListModel[];
+      list = this.finalList.filter((company) => {
+        return company.name.toLowerCase() == e.toLowerCase();
       });
-      this.backUpListss = list;
+      this.filteredList = list;
       this.currentPage = 1;
 
-      this.finalListss = this.getList(1, this.currentPageSize, list);
+      this.filteredList = this.getList(1, this.currentPageSize, list);
       this.totalLists = list.length - this.currentPageSize;
-      if (this.finalListss.length == 0) {
+      if (this.filteredList.length == 0) {
         this.empty = true;
       } else {
         this.empty = false;
@@ -868,23 +409,22 @@ export class ListContainerComponent implements OnInit {
       this.empty = false;
 
       this.currentPage = 1;
-      this.finalListss = this.getList(
+      this.filteredList = this.getList(
         1,
         this.currentPageSize,
-        this.backUpListss2
+        this.finalList
       );
-      this.totalLists = this.backUpListss2.length;
-
-      this.backUpListss = this.backUpListss2;
+      this.totalLists = this.filteredList.length;
     }
   }
 
+  /*
   onSearchClicked() {
     let searchInput = this.inputValue;
     if (searchInput != '' && searchInput) {
-      let list: FinalList2[];
+      let list: CompanyListModel[];
       list = this.backUpListss.filter((list) => {
-        return list.originReadyList.name
+        return list.name
           .toLowerCase()
           .includes(searchInput.toLowerCase());
       });
@@ -905,15 +445,18 @@ export class ListContainerComponent implements OnInit {
       this.backUpListss = this.backUpListss2;
     }
   }
+   */
 
+  /*
   uniqueArr(array: any) {
     return array.filter((obj: any, pos: any, arr: any) => {
       return arr.map((mapObj: any) => mapObj.name).indexOf(obj.name) === pos;
     });
   }
+   */
 
   filter() {
-    this.backUpListss = this.backUpListss2;
+    this.filteredList = this.finalList;
     let list: any[] = [];
     if (
       this.selectedIndustryValue?.length > 0 ||
@@ -921,12 +464,12 @@ export class ListContainerComponent implements OnInit {
       this.inputValue.length > 0 ||
       this.CompaniesType == true ||
       this.CompaniesType == false ||
-      this.EmailsType == true ||
-      this.EmailsType == false ||
-      this.OppType == true ||
-      this.OppType == false
+      this.CompaniesFromOversea == true ||
+      this.CompaniesFromOversea == false ||
+      this.CompaniesFromIsrael == true ||
+      this.CompaniesFromIsrael == false
     ) {
-      list = this.backUpListss.filter(
+      list = this.finalList.filter(
         (item: any) =>
           (this.inputValue.length > 0
             ? item.originReadyList.name
@@ -949,93 +492,48 @@ export class ListContainerComponent implements OnInit {
                   item.location?.regionId == name.split(',')[1] &&
                   item.location?.id == name.split(',')[0]
                 );
-                // return item.location.some((l) => {
-                //   console.log('filter', name, l);
-
-                //   return (
-                //     l.id == name.split(',')[0] &&
-                //     l.regionId == name.split(',')[1]
-                //   );
-                // });
-                // item.location.country.id == name.split(',')[0] &&
-                // item.location.region.id == name.split(',')[1]
               })
             : true) &&
           (this.CompaniesType == true &&
-          this.EmailsType == false &&
-          this.OppType == false
+          this.CompaniesFromOversea == false &&
+          this.CompaniesFromIsrael == false
             ? item.type == 'companies'
             : true) &&
           (this.CompaniesType == false &&
-          this.EmailsType == true &&
-          this.OppType == false
+          this.CompaniesFromOversea == true &&
+          this.CompaniesFromIsrael == false
             ? item.type == 'leads'
             : true) &&
           (this.CompaniesType == true &&
-          this.EmailsType == true &&
-          this.OppType == true
+          this.CompaniesFromOversea == true &&
+          this.CompaniesFromIsrael == true
             ? true
             : true) &&
           (this.CompaniesType == false &&
-          this.EmailsType == false &&
-          this.OppType == false
+          this.CompaniesFromOversea == false &&
+          this.CompaniesFromIsrael == false
             ? false
             : true) &&
           (this.CompaniesType == false &&
-          this.EmailsType == false &&
-          this.OppType == true
+          this.CompaniesFromOversea == false &&
+          this.CompaniesFromIsrael == true
             ? item.type == 'opportunities'
             : true) &&
           (this.CompaniesType == false &&
-          this.EmailsType == true &&
-          this.OppType == true
+          this.CompaniesFromOversea == true &&
+          this.CompaniesFromIsrael == true
             ? item.type == 'opportunities' || item.type == 'leads'
             : true) &&
           (this.CompaniesType == true &&
-          this.EmailsType == false &&
-          this.OppType == true
+          this.CompaniesFromOversea == false &&
+          this.CompaniesFromIsrael == true
             ? item.type == 'opportunities' || item.type == 'leads'
             : true) &&
           (this.CompaniesType == true &&
-          this.EmailsType == true &&
-          this.OppType == false
+          this.CompaniesFromOversea == true &&
+          this.CompaniesFromIsrael == false
             ? item.type != 'opportunities'
             : true)
-        // (this.CompaniesType == true &&
-        // this.EmailsType == false &&
-        // this.OppType == false
-        //   ? !('campaignId' in item)
-        //   : true) &&
-        // (this.CompaniesType == false &&
-        // this.EmailsType == true &&
-        // this.OppType == false
-        //   ? 'campaignId' in item
-        //   : true) &&
-        // (this.CompaniesType == true &&
-        // this.EmailsType == true &&
-        // this.OppType == true
-        //   ? true
-        //   : true) &&
-        // (this.CompaniesType == false &&
-        // this.EmailsType == false &&
-        // this.OppType == false
-        //   ? false
-        //   : true) &&
-        // (this.CompaniesType == false &&
-        // this.EmailsType == false &&
-        // this.OppType == true
-        //   ? 'readyListPosts' in item
-        //   : true) &&
-        // (this.CompaniesType == false &&
-        // this.EmailsType == true &&
-        // this.OppType == true
-        //   ? 'readyListPosts' in item && item.type == 'leads'
-        //   : true) &&
-        // (this.CompaniesType == true &&
-        // this.EmailsType == false &&
-        // this.OppType == true
-        //   ? 'readyListPosts' in item && item.type == 'leads'
-        //   : true)
       );
       let loc: Array<{ value: string; label: string }> =
         this.listOfLocationOptionBackup;
@@ -1064,39 +562,32 @@ export class ListContainerComponent implements OnInit {
         this.listOfIndustryOption = filteredIndustries;
       }
 
-      this.backUpListss = list;
-      this.currentPage = 1;
-      this.finalListss = this.getList(1, this.currentPageSize, list);
-      if (list.length < this.currentPageSize) {
-        this.totalLists = list.length;
-      } else {
-        this.totalLists = list.length - this.currentPageSize;
-      }
-      this.options = this.finalListss;
-      if (this.finalListss.length == 0) {
-        this.empty = true;
-      } else {
-        this.empty = false;
-      }
+      // this.backUpListss = list;
+      // this.currentPage = 1;
+      // this.finalListss = this.getList(1, this.currentPageSize, list);
+      // if (list.length < this.currentPageSize) {
+      //   this.totalLists = list.length;
+      // } else {
+      //   this.totalLists = list.length - this.currentPageSize;
+      // }
+      // this.options = this.finalListss;
+      // if (this.finalListss.length == 0) {
+      //   this.empty = true;
+      // } else {
+      //   this.empty = false;
+      // }
     } else {
       this.empty = false;
 
       this.currentPage = 1;
-      this.finalListss = this.getList(
+      this.filteredList = this.getList(
         1,
         this.currentPageSize,
-        this.backUpListss2
+        this.finalList
       );
-      this.totalLists = this.backUpListss2.length - this.currentPageSize;
-
-      this.backUpListss = this.backUpListss2;
-
-      // this.listOfLocationOption = this.listOfLocationOptionBackup;
+      this.totalLists = this.filteredList.length - this.currentPageSize;
     }
   }
-  // private getRandomInt(max: number, min: number = 0): number {
-  //   return Math.floor(Math.random() * (max - min + 1)) + min;
-  // }
   addToCart(listItem: any) {
     this.addToCartEvent.emit(listItem);
   }
@@ -1106,6 +597,37 @@ export class ListContainerComponent implements OnInit {
 
   toJson(x: any){
     return JSON.stringify(x);
+  }
+
+  showCompanyDetails($event:any, company: any) {
+    if (!this.userService.isUserLoggedIn()) {
+      this.isVisibleUnauthorizedAccessModal = true;
+      $event.stopPropagation();
+    } else {
+      this.selectedCompany = company;
+      this.isVisibleCompanyDetailsModal = true;
+    }
+  }
+
+  handleCancelCompanyDetailsModal(){
+    this.selectedCompany = null;
+    this.isVisibleCompanyDetailsModal = false;
+  }
+
+  isAuthorized(): boolean{
+    return this.userService.isUserLoggedIn();
+  }
+  preventUnauthorized($event:any | null = null){
+    if(!this.userService.isUserLoggedIn()){
+      this.isVisibleUnauthorizedAccessModal = true;
+      $event?.stopPropagation();
+      return true;
+    }
+    return false;
+  }
+
+  handleCancelUnauthorizedAccessModal(){
+    this.isVisibleUnauthorizedAccessModal = false;
   }
 }
 export interface OppPost {

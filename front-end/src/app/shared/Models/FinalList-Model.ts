@@ -42,6 +42,19 @@ export interface FinalList2 {
   location: FinalLocation2;
   originReadyList: FinaloriginReadyList2;
 }
+
+export interface CompanyListModel {
+  id: string;
+  name: string;
+  url: string;
+  logo: string;
+  industryId: string;
+  countryId: string;
+  lookingFor: string;
+  benefits: string;
+  description: string;
+  benefitsImage: string;
+}
 export interface FinalLocation2 {
   id: string;
   regionId: string;

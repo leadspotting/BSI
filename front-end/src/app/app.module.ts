@@ -22,6 +22,8 @@ import { SpinnerComponent } from './shared/components/spinner/spinner.component'
 import { PaypalComponent } from './shared/components/paypal/paypal.component';
 import { CartItemCardComponent } from './home/components/cart-item-card/cart-item-card.component';
 import { BookademoDialogComponent } from './home/components/bookademo-dialog/bookademo-dialog.component';
+import {CompanyModalComponent} from "./home/components/company-modal/company-modal.component";
+import {CompanyModalEditComponent} from "./home/components/company-modal-edit/company-modal-edit.component";
 
 registerLocaleData(en);
 
@@ -38,6 +40,8 @@ registerLocaleData(en);
     PaypalComponent,
     CartItemCardComponent,
     BookademoDialogComponent,
+    CompanyModalComponent,
+    CompanyModalEditComponent
   ],
   imports: [
     BrowserModule,

@@ -35,8 +35,9 @@
           nzSize="large"
           nz-button
           nz-dropdown
-          [nzDropdownMenu]="menu"
+          [nzDropdownMenu]="isAuthorized() ? menu : null"
           style="display: flex; justify-content: space-between; width: 100%"
+          (click)="preventUnauthorized($event)"
         >
           <!-- class="width-100 alignLeft placeholder" -->
 
@@ -48,11 +49,11 @@
         </button>
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
-            <li nz-menu-item class="li-type" (click)="oppTypeClicked()">
+            <li nz-menu-item class="li-type" (click)="companiesFromIsraelClicked()">
               <div class="type">
-                <span>Opportunities</span>
+                <span>Companies from Israel</span>
                 <nz-switch
-                  [ngModel]="OppType"
+                  [ngModel]="CompaniesFromIsrael"
                   [nzCheckedChildren]="checkedTemplate"
                   [nzUnCheckedChildren]="unCheckedTemplate"
                 ></nz-switch>
@@ -66,29 +67,11 @@
             </li>
             <li nz-menu-divider></li>
 
-            <li nz-menu-item class="li-type" (click)="emailsTypeClicked()">
+            <li nz-menu-item class="li-type" (click)="companiesFromOverseaClicked()">
               <div class="type">
-                <span>Email's</span>
+                <span>Companies from overseas</span>
                 <nz-switch
-                  [ngModel]="EmailsType"
-                  [nzCheckedChildren]="checkedTemplate"
-                  [nzUnCheckedChildren]="unCheckedTemplate"
-                ></nz-switch>
-                <ng-template #checkedTemplate
-                  ><span nz-icon nzType="check"></span
-                ></ng-template>
-                <ng-template #unCheckedTemplate
-                  ><span nz-icon nzType="close"></span
-                ></ng-template>
-              </div>
-            </li>
-            <li nz-menu-divider></li>
-
-            <li nz-menu-item class="li-type" (click)="companiesTypeClicked()">
-              <div class="type">
-                <span>Companies</span>
-                <nz-switch
-                  [ngModel]="CompaniesType"
+                  [ngModel]="CompaniesFromOversea"
                   [nzCheckedChildren]="checkedTemplate"
                   [nzUnCheckedChildren]="unCheckedTemplate"
                 ></nz-switch>
@@ -113,7 +96,7 @@
         data-aos-once="true"
       >
         <div class="title-question">
-          <h4 nz-typography class="title">Free Search</h4>
+          <h4 nz-typography class="title">Benefits</h4>
           <span
             nz-tooltip
             [nzTooltipColor]="'var(--primaryLight)'"
@@ -166,7 +149,7 @@
             nzTooltipColor="var(--primaryLight)"
             nzTooltipPlacement="right"
           >
-            {{ option.originReadyList.name }}
+            ={{ option.originReadyList.name }}=
             <ng-template #titleTemplate let-thing>
               <span>
                 <span nz-icon nzType="file" style="vertical-align: 2px"></span>
@@ -204,9 +187,10 @@
           nz-dropdown
           nzMode="multiple"
           nzPlaceHolder="Select a location"
-          [nzOptions]="listOfLocationOption"
+          [nzOptions]="isAuthorized() ? listOfLocationOption : []"
           [(ngModel)]="selectedLocationValue"
-          (ngModelChange)="filter()"
+          (click)="preventUnauthorized()"
+          (ngModelChange)="filter();"
         >
         </nz-select>
       </div>
@@ -236,8 +220,9 @@
           nzAllowClear
           nzMode="multiple"
           nzPlaceHolder="Select an industry"
-          [nzOptions]="listOfIndustryOption"
+          [nzOptions]="isAuthorized() ? listOfIndustryOption : []"
           [(ngModel)]="selectedIndustryValue"
+          (click)="preventUnauthorized()"
           (ngModelChange)="filter()"
         >
         </nz-select>
@@ -274,12 +259,13 @@
     nzXl="10" -->
     <nz-empty class="mt-2" *ngIf="empty == true"></nz-empty>
 
-    <div class="col center" *ngFor="let list of finalListss">
+    <div class="col center" *ngFor="let list of filteredList">
       <app-list-card
         [list]="list"
         [firstTime]="firstTime"
         (addToCartEvent)="addToCart($event)"
         (cartDrawerEvent)="drawerCart($event)"
+        (click)="showCompanyDetails($event, list)"
       ></app-list-card>
       <!-- (firstTimeEvent)="changeFirstTime($event)" -->
     </div>
@@ -301,7 +287,7 @@
   <div
     style="display: flex !important; justify-content: center !important"
     class="mt-4"
-    *ngIf="finalListss.length > 0"
+    *ngIf="filteredList.length > 0"
   >
     <nz-pagination
       [(nzPageIndex)]="currentPage"
@@ -328,4 +314,56 @@
       [nzSize]="'small'"
     ></nz-pagination> -->
   </div>
+
+  <nz-modal
+    [(nzVisible)]="isVisibleCompanyDetailsModal"
+    nzTitle="Company details"
+    nzClosable="true"
+    [nzFooter]="companyDetailsModalFooter"
+    (nzOnCancel)="handleCancelCompanyDetailsModal()"
+    [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+  >
+    <ng-container *nzModalContent>
+      <!-- <div style="width: 100%; display: flex; justify-content: center;"> -->
+      <div class="center">
+        <company-modal [company]="selectedCompany"
+                       (click)="preventUnauthorized($event)"
+        ></company-modal>
+      </div>
+    </ng-container>
+    <ng-template #companyDetailsModalFooter>
+      <button
+        style="width: 100%"
+        nz-button
+        nzType="primary"
+      >Close
+      </button>
+    </ng-template>
+  </nz-modal>
+
+  <nz-modal
+    [(nzVisible)]="isVisibleUnauthorizedAccessModal"
+    nzTitle="Exclusive for Registered Users"
+    nzClosable="true"
+    [nzFooter]="unauthorizedAccessModalFooter"
+    (nzOnCancel)="handleCancelUnauthorizedAccessModal()">
+    <ng-container *nzModalContent>
+      <p>This feature is exclusively available to registered users.</p>
+      <p>
+        If you haven't registered yet, you can upgrade to unlock <br />
+        this feature and gain access to our premium content.
+      </p>
+    </ng-container>
+    <ng-template #unauthorizedAccessModalFooter>
+      <button
+        nz-button
+        nzType="primary"
+      >Register</button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="handleCancelUnauthorizedAccessModal()"
+      >Close</button>
+    </ng-template>
+  </nz-modal>
 </nz-content>

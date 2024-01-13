@@ -1,0 +1,141 @@
+.card {
+  border-radius: 4px;
+  min-height: 321px;
+  max-width: 387px;
+  min-width: 387px;
+  max-height: 555px;
+  // max-height: 470px;
+  transition: 1s ease all;
+}
+.skelaton {
+  min-width: 370px;
+  // min-width: 275px;
+  transition: 1s ease all;
+}
+.img-div {
+  overflow: hidden; /* [1.2] Hide the overflowing of child elements */
+  height: auto;
+  text-align: center;
+  img {
+    transition: 1s ease all;
+    object-fit: cover;
+    overflow: hidden;
+    // width: inherit;
+    width: auto;
+    padding: 1px;
+  }
+}
+.card:hover {
+  img {
+    transform: scale(1.15);
+  }
+}
+
+// [nz-button] {
+//   margin-right: 8px;
+//   margin-bottom: 12px;
+// }
+#buy-btn {
+  transition: 0.3s ease-in-out 0s;
+}
+#buy-btn:hover {
+  background-color: var(--secondaryLight) !important;
+}
+[nz-button],
+#action-btn {
+  width: 85px !important;
+  // min-width: 50px;
+}
+.card-body {
+  // display: flex;
+}
+
+.list-name {
+  white-space: normal;
+  text-transform: capitalize;
+  height: 50.3px;
+}
+
+.list-leads-title-div {
+  width: auto;
+  // transition: 0.3s ease-in-out 0s;
+}
+
+.list-leads-title {
+  color: var(--primaryLight);
+}
+#leadsTitle {
+  transition: 200ms ease-in-out;
+}
+#downloadsTitle {
+  transition: 200ms ease-in-out;
+}
+
+// .list-leads-title-div:hover {
+//   .list-leads-title {
+//     color: var(--primary);
+//   }
+// }
+// .list-leads-number:hover {
+//   nz-statistic-number {
+//     color: var(--primary) !important;
+//   }
+// }
+.spinner-div {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.payment-title {
+  font-size: larger;
+}
+
+@media (max-width: 550px) {
+  .card {
+    width: 290px;
+    min-width: auto;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  [nz-button] {
+    width: 50px;
+    // min-width: 50px;
+  }
+}
+
+.modal-title-span {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  .modal-title-res {
+    padding: 0;
+    display: flex;
+  }
+}
+.li-type {
+  width: 100%;
+  display: flex;
+}
+.li-type:hover {
+  background-color: var(--primaryLight) !important;
+  .type {
+    span {
+      color: #fff !important;
+    }
+  }
+}
+.type {
+  width: 100%;
+  display: flex;
+  //justify-content: space-between !important;
+  align-items: center;
+  /* padding: 10px !important; */
+
+  span {
+    font-size: 14px;
+  }
+}
+

@@ -1,0 +1,116 @@
+<nz-card
+  nzHoverable
+  class="card"
+  style="max-height: max-content; width: 320px"
+  [nzCover]="coverTemplate"
+  [nzActions]="[]"
+  (click)="openCompanyDetails($event)"
+>
+  <div>
+    <div class="row mt-2">
+
+      <form nz-form>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
+            <span>Name</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input company name!"
+          >
+            <input
+              nz-input
+              id="name"
+              formControlName="name"
+              placeholder="first name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="description" nzRequired
+          >Description</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input company description!"
+          >
+            <textarea
+              nz-input
+              id="message"
+              formControlName="message"
+              placeholder="message"
+              [nzAutosize]="{ minRows: 2, maxRows: 6 }"
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="logoUrl" nzRequired>
+            <span>Logo URL</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input company logo URL!"
+          >
+            <input
+              nz-input
+              id="logoUrl"
+              formControlName="logoUrl"
+              placeholder="logo Url"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="industryId"
+          >Industry</nz-form-label
+          >
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please choose industries!"
+          >
+            <input
+              nz-input
+              id="industryId"
+              formControlName="industryId"
+              placeholder="industryId"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber">
+            <span>Phone number</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSm]="14"
+            [nzXs]="24"
+            nzErrorTip="Please input your Phone number!"
+          >
+            <input
+              nz-input
+              id="phoneNumber"
+              formControlName="phoneNumber"
+              placeholder="phone number"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</nz-card>
+
+<ng-template #coverTemplate>
+  <div class="img-div">
+    <img
+      alt="example"
+      onerror="this.onerror=null;this.src='/assets/small-logo.png'"
+      [src]="
+        company!.url
+          ? company!.url
+          : '/assets/small-logo.png'
+      "
+    />
+  </div>
+</ng-template>

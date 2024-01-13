@@ -17,6 +17,7 @@ import {
 } from '@angular/forms';
 
 import { NzFormTooltipIcon } from 'ng-zorro-antd/form';
+import {UserServiceService} from "../../../shared/services/user.service.service";
 
 @Component({
   selector: 'app-header',
@@ -28,7 +29,8 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private drawerService: NzDrawerService,
     private api: BackEndService,
-    private fb: UntypedFormBuilder
+    private fb: UntypedFormBuilder,
+    private userService: UserServiceService
   ) {}
   private _drawer: any;
   @Input() cart: any;
@@ -53,8 +55,31 @@ export class HeaderComponent implements OnInit {
   isVisibleContactUs = false;
   isVisibleBookADemo = false;
   isVisibleVideoTutorial = false;
+  isVisibleRegister = false;
+  isVisibleLogin = false;
+  isVisibleResetPassword: boolean = false;
+  isVisibleAccount: boolean = false;
   validateForm!: UntypedFormGroup;
+  validateRegistrationForm!: UntypedFormGroup;
+  validateLoginForm!: UntypedFormGroup;
+  validateResetPasswordForm!: UntypedFormGroup;
   xml2js = require('xml2js');
+  isLoggedIn = false;
+
+  register_passwordVisible:boolean = false;
+  register_verifyPasswordVisible:boolean = false;
+  register_error: boolean = false;
+
+  login_passwordVisible:boolean = false;
+  login_error: boolean = false;
+  login_errorMessage: string = "";
+  resetPassword_errorMessage: string = "";
+
+  ERROR_CODES = {
+    'verifyPassword': {
+      'required': 'Reenter your password!'
+    }
+  }
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({
@@ -64,12 +89,34 @@ export class HeaderComponent implements OnInit {
       phoneNumber: ['', []],
       message: [null, [Validators.required]],
     });
+    this.validateRegistrationForm = this.fb.group({
+      firstName: [null, [Validators.required]],
+      lastName: [null, [Validators.required]],
+      email: [null, [Validators.email, Validators.required]],
+      password: [null, [Validators.required]],
+      verifyPassword: [null, [Validators.required]],
+      termsAndConditions: [false, [Validators.requiredTrue]],
+      receiveNewsLetter: [false],
+    });
+    this.validateLoginForm = this.fb.group({
+      email: [null, [Validators.email, Validators.required]],
+      password: [null, [Validators.required]],
+      rememberMe: [false, [Validators.required]],
+    });
+    this.validateResetPasswordForm = this.fb.group({
+      email: [null, [Validators.email, Validators.required]]
+    });
+
+    this.isLoggedIn = this.userService.isUserLoggedIn();
   }
-  sentSuccessfully = false;
-  sentError = false;
+  registeredSuccessfully = false;
+  loggedInSuccessfully = false;
+  resetPasswordSuccessfully = false;
+  registrationError = false;
+  company:any = null;
   submitForm(): void {
-    this.sentSuccessfully = false;
-    this.sentError = false;
+    this.registeredSuccessfully = false;
+    this.registrationError = false;
 
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
@@ -91,13 +138,97 @@ export class HeaderComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           if (res.includes('Email sent')) {
-            this.sentSuccessfully = true;
+            this.registeredSuccessfully = true;
           } else {
-            this.sentError = true;
+            this.registrationError = true;
           }
         });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  submitRegisterForm(): void {
+    this.registeredSuccessfully = false;
+    this.registrationError = false;
+
+    if (this.validateRegistrationForm.valid) {
+      let password = this.validateRegistrationForm.value.password;
+      let verifyPassword = this.validateRegistrationForm.value.verifyPassword;
+
+      if(password !== verifyPassword){
+        this.validateRegistrationForm.get("verifyPassword")?.setErrors({"customError": "Passwords do not match!"});
+        return;
+      }
+
+      this.api.register(this.validateRegistrationForm.value).subscribe((res) => {
+        this.xml2js.parseString(res, (err: any, result: any) => {
+          if (
+            result.LSResponse.Response[0] ===
+            'SUCCESS;Thanks for registering! We’ve sent you a link to verify your email. Please check your email'
+          ) {
+          } else {
+            this.register_error = true;
+          }
+        });
+      });
+    } else {
+      Object.values(this.validateRegistrationForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  submitLoginForm(): void {
+    this.loggedInSuccessfully = false;
+    this.login_errorMessage = "";
+
+    if (this.validateLoginForm.valid) {
+      const form = this.validateLoginForm.value;
+      this.userService.login(form).subscribe((successful:boolean) => {
+        if(successful){
+          this.isLoggedIn = true;
+          this.isVisibleLogin = false;
+        } else {
+          this.login_errorMessage = 'Please try again or click "Forgot password"';
+        }
+      }, (err: any) => {
+          this.login_errorMessage =
+            err.error.message + ' Please try again or click "Forgot password"';
+        });
+    } else {
+      Object.values(this.validateLoginForm.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  submitResetPasswordForm(): void {
+    this.resetPasswordSuccessfully = false;
+    this.resetPassword_errorMessage = "";
+
+    if (this.validateResetPasswordForm.valid) {
+      const email = this.validateResetPasswordForm.value.email;
+      this.userService.forgotPasswordRequest(email).subscribe((res: any) => {
+        if (res.includes('FAIL')) {
+          this.validateResetPasswordForm.get("email")?.setErrors({"valid": true});
+        } else {
+          this.isVisibleResetPassword = false;
+        }
+      });
+    } else {
+      Object.values(this.validateResetPasswordForm.controls).forEach((control) => {
         if (control.invalid) {
           control.markAsDirty();
           control.updateValueAndValidity({ onlySelf: true });
@@ -446,7 +577,41 @@ export class HeaderComponent implements OnInit {
     this.isVisibleContactUs = true;
   }
 
+  showModalRegister(): void {
+    this.isVisibleRegister = true;
+    this.isVisibleLogin = false;
+    this.isVisibleResetPassword = false;
+    this.isVisibleAccount = false;
+  }
+
+  showModalLogin(): void {
+    this.isVisibleRegister = false;
+    this.isVisibleLogin = true;
+    this.isVisibleResetPassword = false;
+    this.isVisibleAccount = false;
+  }
+
+  showModalResetPassword(): void {
+    this.isVisibleRegister = false;
+    this.isVisibleLogin = false;
+    this.isVisibleResetPassword = true;
+    this.isVisibleAccount = false;
+  }
+
+  showModalAccount(): void {
+    this.isVisibleRegister = false;
+    this.isVisibleLogin = false;
+    this.isVisibleResetPassword = false;
+    this.api.getMyCompany(this.userService.getUserId()).subscribe((res:any) => {
+      this.xml2js.parseString(res, (err: any, result: any) => {
+        this.company = result.LSResponse.BsiCompany[0];
+      })
+    });
+    this.isVisibleAccount = true;
+  }
+
   isConfirmLoading = false;
+  isConfirmResetPassword = false;
   handleOkContactUs(): void {
     console.log('Button ok clicked!');
     // this.isVisibleContactUs = true;
@@ -455,8 +620,8 @@ export class HeaderComponent implements OnInit {
   handleCancelContactUs(): void {
     console.log('Button cancel clicked!');
     this.isVisibleContactUs = false;
-    this.sentSuccessfully = false;
-    this.sentError = false;
+    this.registeredSuccessfully = false;
+    this.registrationError = false;
     this.validateForm.reset();
   }
 
@@ -491,8 +656,53 @@ export class HeaderComponent implements OnInit {
     //   document.body.appendChild(script2);
   }
 
-  // captchaTooltipIcon: NzFormTooltipIcon = {
-  //   type: 'info-circle',
-  //   theme: 'twotone',
-  // };
+  handleCancelRegisterDialog(): void {
+    this.isVisibleRegister = false;
+  }
+
+  handleCancelLoginDialog(): void {
+    this.isVisibleLogin = false;
+  }
+
+  handleCancelResetPasswordDialog(): void {
+    this.isVisibleResetPassword = false;
+  }
+
+  handleCancelAccountDialog(): void {
+    this.isVisibleAccount = false;
+  }
+
+  toggleRegisterPasswordVisible(){
+    this.register_passwordVisible = !this.register_passwordVisible;
+  }
+
+  toggleRegisterVreifyPasswordVisible(){
+    this.register_verifyPasswordVisible = !this.register_verifyPasswordVisible;
+  }
+
+  toggleLoginPasswordVisible(){
+    this.login_passwordVisible = !this.login_passwordVisible;
+  }
+
+  hasErrors(control:string){
+    const formControl = this.validateRegistrationForm.get(control);
+    if(!formControl?.dirty)
+      return false;
+    const kvp = formControl?.errors;
+    return kvp != null && kvp && Object.keys(kvp).length > 0;
+  }
+
+  getErrorMessage(control:string){
+    const e = this.validateRegistrationForm.get(control)?.errors;
+    if(e && Object.keys(e).length > 0){
+      const firstKey = Object.keys(e)[0];
+      // @ts-ignore
+      return this.ERROR_CODES[control][firstKey] || e[firstKey];
+    }
+  }
+
+  logout() {
+    this.userService.logOut();
+    this.isLoggedIn = false;
+  }
 }

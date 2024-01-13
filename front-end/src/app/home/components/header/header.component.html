@@ -27,22 +27,40 @@
 
     <span class="btn" (click)="isVisibleVideoTutorial = true; bookADemo()">Video tutorial</span>
 
+    <span
+      *ngIf="!isLoggedIn"
+      class="btn secondary-color"
+      (click)="showModalRegister()"
+    >Register</span>
+
     <nz-badge
+      *ngIf="!isLoggedIn"
       [nzCount]="cart.length"
       [nzOverflowCount]="10"
       [nzStyle]="{ backgroundColor: 'var(--secondary)', color: '#fff' }"
     >
-      <button
-        nz-button
-        nzType="primary"
-        (click)="openTemplate()"
-        style="margin-left: 1rem"
-      >
-        <span>Cart </span>
-
-        <!-- <span *ngIf="cart.length > 0">{{ cart.length }} Items</span> -->
+      <button class="login-btn" id="login-btn" (click)="showModalLogin()">
+        <span class="login-span">Login</span>
       </button>
     </nz-badge>
+
+    <span *ngIf="isLoggedIn" nz-dropdown [nzDropdownMenu]="userMenu" class="btn">Welcome</span>
+    <nz-dropdown-menu #userMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item class="li-type" (click)="showModalAccount()">
+          <div class="type">
+            <span nz-icon nzType="user"></span>
+            <span style="padding-left: 15px;">Account</span>
+          </div>
+        </li>
+        <li nz-menu-item class="li-type" (click)="logout();">
+          <div class="type">
+            <span nz-icon nzType="logout"></span>
+            <span style="padding-left: 15px;">Logout</span>
+          </div>
+        </li>
+      </ul>
+    </nz-dropdown-menu>
   </div>
   <div
     class="mobile-menu"
@@ -55,8 +73,15 @@
       <span nz-icon nzType="menu" nzTheme="outline"></span>
       <!-- <span nz-icon nzType="down"></span> -->
     </a>
+
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu nzSelectable>
+        <li nz-menu-item (click)="showModalLogin()">
+          <span class="">Login</span>
+        </li>
+        <li nz-menu-item (click)="showModalRegister()">
+          <span class="">Register</span>
+        </li>
         <li nz-menu-item (click)="isVisibleAbout = true">
           <span class="">About </span>
         </li>
@@ -68,24 +93,6 @@
         </li>
         <li nz-menu-item (click)="isVisibleVideoTutorial = true">
           <span class="">Video tutorial</span>
-        </li>
-        <li nz-menu-item (click)="openTemplate()">
-          <!-- <nz-badge
-            [nzCount]="cart.length"
-            [nzOverflowCount]="10"
-            [nzStyle]="{ backgroundColor: 'var(--secondary)', color: '#fff' }"
-          > -->
-          <!-- <button
-              nz-button
-              nzType="primary"
-              (click)="openTemplate()"
-              style="margin-left: 1rem"
-            > -->
-          <span>Cart </span>
-
-          <!-- <span *ngIf="cart.length > 0">{{ cart.length }} Items</span> -->
-          <!-- </button> -->
-          <!-- </nz-badge> -->
         </li>
       </ul>
     </nz-dropdown-menu>
@@ -207,7 +214,7 @@
   (nzOnCancel)="handleCancelContactUs()"
 >
   <ng-container *nzModalContent>
-    <div *ngIf="sentError == true">
+    <div *ngIf="registrationError == true">
       <h5>Error!</h5>
       <p>We apologize, but there was an issue sending your contact message.</p>
 
@@ -225,7 +232,7 @@
       nz-form
       [formGroup]="validateForm"
       (ngSubmit)="submitForm()"
-      *ngIf="sentSuccessfully == false"
+      *ngIf="registeredSuccessfully == false"
     >
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
@@ -346,7 +353,7 @@
         </nz-form-control>
       </nz-form-item> -->
     </form>
-    <div *ngIf="sentSuccessfully == true">
+    <div *ngIf="registeredSuccessfully == true">
       <h5>Congratulations!</h5>
       <p>
         Your message has been successfully sent. We appreciate you reaching out
@@ -365,7 +372,7 @@
       Custom Callback
     </button> -->
     <button
-      *ngIf="sentSuccessfully == false"
+      *ngIf="registeredSuccessfully == false"
       style="width: 100%"
       nz-button
       nzType="primary"
@@ -375,7 +382,7 @@
       Submit
     </button>
     <button
-      *ngIf="sentSuccessfully == true"
+      *ngIf="registeredSuccessfully == true"
       nz-button
       nzType="primary"
       (click)="handleCancelContactUs()"
@@ -386,6 +393,7 @@
   </ng-template>
 </nz-modal>
 
+<!-- book a demo -->
 <nz-modal
   [(nzVisible)]="isVisibleBookADemo"
   nzTitle="Book A Demo"
@@ -410,6 +418,7 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
   </ng-container>
 </nz-modal>
 
+<!-- Video tutorial -->
 <nz-modal
   [(nzVisible)]="isVisibleVideoTutorial"
   nzTitle="Video tutorial"
@@ -445,4 +454,295 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
       ></iframe>
     </div>
   </ng-container>
+</nz-modal>
+
+<!-- Register -->
+<nz-modal
+  [(nzVisible)]="isVisibleRegister"
+  nzTitle="Sign Up"
+  nzClosable="true"
+  [nzFooter]="registerModalFooter"
+  (nzOnCancel)="handleCancelRegisterDialog()"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+>
+  <ng-container *nzModalContent>
+
+    <form
+      nz-form
+      [formGroup]="validateRegistrationForm"
+      (ngSubmit)="submitRegisterForm()"
+      *ngIf="registeredSuccessfully == false"
+    >
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
+          <span>First name</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your First name!"
+        >
+          <input
+            nz-input
+            id="register_firstName"
+            formControlName="firstName"
+            placeholder="first name"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="lastName" nzRequired>
+          <span>Last name</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Please input your Last name!"
+        >
+          <input
+            nz-input
+            id="refister_lastName"
+            formControlName="lastName"
+            placeholder="last name"
+          />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email"
+        >E-mail</nz-form-label
+        >
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="The input is not valid E-mail!"
+        >
+          <input
+            nz-input
+            formControlName="email"
+            id="register_email"
+            placeholder="email"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="register_password">
+          <span>Password</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Enter your password!"
+        >
+          <input
+            nz-input
+            type="{{register_passwordVisible ? 'text' : 'password'}}"
+            id="register_password"
+            formControlName="password"
+            placeholder="password"
+          />
+          <i nz-icon [nzType]="register_passwordVisible ? 'eye-invisible' : 'eye'" class="password-toggle" (click)="toggleRegisterPasswordVisible()"></i>
+
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="8" [nzXs]="24" nzRequired nzFor="register_verifyPassword">
+          <span>Verify password</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="12"
+          [nzXs]="24"
+        >
+          <input
+            nz-input
+            type="{{register_verifyPasswordVisible ? 'text' : 'password'}}"
+            id="register_verifyPassword"
+            formControlName="verifyPassword"
+            placeholder="verify password"
+          />
+          <i nz-icon [nzType]="register_verifyPasswordVisible ? 'eye-invisible' : 'eye'" class="password-toggle" (click)="toggleRegisterVreifyPasswordVisible()"></i>
+          <div role="alert" class="error-message" *ngIf="hasErrors('verifyPassword')">
+            {{getErrorMessage('verifyPassword')}}
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Please accept the terms and conditions">
+          <label nz-checkbox formControlName="termsAndConditions">I accept terms and conditions</label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Please accept the terms and conditions">
+          <label nz-checkbox formControlName="receiveNewsLetter">I want to receive the newsletter</label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="error-message center" *ngIf="register_error">Something went wrong!</div>
+    </form>
+  </ng-container>
+  <ng-template #registerModalFooter>
+    <button
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+      (click)="submitRegisterForm()"
+      [nzLoading]="isConfirmLoading"
+    >Create Account</button>
+    <div style="text-align: center; margin-top: 13px;">Already a member? <span class="btn inline" (click)="showModalLogin()">Sign in</span></div>
+  </ng-template>
+</nz-modal>
+
+
+<!-- Login -->
+<nz-modal
+  [(nzVisible)]="isVisibleLogin"
+  nzTitle="Sign In"
+  nzClosable="true"
+  [nzFooter]="loginModalFooter"
+  (nzOnCancel)="handleCancelLoginDialog()"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+>
+  <ng-container *nzModalContent>
+
+    <form
+      nz-form
+      [formGroup]="validateLoginForm"
+      (ngSubmit)="submitLoginForm()"
+      *ngIf="loggedInSuccessfully == false"
+    >
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="login_email"
+        >E-mail</nz-form-label
+        >
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="The input is not valid E-mail!"
+        >
+          <input
+            nz-input
+            id="login_email"
+            formControlName="email"
+            placeholder="email"
+          />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="login_password">
+          <span>Password</span>
+        </nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="Enter your password!"
+        >
+          <input
+            nz-input
+            type="{{login_passwordVisible ? 'text' : 'password'}}"
+            id="login_password"
+            formControlName="password"
+            placeholder="password"
+          />
+          <i nz-icon [nzType]="login_passwordVisible ? 'eye-invisible' : 'eye'" class="password-toggle" (click)="toggleLoginPasswordVisible()"></i>
+
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control [nzSpan]="24" nzErrorTip="Please accept the terms and conditions">
+          <label nz-checkbox formControlName="rememberMe">Remember me</label>
+          <span class="btn inline" style="float: right;" (click)="showModalResetPassword()">Forgot password</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="error-message center">{{login_errorMessage}}</div>
+    </form>
+  </ng-container>
+  <ng-template #loginModalFooter>
+    <button
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+      (click)="submitLoginForm()"
+      [nzLoading]="isConfirmLoading"
+    >Log In</button>
+    <div style="text-align: center; margin-top: 13px;">Don't have an account? <span class="btn inline" (click)="showModalRegister()">Create</span></div>
+  </ng-template>
+</nz-modal>
+
+
+<!-- Reset password -->
+<nz-modal
+  [(nzVisible)]="isVisibleResetPassword"
+  nzTitle="Reset Password"
+  nzClosable="true"
+  [nzFooter]="resetPasswordModalFooter"
+  (nzOnCancel)="handleCancelResetPasswordDialog()"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+>
+  <ng-container *nzModalContent>
+    <p>Simply enter your email address in the field below and click the 'Reset Password' button.</p>
+    <form
+      nz-form
+      [formGroup]="validateResetPasswordForm"
+      (ngSubmit)="submitResetPasswordForm()"
+      *ngIf="resetPasswordSuccessfully == false"
+    >
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="resetPassword_email"
+        >E-mail</nz-form-label>
+        <nz-form-control
+          [nzSm]="14"
+          [nzXs]="24"
+          nzErrorTip="The input is not valid E-mail!"
+        >
+          <input
+            nz-input
+            id="resetPassword_email"
+            formControlName="email"
+            placeholder="email"
+          />
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="error-message center">{{resetPassword_errorMessage}}</div>
+    </form>
+  </ng-container>
+  <ng-template #resetPasswordModalFooter>
+    <button
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+      (click)="submitResetPasswordForm()"
+      [nzLoading]="isConfirmResetPassword"
+    >Reset Password</button>
+    <div style="text-align: center; margin-top: 13px;">Don't have an account? <span class="btn inline" (click)="showModalRegister()">Create</span></div>
+  </ng-template>
+</nz-modal>
+
+<!-- Account -->
+<nz-modal
+  [(nzVisible)]="isVisibleAccount"
+  nzTitle="Account"
+  nzClosable="true"
+  [nzFooter]="accountModalFooter"
+  (nzOnCancel)="handleCancelAccountDialog()"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+>
+  <ng-container *nzModalContent>
+    <div class="center">
+      <company-modal-edit [company]="company"
+      ></company-modal-edit>
+    </div>
+  </ng-container>
+  <ng-template #accountModalFooter>
+    <button
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+    >Close
+    </button>
+  </ng-template>
 </nz-modal>

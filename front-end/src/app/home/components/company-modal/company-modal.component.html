@@ -1,0 +1,163 @@
+<nz-card
+  nzHoverable
+  class="card"
+  style="max-height: max-content; width: 320px"
+  [nzCover]="coverTemplate"
+  [nzActions]="[actionSetting, actionEdit]"
+  (click)="openCompanyDetails($event)"
+>
+  <nz-card-meta
+    nzTitle="{{ company.name }}"
+    nzDescription="{{ company.description }}"
+  ></nz-card-meta>
+
+  <div>
+      <div class="row mt-2">
+      <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <span
+          class="list-leads-title leadsTitle"
+          style="white-space: nowrap"
+          id="leadsTitle"
+          >Industry</span
+        >
+        <nz-statistic
+          id="Down{{ company.id }}"
+          class="statistics downloadsTitle"
+          [nzValue]="company.industryId"
+        >
+        </nz-statistic>
+      </div>
+      <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <span
+          class="list-leads-title downloadsTitle"
+          style="white-space: nowrap"
+          id="countryTitle"
+          >Country</span
+        >
+        <nz-statistic
+          id="Down{{ company.id }}"
+          class="statistics downloadsTitle"
+          [nzValue]="company.countryId"
+        >
+        </nz-statistic>
+      </div>
+    </div>
+    <div class="row mt-2">
+        <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <span
+          class="list-leads-title downloadsTitle"
+          style="white-space: nowrap"
+          id="lookingForTitle"
+          >Looking for</span
+        >
+        <nz-statistic
+          id="Down{{ company.id }}"
+          class="statistics downloadsTitle"
+          [nzValue]="company.lookingFor"
+        >
+        </nz-statistic>
+      </div>
+    </div>
+    <div class="row mt-2">
+        <div
+        class="col list-leads-number"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: space-between;
+        "
+      >
+        <span
+          class="list-leads-title downloadsTitle"
+          style="white-space: nowrap"
+          id="benefitsTitle"
+          >Benefits</span
+        >
+        <nz-statistic
+          id="Down{{ company.id }}"
+          class="statistics downloadsTitle"
+          [nzValue]="company.benefits"
+        >
+        </nz-statistic>
+          <img style="width: 100%;" src="{{company.benefitsImage ? company.benefitsImage : '/assets/small-logo.png'}}"/>
+      </div>
+    </div>
+  </div>
+</nz-card>
+
+<ng-template #coverTemplate>
+  <div class="img-div">
+    <img
+      alt="example"
+      onerror="this.onerror=null;this.src='/assets/small-logo.png'"
+      [src]="
+        company!.url
+          ? company!.url
+          : '/assets/small-logo.png'
+      "
+    />
+  </div>
+</ng-template>
+<ng-template #actionSetting>
+  <button
+    id="buy-btn action-btn"
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    style="background-color: var(--secondary); border-color: var(--secondary)"
+    (click)="showModal()"
+    nz-tooltip
+    [nzTooltipColor]="'var(--secondaryLight)'"
+    nzTooltipTitle="Buy now"
+  >
+    <span nz-icon nzType="shopping"></span>
+  </button>
+</ng-template>
+
+<ng-template #actionEdit>
+  <button
+    id="action-btn"
+    nz-button
+    nzType="primary"
+    nzSize="large"
+    nz-tooltip
+    [nzTooltipTitle]="titleTemplate"
+    [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
+    nzTooltipColor="var(--primaryLight)"
+    nzTooltipPlacement="bottom"
+    (click)="openCompanyDetails($event)"
+  >
+    <span nz-icon nzType="download" nzTooltipTitle="Download 5 samples"></span>
+  </button>
+  <ng-template #titleTemplate let-thing>
+    <span>
+      <span nz-icon nzType="file" style="vertical-align: 2px"></span> download 5
+      samples</span
+    >
+  </ng-template>
+</ng-template>

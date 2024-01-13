@@ -1,12 +1,50 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { Injectable } from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
+import {Injectable} from '@angular/core';
+
+const md5 = require('md5');
 
 @Injectable({
   providedIn: 'root',
 })
 export class BackEndService {
   constructor(private http: HttpClient) {}
+
+
+  register(form: any) {
+    let email = form.email;
+    let password = form.password;
+    let name = form.firstName + ' ' + form.lastName;
+    return this.http.get(
+      `${
+        environment.BASE_URL
+      }Command=Register2&AppId=20&Portal=iei&Name=${name}&Email=${email}&Pwd=${md5(
+        password
+      )}&Source=2`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
+  login(form: any) {
+    let email = form.email;
+    let password = form.password;
+    let remember = form.rememberMe;
+    if (remember == true) {
+      localStorage.setItem('userOpp', email);
+      localStorage.setItem('userPassOpp', password);
+    }
+    return this.http.get(
+      `${environment.BASE_URL}Command=Login2&Email=${email}&Password=${md5(
+        password
+      )}&AppId=20`,
+      {
+        //return this.http.get(`${environment.BASE_URL}?Command=Login2&Email=defense@leadspotting.com&Password=${hash("defense")}&AppId=12`, {
+        responseType: 'text',
+      }
+    );
+  }
 
   getCrmConfig() {
     return this.http.get(
@@ -26,6 +64,24 @@ export class BackEndService {
   getReadyLists2() {
     return this.http.get(
       `${environment.BASE_URL2}Command=CompaniesReadyLists`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
+  getCompaniesList() {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSICompaniesList`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
+  getBenefitsList() {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSIBenefitsList`,
       {
         responseType: 'text',
       }
@@ -146,4 +202,12 @@ export class BackEndService {
   //     responseType: 'text',
   //   });
   // }
+  getMyCompany(clientId:string) {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSICompaniesList&ClientID=${clientId}`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
 }
