@@ -9,6 +9,7 @@
   >
     <!-- <img class="logo-img" src="/assets/leadspot_logo.png" alt="" /> -->
     <img class="logo-img" src="/assets/leadspotting-logo-gif.gif" alt="" />
+    <img class="logo-img" src="/assets/flagisrael.jpg" alt="" />
   </div>
   <div
     class="regular-menu"
@@ -22,10 +23,10 @@
     <span class="btn" (click)="isVisibleContactUs = true">Contact us </span>
 
     <span class="btn" (click)="isVisibleBookADemo = true; bookADemo()"
-      >Book a demo
+      >Book a Call
     </span>
 
-    <span class="btn" (click)="isVisibleVideoTutorial = true; bookADemo()">Video tutorial</span>
+    <span class="btn" (click)="isVisibleVideoTutorial = true; bookADemo()">Israel Tech Video</span>
 
     <span
       *ngIf="!isLoggedIn"
@@ -92,7 +93,7 @@
           <span class="">Book a demo</span>
         </li>
         <li nz-menu-item (click)="isVisibleVideoTutorial = true">
-          <span class="">Video tutorial</span>
+          <span class="">IsraelTech Video</span>
         </li>
       </ul>
     </nz-dropdown-menu>
@@ -138,69 +139,41 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleAbout"
-  nzTitle="About ReadyLists"
+  nzTitle="About BSI"
   (nzOnCancel)="handleCancelAbout()"
   (nzOnOk)="handleOkAbout()"
 >
   <ng-container *nzModalContent>
     <p>
-      Welcome to readyLists, your go-to source for high-quality leads lists! We
-      understand the importance of targeted leads for growing your business, and
-      our portal is designed to provide you with the perfect lists to boost your
-      sales.
+      Welcome to the BSI website. 
+      Business owners from Israel and around the world are invited to register on the site and discover your new business partners.
     </p>
     <div>
-      <span class="modal-title">High-Quality Leads for Your Business </span>
+      <span class="modal-title"></span>
       <p>
-        At readyLists, we believe in making the process of finding the perfect
-        leads list easy and efficient. Our platform allows you to filter with
-        ease, ensuring that you find the leads list that aligns perfectly with
-        your business requirements. Whether you need leads from a specific
-        industry or location, our comprehensive filters will help you find
-        exactly what you're looking for.
+        Inspired by the challenges faced during the wars in Israel, a group of entrepreneurs led us to establish this non-profit website. Our goal is to assist Israeli businesses in finding their next collaborations with companies from all over the world.
       </p>
     </div>
     <div>
-      <span class="modal-title">Customized Lists and Secure Payments </span>
+      <span class="modal-title"> </span>
       <p>
-        In addition to our pre-made lists, we also offer the option to create
-        custom lists tailored specifically to your business needs. Just let us
-        know your requirements, and we'll deliver a high-quality list right to
-        your inbox.
+        Why operate as a non-profit? The Israeli spirit carries with it a sense of volunteering and mutual assistance. While in normal circumstances, every business operates for its own sake, seeking business partners in its own ways, during times of war, many entrepreneurs have fought and continue to fight for the country. We, as entrepreneurs, are committed to each other and committed to doing what we can to support businesses and companies in their activities and growth. This site is for the benefit of all businesses and companies that want to do business with Israeli entrepreneurs.
       </p>
       <p>
-        We understand the importance of security when it comes to online
-        transactions. That's why we've partnered with PayPal to provide you with
-        a safe and secure payment method. With PayPal, you can complete your
-        purchases with ease, knowing that your financial information is
-        protected.
+        Our contribution is the platform for connecting people. Between businesses. Between countries.
+        The site is tailored for companies specializing in export in various fields.
+        All you need to do – whether you are a business from Israel or abroad – is to register and start working.
       </p>
     </div>
     <div>
-      <span class="modal-title">Instant Access, No Registration Required </span>
+      <span class="modal-title"> </span>
       <p>
-        At readyLists, we believe in providing a seamless user experience. You
-        can access our targeted leads lists instantly, without the hassle of
-        login or registration. Simply find the list you need, make your purchase
-        through LeadSpot, and start leveraging the power of high-quality leads
-        right away.
+        At BSI, we believe in making the process of finding businesses easy and efficient. The platform on the site allows you to easily filter and find the industries and types of companies that suit your business needs.
       </p>
     </div>
     <div>
-      <span class="modal-title">Try Before You Commit </span>
+      <span class="modal-title"> </span>
       <p>
-        We want you to feel confident in your decision to purchase leads from
-        readyLists. That's why we offer a free sample download of 5 leads. This
-        way, you can evaluate the quality and relevance of our lists firsthand
-        before making a commitment.
-      </p>
-      <p>
-        Start growing your business today with readyLists. Browse our
-        comprehensive collection of ready companies and ready emails, and take
-        advantage of our advanced filtering options to find the perfect leads
-        for your industry, location, and business type. With our secure payment
-        system and instant access, you're just a few clicks away from boosting
-        your sales.
       </p>
     </div>
   </ng-container>
@@ -209,7 +182,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisibleContactUs"
-  nzTitle="Contact us ReadyLists"
+  nzTitle="Contact us"
   [nzFooter]="modalFooter"
   (nzOnCancel)="handleCancelContactUs()"
 >
@@ -225,8 +198,6 @@
       </p>
     </div>
     <p>
-      Please fill out the form below with your name, email, and phone number,
-      message and we'll get back to you as soon as possible.
     </p>
     <form
       nz-form
@@ -360,11 +331,6 @@
         to us through our contact form. Our team will review your message and
         get back to you as soon as possible.
       </p>
-
-      <p>
-        Thank you for choosing us and for your interest in our services. We
-        value your feedback and look forward to assisting you further.
-      </p>
     </div>
   </ng-container>
   <ng-template #modalFooter>
@@ -396,7 +362,7 @@
 <!-- book a demo -->
 <nz-modal
   [(nzVisible)]="isVisibleBookADemo"
-  nzTitle="Book A Demo"
+  nzTitle="Book A Call"
   nzClosable="true"
   [nzFooter]="null"
   (nzOnCancel)="handleCancelBookADemo()"
@@ -407,10 +373,7 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
     <div>
       <span class="modal-title">Schedule a Meeting now </span>
       <p>
-        Please select a convenient day and time for your appointment. By
-        scheduling in advance, you can save valuable time. Simply choose a
-        suitable date from the calendar and fill in your details. We look
-        forward to meeting with you and providing our assistance.
+        Please select a convenient day and time for your appointment.
       </p>
     </div>
 
@@ -421,7 +384,7 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
 <!-- Video tutorial -->
 <nz-modal
   [(nzVisible)]="isVisibleVideoTutorial"
-  nzTitle="Video tutorial"
+  nzTitle="IsraelTech Video"
   nzClosable="true"
   [nzFooter]="null"
   (nzOnCancel)="handleCancelVideoTutorial()"
@@ -437,21 +400,7 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
               text-align: center;
             "
     >
-      <iframe
-        src="https://www.loom.com/embed/11c77ea6491a48a29221c93027051678?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
-        frameborder="0"
-        webkitallowfullscreen
-        mozallowfullscreen
-        allowfullscreen
-        style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                height: 100% !important;
-                border-radius: 5px;
-                width: 100% !important;
-              "
-      ></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/quvPSKtLYsg" frameborder="0" allowfullscreen></iframe>
     </div>
   </ng-container>
 </nz-modal>
