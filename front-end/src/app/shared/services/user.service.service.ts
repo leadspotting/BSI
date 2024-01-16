@@ -31,7 +31,10 @@ export class UserServiceService {
 
     return this.api.login(form).pipe(
       map((res: any) => {
-        return this.xml2js.parseString(res, (err: any, result: any) => {
+        let result:any = null;
+        this.xml2js.parseString(res, (err1: any, result1: any) => {result = result1});
+        // return this.xml2js.parseString(res, (err: any, result: any) => {
+        //   debugger;
           if (
             result?.LSResponse?.Response[0].IntroDone[0] == '1' ||
             result?.LSResponse?.Response[0].IntroDone[0] == '0'
@@ -43,7 +46,7 @@ export class UserServiceService {
             return userData;
           }
           return false;
-        });
+        // });
       }
     ));
   }

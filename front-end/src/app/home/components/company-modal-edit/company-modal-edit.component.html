@@ -9,30 +9,19 @@
   <div>
     <div class="row mt-2">
 
-      <form nz-form>
+      <form nz-form
+            [formGroup]="validateForm"
+            (ngSubmit)="submitForm()">
+        <nz-card-meta nzTitle="{{ company.name }}"></nz-card-meta>
+        <br/>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
-            <span>Name</span>
-          </nz-form-label>
+          <nz-form-label [nzSm]="24"
+                         [nzXs]="24"
+                         nzFor="description"
+                         nzRequired
+          >Description</nz-form-label>
           <nz-form-control
-            [nzSm]="14"
-            [nzXs]="24"
-            nzErrorTip="Please input company name!"
-          >
-            <input
-              nz-input
-              id="name"
-              formControlName="name"
-              placeholder="first name"
-            />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="description" nzRequired
-          >Description</nz-form-label
-          >
-          <nz-form-control
-            [nzSm]="14"
+            [nzSm]="24"
             [nzXs]="24"
             nzErrorTip="Please input company description!"
           >
@@ -46,11 +35,45 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="logoUrl" nzRequired>
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+            <span>Benefits</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSm]="24"
+            [nzXs]="24"
+            nzErrorTip="Please enter company benefits!"
+          >
+            <input
+              nz-input
+              id="benefits"
+              formControlName="benefits"
+              placeholder="benefits"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+            <span>Benefits image URL</span>
+          </nz-form-label>
+          <nz-form-control
+            [nzSm]="24"
+            [nzXs]="24"
+            nzErrorTip="Please enter company benefits image URL!"
+          >
+            <input
+              nz-input
+              id="benefitsImageUrl"
+              formControlName="benefitsImageUrl"
+              placeholder="benefits image Url"
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
             <span>Logo URL</span>
           </nz-form-label>
           <nz-form-control
-            [nzSm]="14"
+            [nzSm]="24"
             [nzXs]="24"
             nzErrorTip="Please input company logo URL!"
           >
@@ -63,36 +86,18 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="industryId"
-          >Industry</nz-form-label
-          >
+          <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="industryId"
+          >URL</nz-form-label>
           <nz-form-control
-            [nzSm]="14"
+            [nzSm]="24"
             [nzXs]="24"
-            nzErrorTip="Please choose industries!"
+            nzErrorTip="Please enter company URL!"
           >
             <input
               nz-input
-              id="industryId"
-              formControlName="industryId"
-              placeholder="industryId"
-            />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber">
-            <span>Phone number</span>
-          </nz-form-label>
-          <nz-form-control
-            [nzSm]="14"
-            [nzXs]="24"
-            nzErrorTip="Please input your Phone number!"
-          >
-            <input
-              nz-input
-              id="phoneNumber"
-              formControlName="phoneNumber"
-              placeholder="phone number"
+              id="url"
+              formControlName="url"
+              placeholder="url"
             />
           </nz-form-control>
         </nz-form-item>

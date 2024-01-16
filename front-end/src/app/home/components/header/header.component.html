@@ -77,12 +77,26 @@
 
     <nz-dropdown-menu #menu="nzDropdownMenu">
       <ul nz-menu nzSelectable>
-        <li nz-menu-item (click)="showModalLogin()">
+        <li nz-menu-item
+            *ngIf="!isLoggedIn"
+            (click)="showModalLogin()"
+        >
           <span class="">Login</span>
         </li>
-        <li nz-menu-item (click)="showModalRegister()">
+        <li nz-menu-item
+            (click)="showModalRegister()"
+            *ngIf="!isLoggedIn"
+        >
           <span class="">Register</span>
         </li>
+
+        <li nz-menu-item
+            (click)="showModalAccount()"
+            *ngIf="isLoggedIn"
+        >
+          <span>Account</span>
+        </li>
+
         <li nz-menu-item (click)="isVisibleAbout = true">
           <span class="">About </span>
         </li>
@@ -94,6 +108,12 @@
         </li>
         <li nz-menu-item (click)="isVisibleVideoTutorial = true">
           <span class="">IsraelTech Video</span>
+        </li>
+        <li nz-menu-item
+            (click)="logout();"
+            *ngIf="isLoggedIn"
+        >
+          <span>Logout</span>
         </li>
       </ul>
     </nz-dropdown-menu>
@@ -142,10 +162,11 @@
   nzTitle="About BSI"
   (nzOnCancel)="handleCancelAbout()"
   (nzOnOk)="handleOkAbout()"
+  [nzFooter]="null"
 >
   <ng-container *nzModalContent>
     <p>
-      Welcome to the BSI website. 
+      Welcome to the BSI website.
       Business owners from Israel and around the world are invited to register on the site and discover your new business partners.
     </p>
     <div>
@@ -203,7 +224,7 @@
       nz-form
       [formGroup]="validateForm"
       (ngSubmit)="submitForm()"
-      *ngIf="registeredSuccessfully == false"
+      *ngIf="register_success == false"
     >
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
@@ -324,7 +345,7 @@
         </nz-form-control>
       </nz-form-item> -->
     </form>
-    <div *ngIf="registeredSuccessfully == true">
+    <div *ngIf="register_success == true">
       <h5>Congratulations!</h5>
       <p>
         Your message has been successfully sent. We appreciate you reaching out
@@ -338,7 +359,7 @@
       Custom Callback
     </button> -->
     <button
-      *ngIf="registeredSuccessfully == false"
+      *ngIf="register_success == false"
       style="width: 100%"
       nz-button
       nzType="primary"
@@ -348,7 +369,7 @@
       Submit
     </button>
     <button
-      *ngIf="registeredSuccessfully == true"
+      *ngIf="register_success == true"
       nz-button
       nzType="primary"
       (click)="handleCancelContactUs()"
@@ -407,20 +428,20 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
 
 <!-- Register -->
 <nz-modal
-  [(nzVisible)]="isVisibleRegister"
+  [(nzVisible)]="register_isVisible"
   nzTitle="Sign Up"
   nzClosable="true"
-  [nzFooter]="registerModalFooter"
-  (nzOnCancel)="handleCancelRegisterDialog()"
+  [nzFooter]="(register_step == 0 && registerModalFooter) || (register_step == 1 && verifyTokenModalFooter) || null"
+  (nzOnCancel)="register_handleCancel()"
   [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
 >
   <ng-container *nzModalContent>
 
     <form
       nz-form
-      [formGroup]="validateRegistrationForm"
-      (ngSubmit)="submitRegisterForm()"
-      *ngIf="registeredSuccessfully == false"
+      [formGroup]="register_formGroup"
+      (ngSubmit)="register_submitForm()"
+      *ngIf="register_step == 0"
     >
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firstName" nzRequired>
@@ -530,23 +551,120 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
 
       <div class="error-message center" *ngIf="register_error">Something went wrong!</div>
     </form>
+
+    <form style="padding: 0 16px !important"
+          *ngIf="register_step == 1">
+      <div class="popUp-content mt-4" style="text-align: center">
+              <span class="span-bolder">We’ve sent a verification code to: <br />
+                <span class="span-email">{{ register_formGroup.controls["email"].value }}</span>
+              </span>
+        <br />
+        <br />
+        <span class="span-bolder mt-4">Enter your verification code below:</span>
+      </div>
+      <div class="input-container d-flex flex-row justify-content-center mt-4">
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[0]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 0)"
+          (input)="register_onInput($event, 0)" maxlength="1"
+        />
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[1]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 1)"
+          (input)="register_onInput($event, 1)" maxlength="1"
+        />
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[2]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 2)"
+          (input)="register_onInput($event, 2)" maxlength="1"
+        />
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[3]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 3)"
+          (input)="register_onInput($event, 3)" maxlength="1"
+        />
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[4]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 4)"
+          (input)="register_onInput($event, 4)" maxlength="1"
+        />
+        <input
+          type="text"
+          class="m-1 text-center form-control rounded otp"
+          maxlength="1"
+          [(ngModel)]="register_token[5]"
+          [ngModelOptions]="{standalone: true}"
+          (keyup)="register_keyUp($event, 5)"
+          maxlength="1"
+        />
+      </div>
+
+      <div
+        class="col-12 red mt-3"
+        style="text-align: center"
+        *ngIf="register_tokenError == true"
+      >Invalid Token</div>
+    </form>
+
+    <div *ngIf="register_step == 2"
+         style="text-align: center"
+         class="mt-4 span-bolder">
+      <p style="color: var(--secondary)">You are now done</p>
+      <p style="color: var(--primaryLight)">
+        Redirecting to Login Page...
+      </p>
+    </div>
   </ng-container>
   <ng-template #registerModalFooter>
     <button
       style="width: 100%"
       nz-button
       nzType="primary"
-      (click)="submitRegisterForm()"
+      (click)="register_submitForm()"
       [nzLoading]="isConfirmLoading"
     >Create Account</button>
     <div style="text-align: center; margin-top: 13px;">Already a member? <span class="btn inline" (click)="showModalLogin()">Sign in</span></div>
+  </ng-template>
+  <ng-template #verifyTokenModalFooter>
+    <button
+      style="width: 100%"
+      nz-button
+      nzType="primary"
+      [disabled]="!register_check()"
+      [ngClass]="{ disabled: !register_check() }"
+      (click)="register_submitToken()"
+    >VERIFY</button>
+    <div style="text-align: center" class="mt-5">
+      <span class="span-lighter"
+            style="color: var(--primaryLight)">If you don't see it please check your spam folder</span>
+    </div>
   </ng-template>
 </nz-modal>
 
 
 <!-- Login -->
 <nz-modal
-  [(nzVisible)]="isVisibleLogin"
+  [(nzVisible)]="login_isVisible"
   nzTitle="Sign In"
   nzClosable="true"
   [nzFooter]="loginModalFooter"

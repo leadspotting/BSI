@@ -118,3 +118,25 @@ nz-header {
   margin:0;
   padding: 0;
 }
+
+.span-email {
+  color: var(--secondary) !important;
+  font-weight: bolder !important;
+}
+.span-bolder {
+  font-weight: bolder !important;
+}
+.span-lighter {
+  font-size: x-small !important;
+}
+.form-control:focus {
+  // box-shadow: none !important;
+  // border: 1px solid var(--primary) !important;
+  border-color: var(--secondaryTrans);
+
+  box-shadow: 0 0 0 0.25rem var(--secondaryTrans) !important;
+}
+
+.danger {
+  box-shadow: 0 0 0 0.2rem rgba(197, 8, 18, 0.5);
+}

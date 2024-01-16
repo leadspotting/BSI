@@ -55,25 +55,181 @@ export class HeaderComponent implements OnInit {
   isVisibleContactUs = false;
   isVisibleBookADemo = false;
   isVisibleVideoTutorial = false;
-  isVisibleRegister = false;
-  isVisibleLogin = false;
-  isVisibleResetPassword: boolean = false;
-  isVisibleAccount: boolean = false;
-  validateForm!: UntypedFormGroup;
-  validateRegistrationForm!: UntypedFormGroup;
-  validateLoginForm!: UntypedFormGroup;
-  validateResetPasswordForm!: UntypedFormGroup;
-  xml2js = require('xml2js');
-  isLoggedIn = false;
 
+  //region  REGISTRATION
+  register_isVisible = false;
+  register_formGroup!: UntypedFormGroup;
   register_passwordVisible:boolean = false;
   register_verifyPasswordVisible:boolean = false;
+  register_success = false;
   register_error: boolean = false;
+  register_tokenError: boolean = false;
+  registrationError = false;
+  register_step = 0;
+  register_token:string[] = ['', '', '', '', '', ''];
 
+  register_handleCancel(): void {
+    this.register_isVisible = false;
+  }
+  register_submitForm(): void {
+    this.register_success = false;
+    this.registrationError = false;
+
+    if (this.register_formGroup.valid) {
+      let password = this.register_formGroup.value.password;
+      let verifyPassword = this.register_formGroup.value.verifyPassword;
+
+      if(password !== verifyPassword){
+        this.register_formGroup.get("verifyPassword")?.setErrors({"customError": "Passwords do not match!"});
+        return;
+      }
+
+      this.api.register(this.register_formGroup.value).subscribe((res) => {
+        this.xml2js.parseString(res, (err: any, result: any) => {
+          if (
+            result.LSResponse.Response[0] ===
+            'SUCCESS;Thanks for registering! We’ve sent you a link to verify your email. Please check your email'
+          ) {
+            this.register_step = 1;
+          } else {
+            this.register_error = true;
+          }
+        });
+      });
+    } else {
+      Object.values(this.register_formGroup.controls).forEach((control) => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
+  }
+
+  register_submitToken() {
+    this.userService.verifyUser(this.register_token.join('')).subscribe((res) => {
+      if (res.includes('SUCCESS')) {
+        this.register_step = 2;
+        setTimeout(() => {
+          this.showModalLogin();
+        }, 1300);
+
+        try {
+          let ele = document.getElementsByClassName('otp');
+          for (let i = 0; i < ele.length; i++) {
+            ele[i].classList.remove('danger');
+          }
+        } catch {
+        }
+      } else {
+        this.register_tokenError = true;
+
+        let ele = document.getElementsByClassName('otp');
+        for (let i = 0; i < ele.length; i++) {
+          ele[i].classList.add('danger');
+        }
+        setTimeout(() => {
+          for (let i = 0; i < ele.length; i++) {
+            ele[i].classList.remove('danger');
+            (ele[i] as HTMLInputElement).value = '';
+          }
+          this.register_tokenError = false;
+        }, 2000);
+      }
+    });
+  }
+
+  register_check() {
+    if (this.register_token.join('').length == 6) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  register_tabChange(num: number, e:any = null) {
+    return;
+    let ele = document.getElementsByClassName('otp');
+
+    if ((ele[num - 1] as HTMLInputElement).value != '') {
+      (ele[num] as HTMLInputElement).focus();
+    } else if ((ele[num - 1] as HTMLInputElement).value == '') {
+      (ele[num - 2] as HTMLInputElement).focus();
+    }
+  }
+  register_keyUp(event: KeyboardEvent, index: number){
+    switch (event.key) {
+      case 'ArrowLeft':
+        this.register_focusPreviousInput(index);
+        break;
+      case 'ArrowRight':
+        this.register_focusNextInput(index);
+        break;
+      case 'Backspace':
+        this.register_handleBackspace(event, index);
+        break;
+    }
+  }
+
+  register_onInput(event: Event, nextIndex: number): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    if (value && nextIndex < this.register_token.length) {
+      this.register_token[nextIndex] = value;
+      this.register_focusNextInput(nextIndex);
+    }
+  }
+
+  register_focusPreviousInput(index: number): void {
+    let ele = document.getElementsByClassName('otp');
+
+    if (index > 0) {
+      (ele[index - 1] as HTMLInputElement).focus();
+    }
+  }
+
+  register_focusNextInput(index: number): void {
+    let ele = document.getElementsByClassName('otp');
+
+    if (index < this.register_token.length - 1) {
+      (ele[index + 1] as HTMLInputElement).focus();
+    }
+  }
+  register_handleBackspace(event: KeyboardEvent, index: number): void {
+    const value = (event.target as HTMLInputElement).value;
+    // if (!value && index > 0) {
+    this.register_token[index] = '';
+    if (index > 0) {
+      this.register_focusPreviousInput(index);
+    }
+  }
+
+  //endregion
+
+
+  // Login
+  login_isVisible = false;
+  validateLoginForm!: UntypedFormGroup;
   login_passwordVisible:boolean = false;
   login_error: boolean = false;
   login_errorMessage: string = "";
+  loggedInSuccessfully = false;
+
+  // Reset password
+  isVisibleResetPassword: boolean = false;
+  validateResetPasswordForm!: UntypedFormGroup;
   resetPassword_errorMessage: string = "";
+  resetPasswordSuccessfully = false;
+
+  // Account
+  isVisibleAccount: boolean = false;
+  company:any = null;
+
+  validateForm!: UntypedFormGroup;
+  xml2js = require('xml2js');
+  isLoggedIn = false;
+
+
 
   ERROR_CODES = {
     'verifyPassword': {
@@ -89,7 +245,7 @@ export class HeaderComponent implements OnInit {
       phoneNumber: ['', []],
       message: [null, [Validators.required]],
     });
-    this.validateRegistrationForm = this.fb.group({
+    this.register_formGroup = this.fb.group({
       firstName: [null, [Validators.required]],
       lastName: [null, [Validators.required]],
       email: [null, [Validators.email, Validators.required]],
@@ -109,13 +265,8 @@ export class HeaderComponent implements OnInit {
 
     this.isLoggedIn = this.userService.isUserLoggedIn();
   }
-  registeredSuccessfully = false;
-  loggedInSuccessfully = false;
-  resetPasswordSuccessfully = false;
-  registrationError = false;
-  company:any = null;
   submitForm(): void {
-    this.registeredSuccessfully = false;
+    this.register_success = false;
     this.registrationError = false;
 
     if (this.validateForm.valid) {
@@ -138,7 +289,7 @@ export class HeaderComponent implements OnInit {
         .subscribe((res) => {
           console.log(res);
           if (res.includes('Email sent')) {
-            this.registeredSuccessfully = true;
+            this.register_success = true;
           } else {
             this.registrationError = true;
           }
@@ -153,50 +304,17 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  submitRegisterForm(): void {
-    this.registeredSuccessfully = false;
-    this.registrationError = false;
-
-    if (this.validateRegistrationForm.valid) {
-      let password = this.validateRegistrationForm.value.password;
-      let verifyPassword = this.validateRegistrationForm.value.verifyPassword;
-
-      if(password !== verifyPassword){
-        this.validateRegistrationForm.get("verifyPassword")?.setErrors({"customError": "Passwords do not match!"});
-        return;
-      }
-
-      this.api.register(this.validateRegistrationForm.value).subscribe((res) => {
-        this.xml2js.parseString(res, (err: any, result: any) => {
-          if (
-            result.LSResponse.Response[0] ===
-            'SUCCESS;Thanks for registering! We’ve sent you a link to verify your email. Please check your email'
-          ) {
-          } else {
-            this.register_error = true;
-          }
-        });
-      });
-    } else {
-      Object.values(this.validateRegistrationForm.controls).forEach((control) => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
-    }
-  }
-
   submitLoginForm(): void {
     this.loggedInSuccessfully = false;
     this.login_errorMessage = "";
 
     if (this.validateLoginForm.valid) {
       const form = this.validateLoginForm.value;
-      this.userService.login(form).subscribe((successful:boolean) => {
+      this.userService.login(form).subscribe((successful:any) => {
+        debugger;
         if(successful){
           this.isLoggedIn = true;
-          this.isVisibleLogin = false;
+          this.login_isVisible = false;
         } else {
           this.login_errorMessage = 'Please try again or click "Forgot password"';
         }
@@ -578,29 +696,29 @@ export class HeaderComponent implements OnInit {
   }
 
   showModalRegister(): void {
-    this.isVisibleRegister = true;
-    this.isVisibleLogin = false;
+    this.register_isVisible = true;
+    this.login_isVisible = false;
     this.isVisibleResetPassword = false;
     this.isVisibleAccount = false;
   }
 
   showModalLogin(): void {
-    this.isVisibleRegister = false;
-    this.isVisibleLogin = true;
+    this.register_isVisible = false;
+    this.login_isVisible = true;
     this.isVisibleResetPassword = false;
     this.isVisibleAccount = false;
   }
 
   showModalResetPassword(): void {
-    this.isVisibleRegister = false;
-    this.isVisibleLogin = false;
+    this.register_isVisible = false;
+    this.login_isVisible = false;
     this.isVisibleResetPassword = true;
     this.isVisibleAccount = false;
   }
 
   showModalAccount(): void {
-    this.isVisibleRegister = false;
-    this.isVisibleLogin = false;
+    this.register_isVisible = false;
+    this.login_isVisible = false;
     this.isVisibleResetPassword = false;
     this.api.getMyCompany(this.userService.getUserId()).subscribe((res:any) => {
       this.xml2js.parseString(res, (err: any, result: any) => {
@@ -620,7 +738,7 @@ export class HeaderComponent implements OnInit {
   handleCancelContactUs(): void {
     console.log('Button cancel clicked!');
     this.isVisibleContactUs = false;
-    this.registeredSuccessfully = false;
+    this.register_success = false;
     this.registrationError = false;
     this.validateForm.reset();
   }
@@ -656,12 +774,8 @@ export class HeaderComponent implements OnInit {
     //   document.body.appendChild(script2);
   }
 
-  handleCancelRegisterDialog(): void {
-    this.isVisibleRegister = false;
-  }
-
   handleCancelLoginDialog(): void {
-    this.isVisibleLogin = false;
+    this.login_isVisible = false;
   }
 
   handleCancelResetPasswordDialog(): void {
@@ -685,7 +799,7 @@ export class HeaderComponent implements OnInit {
   }
 
   hasErrors(control:string){
-    const formControl = this.validateRegistrationForm.get(control);
+    const formControl = this.register_formGroup.get(control);
     if(!formControl?.dirty)
       return false;
     const kvp = formControl?.errors;
@@ -693,7 +807,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getErrorMessage(control:string){
-    const e = this.validateRegistrationForm.get(control)?.errors;
+    const e = this.register_formGroup.get(control)?.errors;
     if(e && Object.keys(e).length > 0){
       const firstKey = Object.keys(e)[0];
       // @ts-ignore
