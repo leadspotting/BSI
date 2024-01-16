@@ -1,18 +1,9 @@
-import { ReadyListDownload } from './../../../shared/Models/ReadyListDownload-Model';
-import { BackEndService } from 'src/app/shared/services/back-end-service';
-import {
-  Component,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef,
-  EventEmitter,
-} from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { first } from 'rxjs';
-import { FinalList } from 'src/app/shared/Models/FinalList-Model';
+import {BackEndService} from 'src/app/shared/services/back-end-service';
+import {Component, EventEmitter, Input, OnInit, Output,} from '@angular/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
+import {UserServiceService} from "../../../shared/services/user.service.service";
 
 @Component({
   selector: 'company-modal-edit',
@@ -24,72 +15,54 @@ export class CompanyModalEditComponent implements OnInit {
     private modal: NzModalService,
     private notification: NzNotificationService,
     private fb: UntypedFormBuilder,
-    private api: BackEndService
+    private api: BackEndService,
+    private userService: UserServiceService
   ) {}
+
+  private _isVisible:boolean = false;
+  get isVisible(): boolean {
+    return this._isVisible;
+  }
+  @Input() set isVisible(value: boolean){
+    this._isVisible = value;
+    if(this._isVisible){
+      this.validateForm = this.fb.group({
+        description: [this.company.description, [Validators.required]],
+        benefits: [this.company.benefits, [Validators.required]],
+        benefitsImageUrl: [this.company.benefitsImage, [Validators.required]],
+        logoUrl: [this.company.logo, [Validators.required]],
+        url: [this.company.url, [Validators.required]],
+      });
+    }
+  }
   @Input() company: any;
-  showSpinnerSample = false;
-  showSpinner = false;
+
+  @Output() onCancel: EventEmitter<void> = new EventEmitter<void>();
+
   xml2js = require('xml2js');
-  firstTime:boolean = false;
 
   email = false;
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      firstName: [null, [Validators.required]],
-      lastName: [null, [Validators.required]],
-      email: [null, [Validators.email, Validators.required]],
-      phoneNumber: ['', []],
-      message: [null, [Validators.required]],
-    });
-
   }
 
   validateForm!: UntypedFormGroup;
-  isVisiblePaymentSuccess = false;
 
-  isVisible = false;
-  showModal(): void {
-    this.isVisible = true;
-    this.showSpinner = true;
-
-    // this.isVisible ? this.paypal() : true;
-  }
-
-  isVisibleSample = false;
-
-  handleCancel(): void {
-    this.isVisible = false;
-    this.isVisibleSample = false;
-    this.isVisiblePaymentSuccess = false;
-  }
-
-  openCompanyDetails($event: any){
-    this.firstTime = !this.firstTime;
-  }
   submitForm(): void {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
-      let fromname =
-        this.validateForm.value.firstName +
-        ' ' +
-        this.validateForm.value.lastName;
-      let email = this.validateForm.value.email;
-      let phone = this.validateForm.value.phoneNumber;
-      let message = this.validateForm.value.message;
-      let body = `<h4>ReadyLists Contact US</h4><span>name:</span><span>${fromname}</span><br><span>email:</span><span>${email}</span><br><span>phone:</span><span>${phone}</span><br><span>message:</span><span>${message}</span><br>`;
-      this.api
-        .postEmail(
-          fromname,
-          'customersuccess@leadspotting.com',
-          'ReadyLists Contact US',
-          body
-        )
-        .subscribe((res) => {
-          console.log(res);
-          if (res.includes('Email sent')) {
 
+      const description = this.validateForm.value.description;
+      const benefits = this.validateForm.value.benefits;
+      const benefitsImageUrl = this.validateForm.value.benefitsImageUrl;
+      const logoUrl = this.validateForm.value.logoUrl;
+      const url = this.validateForm.value.url;
+
+      this.api.updateUserInfo(this.userService.getUserId(), description, benefits, benefitsImageUrl, logoUrl, url)
+        .subscribe((res) => {
+          if (res.includes('Email sent')) {
+            this.isVisible = false;
           } else {
-            
+
           }
         });
     } else {

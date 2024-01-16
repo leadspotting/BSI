@@ -389,7 +389,6 @@ export class ListContainerComponent implements OnInit {
   */
 
   onOptionClicked(e: string) {
-    debugger;
     if (e != '') {
       let list: CompanyListModel[];
       list = this.finalList.filter((company) => {

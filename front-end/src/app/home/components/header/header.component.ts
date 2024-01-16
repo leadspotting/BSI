@@ -1,11 +1,14 @@
 import { BackEndService } from 'src/app/shared/services/back-end-service';
 import { FinalListt } from './../../../shared/Models/FinalList-Model';
+
 import {
   Component,
   OnInit,
   Input,
   ViewChild,
   TemplateRef,
+  EventEmitter,
+  Output
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
@@ -311,7 +314,6 @@ export class HeaderComponent implements OnInit {
     if (this.validateLoginForm.valid) {
       const form = this.validateLoginForm.value;
       this.userService.login(form).subscribe((successful:any) => {
-        debugger;
         if(successful){
           this.isLoggedIn = true;
           this.login_isVisible = false;
@@ -723,9 +725,9 @@ export class HeaderComponent implements OnInit {
     this.api.getMyCompany(this.userService.getUserId()).subscribe((res:any) => {
       this.xml2js.parseString(res, (err: any, result: any) => {
         this.company = result.LSResponse.BsiCompany[0];
+        this.isVisibleAccount = true;
       })
     });
-    this.isVisibleAccount = true;
   }
 
   isConfirmLoading = false;

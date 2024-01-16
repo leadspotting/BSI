@@ -46,6 +46,15 @@ export class BackEndService {
     );
   }
 
+  getCompaniesList() {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSICompaniesList`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
   getCrmConfig() {
     return this.http.get(
       environment.BASE_URL2 + 'Command=CRMConfigs&ClientId=1468',
@@ -54,6 +63,41 @@ export class BackEndService {
       }
     );
   }
+
+  getIndustryPhrases() {
+    return this.http.get(`${environment.BASE_URL2}Command=IndustryPhrases`, {
+      responseType: 'text',
+    });
+  }
+
+  getReadyFullList2(countryId: string, industryId: string, limit: string) {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=ReadyListCompanySearch&Country=${countryId}&Industry=${industryId}&Limit=${limit}
+`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+  getMyCompany(clientId:string) {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSICompaniesList&ClientID=${clientId}`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+  updateUserInfo(clientId:string, description:string, benefits:string, benefitsimage:string, logo:string, url:string) {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSIUpdateUserInfo&ClientID=${clientId}&description=${description}`
+           + `&benefits=${benefits}&benefitsimage=${benefitsimage}&logo=${logo}&url=${url}`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   getReadyLists() {
     return this.http.get(`${environment.BASE_URL2}Command=readyLists`, {
@@ -70,15 +114,6 @@ export class BackEndService {
     );
   }
 
-  getCompaniesList() {
-    return this.http.get(
-      `${environment.BASE_URL2}Command=BSICompaniesList`,
-      {
-        responseType: 'text',
-      }
-    );
-  }
-
   getBenefitsList() {
     return this.http.get(
       `${environment.BASE_URL2}Command=BSIBenefitsList`,
@@ -86,12 +121,6 @@ export class BackEndService {
         responseType: 'text',
       }
     );
-  }
-
-  getIndustryPhrases() {
-    return this.http.get(`${environment.BASE_URL2}Command=IndustryPhrases`, {
-      responseType: 'text',
-    });
   }
 
   getFiveSamplesList() {
@@ -103,16 +132,6 @@ export class BackEndService {
   getReadyFullList(Amount: number) {
     return this.http.get(
       `${environment.BASE_URL2}Command=GetContactsByAmount&Amount=${Amount}`,
-      {
-        responseType: 'text',
-      }
-    );
-  }
-
-  getReadyFullList2(countryId: string, industryId: string, limit: string) {
-    return this.http.get(
-      `${environment.BASE_URL2}Command=ReadyListCompanySearch&Country=${countryId}&Industry=${industryId}&Limit=${limit}
-`,
       {
         responseType: 'text',
       }
@@ -202,12 +221,4 @@ export class BackEndService {
   //     responseType: 'text',
   //   });
   // }
-  getMyCompany(clientId:string) {
-    return this.http.get(
-      `${environment.BASE_URL2}Command=BSICompaniesList&ClientID=${clientId}`,
-      {
-        responseType: 'text',
-      }
-    );
-  }
 }

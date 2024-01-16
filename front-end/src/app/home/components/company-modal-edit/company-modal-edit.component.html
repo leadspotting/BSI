@@ -1,121 +1,143 @@
-<nz-card
-  nzHoverable
-  class="card"
-  style="max-height: max-content; width: 320px"
-  [nzCover]="coverTemplate"
-  [nzActions]="[]"
-  (click)="openCompanyDetails($event)"
+<nz-modal
+  nzTitle="Account"
+  nzClosable="true"
+  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="onCancel.emit()"
+  [nzFooter]="editCompanyFooter"
 >
-  <div>
-    <div class="row mt-2">
-
-      <form nz-form
-            [formGroup]="validateForm"
-            (ngSubmit)="submitForm()">
-        <nz-card-meta nzTitle="{{ company.name }}"></nz-card-meta>
-        <br/>
-        <nz-form-item>
-          <nz-form-label [nzSm]="24"
-                         [nzXs]="24"
-                         nzFor="description"
-                         nzRequired
-          >Description</nz-form-label>
-          <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
-            nzErrorTip="Please input company description!"
-          >
+  <ng-container *nzModalContent>
+    <nz-card
+      nzHoverable
+      class="card"
+      style="max-height: max-content; max-width: unset"
+      [nzCover]="coverTemplate"
+      [nzActions]="[]">
+      <div class="row mt-2">
+        <form nz-form
+              id="formCompanyModalEdit"
+              [formGroup]="validateForm"
+              (ngSubmit)="submitForm()">
+          <nz-card-meta nzTitle="{{ company.name }}"></nz-card-meta>
+          <br/>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24"
+                           [nzXs]="24"
+                           nzFor="description"
+                           nzRequired
+            >Description
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please input company description!"
+            >
             <textarea
               nz-input
-              id="message"
-              formControlName="message"
-              placeholder="message"
+              id="description"
+              formControlName="description"
+              placeholder="Company description"
               [nzAutosize]="{ minRows: 2, maxRows: 6 }"
             ></textarea>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-            <span>Benefits</span>
-          </nz-form-label>
-          <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
-            nzErrorTip="Please enter company benefits!"
-          >
-            <input
-              nz-input
-              id="benefits"
-              formControlName="benefits"
-              placeholder="benefits"
-            />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-            <span>Benefits image URL</span>
-          </nz-form-label>
-          <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
-            nzErrorTip="Please enter company benefits image URL!"
-          >
-            <input
-              nz-input
-              id="benefitsImageUrl"
-              formControlName="benefitsImageUrl"
-              placeholder="benefits image Url"
-            />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-            <span>Logo URL</span>
-          </nz-form-label>
-          <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
-            nzErrorTip="Please input company logo URL!"
-          >
-            <input
-              nz-input
-              id="logoUrl"
-              formControlName="logoUrl"
-              placeholder="logo Url"
-            />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="industryId"
-          >URL</nz-form-label>
-          <nz-form-control
-            [nzSm]="24"
-            [nzXs]="24"
-            nzErrorTip="Please enter company URL!"
-          >
-            <input
-              nz-input
-              id="url"
-              formControlName="url"
-              placeholder="url"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </form>
-    </div>
-  </div>
-</nz-card>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+              <span>Benefits</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company benefits!"
+            >
+              <input
+                nz-input
+                id="benefits"
+                formControlName="benefits"
+                placeholder="benefits"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+              <span>Benefits image URL</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company benefits image URL!"
+            >
+              <input
+                nz-input
+                id="benefitsImageUrl"
+                formControlName="benefitsImageUrl"
+                placeholder="benefits image Url"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+              <span>Logo URL</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please input company logo URL!"
+            >
+              <input
+                nz-input
+                id="logoUrl"
+                formControlName="logoUrl"
+                placeholder="logo Url"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="industryId"
+            >URL
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company URL!"
+            >
+              <input
+                nz-input
+                id="url"
+                formControlName="url"
+                placeholder="url"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </div>
+    </nz-card>
 
-<ng-template #coverTemplate>
-  <div class="img-div">
-    <img
-      alt="example"
-      onerror="this.onerror=null;this.src='/assets/small-logo.png'"
-      [src]="
+    <ng-template #coverTemplate>
+      <div class="img-div">
+        <img
+          alt="example"
+          onerror="this.onerror=null;this.src='/assets/small-logo.png'"
+          [src]="
         company!.url
           ? company!.url
           : '/assets/small-logo.png'
       "
-    />
-  </div>
-</ng-template>
+        />
+      </div>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #editCompanyFooter>
+    <button
+      nz-button
+      nzType="primary"
+      (click)="submitForm()"
+    >Save</button>
+    <button
+      nz-button
+      nzType="default"
+      (click)="onCancel.emit()"
+    >Close</button>
+  </ng-template>
+</nz-modal>

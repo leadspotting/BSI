@@ -199,8 +199,8 @@
     </div>
   </ng-container>
 </nz-modal>
-<!-- (nzOnCancel)="handleCancelContactUs()" -->
 
+<!-- Contact us -->
 <nz-modal
   [(nzVisible)]="isVisibleContactUs"
   nzTitle="Contact us"
@@ -260,7 +260,6 @@
           />
         </nz-form-control>
       </nz-form-item>
-
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email"
           >E-mail</nz-form-label
@@ -295,25 +294,6 @@
           />
         </nz-form-control>
       </nz-form-item>
-      <!-- <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="phoneNumber"
-          >Phone number</nz-form-label
-        >
-        <nz-form-control
-          [nzSm]="14"
-          [nzXs]="24"
-          nzErrorTip="Please input your phone number!"
-        >
-          <nz-input-group>
-            <input
-              formControlName="phoneNumber"
-              id="phoneNumber"
-              placeholder="phone number"
-              nz-input
-            />
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item> -->
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="message" nzRequired
           >Message</nz-form-label
@@ -338,12 +318,6 @@
           ></textarea>
         </nz-form-control>
       </nz-form-item>
-
-      <!-- <nz-form-item nz-row class="register-area">
-        <nz-form-control [nzSpan]="14" [nzOffset]="6">
-          <button nz-button nzType="primary">Submit</button>
-        </nz-form-control>
-      </nz-form-item> -->
     </form>
     <div *ngIf="register_success == true">
       <h5>Congratulations!</h5>
@@ -661,7 +635,6 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
   </ng-template>
 </nz-modal>
 
-
 <!-- Login -->
 <nz-modal
   [(nzVisible)]="login_isVisible"
@@ -739,7 +712,6 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
   </ng-template>
 </nz-modal>
 
-
 <!-- Reset password -->
 <nz-modal
   [(nzVisible)]="isVisibleResetPassword"
@@ -790,26 +762,8 @@ Choose a day and save time by scheduling your appointment. Fill in your details,
 </nz-modal>
 
 <!-- Account -->
-<nz-modal
-  [(nzVisible)]="isVisibleAccount"
-  nzTitle="Account"
-  nzClosable="true"
-  [nzFooter]="accountModalFooter"
-  (nzOnCancel)="handleCancelAccountDialog()"
-  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
->
-  <ng-container *nzModalContent>
-    <div class="center">
-      <company-modal-edit [company]="company"
-      ></company-modal-edit>
-    </div>
-  </ng-container>
-  <ng-template #accountModalFooter>
-    <button
-      style="width: 100%"
-      nz-button
-      nzType="primary"
-    >Close
-    </button>
-  </ng-template>
-</nz-modal>
+<company-modal-edit
+  [company]="company"
+  [isVisible]="isVisibleAccount"
+  (onCancel)="handleCancelAccountDialog()"
+  ></company-modal-edit>
