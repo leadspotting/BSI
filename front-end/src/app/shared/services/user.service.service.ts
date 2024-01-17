@@ -60,7 +60,7 @@ export class UserServiceService {
         environment.BASE_URL
       }Command=Register2&AppId=20&Portal=iei&Name=${name}&Email=${email}&Pwd=${md5(
         password
-      )}&Source=100`,
+      )}&Source=2`,
       {
         responseType: 'text',
       }
