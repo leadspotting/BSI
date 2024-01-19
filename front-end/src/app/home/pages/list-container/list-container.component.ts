@@ -105,8 +105,7 @@ export class ListContainerComponent implements OnInit {
 
   async getReadyLists(postId: string | null = null) {
     let final: any;
-    this.api.getCompaniesList().subscribe((res) => {
-      // console.log(res);
+    this.api.getCompaniesList(this.userService.getUserId()).subscribe((res) => {
 
       this.xml2js.parseString(res, (err: any, result: any) => {
         if (err) {

@@ -4,6 +4,9 @@ import {NzModalService} from 'ng-zorro-antd/modal';
 import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {UserServiceService} from "../../../shared/services/user.service.service";
+import {Industry} from "../../../shared/Models/Industry-Model";
+import {Country} from "../../../shared/Models/Country-Model";
+import {Region} from "../../../shared/Models/Region-Model";
 
 @Component({
   selector: 'company-modal-edit',
@@ -28,11 +31,16 @@ export class CompanyModalEditComponent implements OnInit {
     if(this._isVisible){
       this.validateForm = this.fb.group({
         description: [this.company.description, [Validators.required]],
+        industryId: [this.company.industryId, [Validators.required]],
+        countryId: [this.company.countryId, [Validators.required]],
         benefits: [this.company.benefits, [Validators.required]],
         benefitsImageUrl: [this.company.benefitsImage, [Validators.required]],
-        logoUrl: [this.company.logo, [Validators.required]],
-        url: [this.company.url, [Validators.required]],
+        lookingFor: [this.company.lookingFor, [Validators.required]],
+        youtubeUrl: [this.company.youtubeUrl, [Validators.required]]
       });
+      debugger;
+      this.selectedIndustryId = this.company.industryId[0];
+      this.selectedCountryId = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.value;
     }
   }
   @Input() company: any;
@@ -42,7 +50,13 @@ export class CompanyModalEditComponent implements OnInit {
   xml2js = require('xml2js');
 
   email = false;
+  listOfIndustryOption: Array<{ value: string; label: string }> = [];
+  listOfLocationOption: Array<{ value: string; label: string }> = [];
+
+  selectedIndustryId:string = "";
+  selectedCountryId:string = "";
   ngOnInit(): void {
+    this.getCRMConfig();
   }
 
   validateForm!: UntypedFormGroup;
@@ -52,12 +66,16 @@ export class CompanyModalEditComponent implements OnInit {
       console.log('submit', this.validateForm.value);
 
       const description = this.validateForm.value.description;
+      const industryId = this.validateForm.value.industryId;
+      debugger;
+      const countryId = this.validateForm.value.countryId?.split(",")?.[0];
       const benefits = this.validateForm.value.benefits;
       const benefitsImageUrl = this.validateForm.value.benefitsImageUrl;
-      const logoUrl = this.validateForm.value.logoUrl;
-      const url = this.validateForm.value.url;
+      const lookingFor = this.validateForm.value.lookingFor;
+      const youtubeUrl = this.validateForm.value.youtubeUrl;
 
-      this.api.updateUserInfo(this.userService.getUserId(), description, benefits, benefitsImageUrl, logoUrl, url)
+      this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
+        benefitsImageUrl, lookingFor, youtubeUrl)
         .subscribe((res) => {
           if (res.includes('Email sent')) {
             this.isVisible = false;
@@ -73,5 +91,61 @@ export class CompanyModalEditComponent implements OnInit {
         }
       });
     }
+  }
+
+  async getCRMConfig() {
+    return this.api.getCrmConfig().subscribe((res) => {
+      // console.log(res);
+
+      this.xml2js.parseString(res, (err: any, result: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        let crmConfig = result.LSResponse.CRMConfigs[0];
+        this.getLocations(crmConfig);
+        this.getIndustries(crmConfig);
+        // this.getIndustryPhrases();
+      });
+    });
+  }
+
+  getIndustries(model: any) {
+    let industries: Industry[] = model.industries[0].industries;
+    let newArr = industries.map(({ id: [id], name: [name] }) => ({
+      value: id,
+      label: name,
+    }));
+
+    this.listOfIndustryOption = newArr.sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+  }
+  getLocations(model: any) {
+    let countries: Country[] = model.countries[0].countries;
+    let regions: Region[] = model.regions[0].regions;
+
+    let newArr = countries.map(
+      ({ id: [id], name: [name], regionId: [regionId] }) => {
+        let region = regions.find(({ id: [id] }) => id === regionId);
+        if (region === undefined) return { id, name };
+        return Object.assign(
+          {},
+          { id: `${id},${regionId}`, name: `${name}, ${region.name[0]}` }
+        );
+      }
+    );
+
+    let finalLocationsArr = newArr.map(({ id, name }) =>
+      Object.assign({}, { value: id, label: name })
+    );
+    this.listOfLocationOption = finalLocationsArr.sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
   }
 }

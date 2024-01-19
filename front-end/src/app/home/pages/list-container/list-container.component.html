@@ -257,9 +257,12 @@
     nzMd="12"
     nzLg="8"
     nzXl="10" -->
-    <nz-empty class="mt-2" *ngIf="empty == true"></nz-empty>
+    <nz-empty class="mt-2" *ngIf="empty == true">
+    </nz-empty>
+<!--      Your account will be approved soon and you will be able to contact other parties-->
 
-    <div class="col center" *ngFor="let list of filteredList">
+    <div class="col center"
+         *ngFor="let list of filteredList">
       <app-list-card
         [list]="list"
         [firstTime]="firstTime"
@@ -268,6 +271,9 @@
         (click)="showCompanyDetails($event, list)"
       ></app-list-card>
       <!-- (firstTimeEvent)="changeFirstTime($event)" -->
+    </div>
+    <div class="col center" *ngIf="!filteredList || filteredList?.length == 0">
+      <h3>Your account will be approved soon and you will be able to contact other parties</h3>
     </div>
   </div>
   <div
@@ -301,18 +307,6 @@
       [nzPageSizeOptions]="[9, 18, 36, 72]"
       [nzSize]="'small'"
     ></nz-pagination>
-    <!-- <nz-pagination
-      [(nzPageIndex)]="currentPage"
-      [nzTotal]="totalLists"
-      nzShowQuickJumper
-      (nzPageIndexChange)="onPageIndexChange($event)"
-      (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzResponsive]="true"
-      [nzPageSize]="currentPageSize"
-      nzShowSizeChanger
-      [nzPageSizeOptions]="[10, 20, 30, 50]"
-      [nzSize]="'small'"
-    ></nz-pagination> -->
   </div>
 
   <nz-modal

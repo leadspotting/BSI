@@ -45,7 +45,7 @@
       </button>
     </nz-badge>
 
-    <span *ngIf="isLoggedIn" nz-dropdown [nzDropdownMenu]="userMenu" class="btn">Welcome</span>
+    <span *ngIf="isLoggedIn" nz-dropdown [nzDropdownMenu]="userMenu" class="btn">Welcome {{username}}</span>
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <ul nz-menu>
         <li nz-menu-item class="li-type" (click)="showModalAccount()">

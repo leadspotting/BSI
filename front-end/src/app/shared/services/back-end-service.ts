@@ -46,9 +46,9 @@ export class BackEndService {
     );
   }
 
-  getCompaniesList() {
+  getCompaniesList(userId: string) {
     return this.http.get(
-      `${environment.BASE_URL2}Command=BSICompaniesList`,
+      `${environment.BASE_URL2}Command=BSICompaniesList&UserId=${userId}`,
       {
         responseType: 'text',
       }
@@ -81,16 +81,30 @@ export class BackEndService {
   }
   getMyCompany(clientId:string) {
     return this.http.get(
-      `${environment.BASE_URL2}Command=BSICompaniesList&ClientID=${clientId}`,
+      `${environment.BASE_URL2}Command=BSICompaniesList&ClientId=${clientId}`,
       {
         responseType: 'text',
       }
     );
   }
-  updateUserInfo(clientId:string, description:string, benefits:string, benefitsimage:string, logo:string, url:string) {
+
+  updateUserInfo(clientId: string, description: string, industryId: string, countryId: string, benefits: string,
+                 benefitsImageUrl: string, lookingFor: string, youtubeUrl: string, logo: string = "", name: string = "",
+                 domain: string = "", visible: boolean = true) {
     return this.http.get(
-      `${environment.BASE_URL2}Command=BSIUpdateUserInfo&ClientID=${clientId}&description=${description}`
-           + `&benefits=${benefits}&benefitsimage=${benefitsimage}&logo=${logo}&url=${url}`,
+      `${environment.BASE_URL2}Command=BSIUpdateUserInfo`
+            + `&ClientId=${clientId}`
+            + `&Description=${description}`
+            + `&IndustryId=${industryId}`
+            + `&CountryId=${countryId}`
+            + `&Benefits=${benefits}`
+            + `&BenefitsImage=${benefitsImageUrl}`
+            + `&LookingFor=${lookingFor}`
+            + `&YoutubeUrl=${youtubeUrl}`
+            + `&Logo=${logo}`
+            + `&Name=${name}`
+            + `&Domain=${domain}`
+            + `&Visible=${visible ? "1" : "0"}`,
       {
         responseType: 'text',
       }

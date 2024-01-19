@@ -231,6 +231,7 @@ export class HeaderComponent implements OnInit {
   validateForm!: UntypedFormGroup;
   xml2js = require('xml2js');
   isLoggedIn = false;
+  username: string = "";
 
 
 
@@ -267,6 +268,7 @@ export class HeaderComponent implements OnInit {
     });
 
     this.isLoggedIn = this.userService.isUserLoggedIn();
+    this.username = this.userService.getUserData()?.Username || "";
   }
   submitForm(): void {
     this.register_success = false;
@@ -317,6 +319,7 @@ export class HeaderComponent implements OnInit {
         if(successful){
           this.isLoggedIn = true;
           this.login_isVisible = false;
+          this.username = successful.Username;
         } else {
           this.login_errorMessage = 'Please try again or click "Forgot password"';
         }
@@ -724,7 +727,8 @@ export class HeaderComponent implements OnInit {
     this.isVisibleResetPassword = false;
     this.api.getMyCompany(this.userService.getUserId()).subscribe((res:any) => {
       this.xml2js.parseString(res, (err: any, result: any) => {
-        this.company = result.LSResponse.BsiCompany[0];
+        if(result?.LSResponse?.BsiCompany?.length > 0)
+          this.company = result.LSResponse.BsiCompany[0];
         this.isVisibleAccount = true;
       })
     });
@@ -820,5 +824,6 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.userService.logOut();
     this.isLoggedIn = false;
+    this.username = "";
   }
 }

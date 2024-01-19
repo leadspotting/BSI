@@ -1,10 +1,9 @@
 <nz-modal
   nzTitle="Account"
   nzClosable="true"
-  [nzStyle]="{'top': '0', 'transform': 'translateY(7%)'}"
   [(nzVisible)]="isVisible"
   (nzOnCancel)="onCancel.emit()"
-  [nzFooter]="editCompanyFooter"
+  [nzFooter]="company != null ? editCompanyFooter : ''"
 >
   <ng-container *nzModalContent>
     <nz-card
@@ -12,7 +11,7 @@
       class="card"
       style="max-height: max-content; max-width: unset"
       [nzCover]="coverTemplate"
-      [nzActions]="[]">
+      *ngIf="company != null">
       <div class="row mt-2">
         <form nz-form
               id="formCompanyModalEdit"
@@ -39,6 +38,53 @@
               placeholder="Company description"
               [nzAutosize]="{ minRows: 2, maxRows: 6 }"
             ></textarea>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24"
+                           [nzXs]="24"
+                           nzFor="industryId"
+                           nzRequired
+            >Industry</nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please input industry!"
+            >
+              <nz-select
+                nzShowSearch
+                nzSize="large"
+                id="selectIndustryId"
+                nzPlaceHolder="Select an industry"
+                formControlName="industryId"
+                [(ngModel)]="selectedIndustryId"
+              >
+                <nz-option *ngFor="let p of listOfIndustryOption" [nzValue]="p.value" [nzLabel]="p.label"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24"
+                           [nzXs]="24"
+                           nzFor="countryId"
+                           nzRequired
+            >Country</nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please input country!"
+            >
+              <nz-select
+                nzShowSearch
+                nzSize="large"
+                nz-dropdown
+                nzMode="default"
+                nzPlaceHolder="Select a location"
+                formControlName="countryId"
+                [(ngModel)]="selectedCountryId"
+                [nzOptions]="listOfLocationOption"
+              >
+              </nz-select>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
@@ -77,41 +123,44 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-              <span>Logo URL</span>
+              <span>Looking for</span>
             </nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please input company logo URL!"
+              nzErrorTip="Please input what your company is looking for"
             >
               <input
                 nz-input
-                id="logoUrl"
-                formControlName="logoUrl"
-                placeholder="logo Url"
+                id="lookingFor"
+                formControlName="lookingFor"
+                placeholder="Looking for"
               />
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="industryId"
-            >URL
-            </nz-form-label>
+            >youtube url</nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please enter company URL!"
+              nzErrorTip="Please enter youtube URL!"
             >
               <input
                 nz-input
-                id="url"
-                formControlName="url"
-                placeholder="url"
+                id="youtubeUrl"
+                formControlName="youtubeUrl"
+                placeholder="Youtube Url"
               />
             </nz-form-control>
           </nz-form-item>
         </form>
       </div>
     </nz-card>
+
+    <div *ngIf="company == null">
+      <span>Your account will be approved soon and you will be able to see it.</span>
+    </div>
 
     <ng-template #coverTemplate>
       <div class="img-div">

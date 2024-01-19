@@ -98,7 +98,7 @@ export class UserServiceService {
   }
 
   getUserId() {
-    return this.getUserData().Login[0];
+    return this.getUserData()?.Login?.[0];
   }
 
   forgotPasswordRequest(email: string) {
