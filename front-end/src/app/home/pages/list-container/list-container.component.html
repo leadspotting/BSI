@@ -291,9 +291,9 @@
     </div>
   </div>
   <div
-    style="display: flex !important; justify-content: center !important"
+    style="display: flex !important; justify-content: center !important; border: 1px solid black; padding: 2px"
     class="mt-4"
-    *ngIf="filteredList.length > 0"
+    *ngIf="(filteredList || []).length > 0"
   >
     <nz-pagination
       [(nzPageIndex)]="currentPage"
@@ -311,7 +311,7 @@
 
   <nz-modal
     [(nzVisible)]="isVisibleCompanyDetailsModal"
-    nzTitle="Company details"
+    nzTitle="{{selectedCompany?.name}}"
     nzClosable="true"
     [nzFooter]="companyDetailsModalFooter"
     (nzOnCancel)="handleCancelCompanyDetailsModal()"
@@ -319,11 +319,11 @@
   >
     <ng-container *nzModalContent>
       <!-- <div style="width: 100%; display: flex; justify-content: center;"> -->
-      <div class="center">
+<!--      <div class="center">-->
         <company-modal [company]="selectedCompany"
                        (click)="preventUnauthorized($event)"
         ></company-modal>
-      </div>
+<!--      </div>-->
     </ng-container>
     <ng-template #companyDetailsModalFooter>
       <button

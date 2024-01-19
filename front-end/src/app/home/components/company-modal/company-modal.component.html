@@ -1,13 +1,12 @@
 <nz-card
   nzHoverable
   class="card"
-  style="max-height: max-content; width: 320px"
+  style="max-height: max-content; max-width: unset"
   [nzCover]="coverTemplate"
   [nzActions]="[actionMakeIntroduction]"
   (click)="openCompanyDetails($event)"
 >
   <nz-card-meta
-    nzTitle="{{ company.name }}"
     nzDescription="{{ company.description }}"
   ></nz-card-meta>
 
@@ -31,7 +30,7 @@
         <nz-statistic
           id="Down{{ company.id }}"
           class="statistics downloadsTitle"
-          [nzValue]="company.industryId"
+          [nzValue]="industryName"
         >
         </nz-statistic>
       </div>
@@ -53,7 +52,7 @@
         <nz-statistic
           id="Down{{ company.id }}"
           class="statistics downloadsTitle"
-          [nzValue]="company.countryId"
+          [nzValue]="countryName"
         >
         </nz-statistic>
       </div>
@@ -104,8 +103,30 @@
           [nzValue]="company.benefits"
         >
         </nz-statistic>
-          <img style="width: 100%;" [src]="company?.benefitsImage ? company?.benefitsImage : '/assets/small-logo.png'"/>
-      </div>
+
+          <div
+            [style.background-image]="'url(' + (company?.benefitsImage ? company?.benefitsImage : '/assets/small-logo.png') + ')'"
+            style="width: 422px;height: 422px;background-size: contain;background-repeat: no-repeat;"
+          >&nbsp;
+          </div>
+
+<!--        <div class="img-div">-->
+<!--&lt;!&ndash;          <img style="width: 95%; padding: 15px" [src]="company?.benefitsImage ? company?.benefitsImage : '/assets/small-logo.png'"/>&ndash;&gt;-->
+<!--          <img-->
+<!--            alt="example"-->
+<!--            onerror="this.onerror=null;this.src='/assets/small-logo.png'"-->
+<!--            class="fixed"-->
+<!--            [src]="company?.benefitsImage ? company?.benefitsImage : '/assets/small-logo.png'"/>-->
+<!--        </div>-->
+<!--          <div class="ant-card-cover">-->
+<!--            <div class="img-div">-->
+<!--              <img alt="example"-->
+<!--                   onerror="this.onerror=null;this.src='/assets/small-logo.png'"-->
+<!--                   [src]="company?.benefitsImage ? company?.benefitsImage : '/assets/small-logo.png'"-->
+<!--                   style="width: 100%;"/>-->
+<!--            </div>-->
+<!--          </div>-->
+        </div>
     </div>
   </div>
 </nz-card>

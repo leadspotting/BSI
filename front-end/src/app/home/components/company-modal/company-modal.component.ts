@@ -12,6 +12,10 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { first } from 'rxjs';
 import { FinalList } from 'src/app/shared/Models/FinalList-Model';
+import {Country} from "../../../shared/Models/Country-Model";
+import {Region} from "../../../shared/Models/Region-Model";
+import {Industry} from "../../../shared/Models/Industry-Model";
+import {Validators} from "@angular/forms";
 
 @Component({
   selector: 'company-modal',
@@ -24,14 +28,34 @@ export class CompanyModalComponent implements OnInit {
     private notification: NzNotificationService,
     private api: BackEndService
   ) {}
-  @Input() company: any;
+
+  // @Input() company: any;
+  private _company:any;
+  get company(): any {
+    return this._company;
+  }
+  @Input() set company(value: any){
+    this._company = value;
+    if(value){
+      debugger;
+      this.industryName = this.listOfIndustryOption.filter(x => x.value == this.company.industryId[0])?.[0]?.label;
+      this.countryName = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.label;
+    }
+  }
   showSpinnerSample = false;
   showSpinner = false;
   xml2js = require('xml2js');
   firstTime:boolean = false;
 
+  listOfIndustryOption: Array<{ value: string; label: string }> = [];
+  listOfLocationOption: Array<{ value: string; label: string }> = [];
+
+  industryName: string = "";
+  countryName: string = "";
+
   email = false;
   ngOnInit(): void {
+    this.getCRMConfig();
   }
 
   isVisiblePaymentSuccess = false;
@@ -54,5 +78,64 @@ export class CompanyModalComponent implements OnInit {
 
   openCompanyDetails($event: any){
     this.firstTime = !this.firstTime;
+  }
+
+  async getCRMConfig() {
+    return this.api.getCrmConfig().subscribe((res) => {
+      // console.log(res);
+
+      this.xml2js.parseString(res, (err: any, result: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        let crmConfig = result.LSResponse.CRMConfigs[0];
+        this.getLocations(crmConfig);
+        this.getIndustries(crmConfig);
+        // this.getIndustryPhrases();
+      });
+    });
+  }
+  getLocations(model: any) {
+    let countries: Country[] = model.countries[0].countries;
+    let regions: Region[] = model.regions[0].regions;
+
+    let newArr = countries.map(
+      ({ id: [id], name: [name], regionId: [regionId] }) => {
+        let region = regions.find(({ id: [id] }) => id === regionId);
+        if (region === undefined) return { id, name };
+        return Object.assign(
+          {},
+          { id: `${id},${regionId}`, name: `${name}, ${region.name[0]}` }
+        );
+      }
+    );
+
+    let finalLocationsArr = newArr.map(({ id, name }) =>
+      Object.assign({}, { value: id, label: name })
+    );
+    this.listOfLocationOption = finalLocationsArr.sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+    this.countryName = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.label;
+  }
+
+  getIndustries(model: any) {
+    let industries: Industry[] = model.industries[0].industries;
+    let newArr = industries.map(({ id: [id], name: [name] }) => ({
+      value: id,
+      label: name,
+    }));
+
+    this.listOfIndustryOption = newArr.sort((a, b) => {
+      if (a.label < b.label) return -1;
+      if (a.label > b.label) return 1;
+      return 0;
+    });
+
+    this.industryName = this.listOfIndustryOption.filter(x => x.value == this.company.industryId[0])?.[0]?.label;
   }
 }
