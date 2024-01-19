@@ -20,6 +20,23 @@
           <nz-card-meta nzTitle="{{ company.name }}"></nz-card-meta>
           <br/>
           <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="name" nzRequired>
+              <span>Company name</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company name!"
+            >
+              <input
+                nz-input
+                id="name"
+                formControlName="name"
+                placeholder="company name"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
             <nz-form-label [nzSm]="24"
                            [nzXs]="24"
                            nzFor="description"
@@ -152,6 +169,46 @@
                 formControlName="youtubeUrl"
                 placeholder="Youtube Url"
               />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="domain" nzRequired>
+              <span>Domain</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company domain!"
+            >
+              <input
+                nz-input
+                id="domain"
+                formControlName="domain"
+                placeholder="domain"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="companyVisible"
+            >Company visible</nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter youtube URL!"
+            >
+              <nz-switch
+                [(ngModel)]="companyVisible"
+                formControlName="companyVisible"
+                [nzCheckedChildren]="checkedTemplate"
+                [nzUnCheckedChildren]="unCheckedTemplate"
+              ></nz-switch>
+              <ng-template #checkedTemplate
+              ><span nz-icon nzType="check"></span
+              ></ng-template>
+              <ng-template #unCheckedTemplate
+              ><span nz-icon nzType="close"></span
+              ></ng-template>
+
             </nz-form-control>
           </nz-form-item>
         </form>

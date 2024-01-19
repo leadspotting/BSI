@@ -30,15 +30,17 @@ export class CompanyModalEditComponent implements OnInit {
     this._isVisible = value;
     if(this._isVisible){
       this.validateForm = this.fb.group({
+        name: [this.company.name, [Validators.required]],
         description: [this.company.description, [Validators.required]],
         industryId: [this.company.industryId, [Validators.required]],
         countryId: [this.company.countryId, [Validators.required]],
         benefits: [this.company.benefits, [Validators.required]],
         benefitsImageUrl: [this.company.benefitsImage, [Validators.required]],
         lookingFor: [this.company.lookingFor, [Validators.required]],
-        youtubeUrl: [this.company.youtubeUrl, [Validators.required]]
+        youtubeUrl: [this.company.youtubeUrl, [Validators.required]],
+        domain: [this.company.url, [Validators.required]],
+        companyVisible: [this.company.visible, [Validators.required]]
       });
-      debugger;
       this.selectedIndustryId = this.company.industryId[0];
       this.selectedCountryId = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.value;
     }
@@ -52,6 +54,7 @@ export class CompanyModalEditComponent implements OnInit {
   email = false;
   listOfIndustryOption: Array<{ value: string; label: string }> = [];
   listOfLocationOption: Array<{ value: string; label: string }> = [];
+  companyVisible:boolean = true;
 
   selectedIndustryId:string = "";
   selectedCountryId:string = "";
@@ -65,23 +68,22 @@ export class CompanyModalEditComponent implements OnInit {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
 
+      const name = this.validateForm.value.name;
       const description = this.validateForm.value.description;
       const industryId = this.validateForm.value.industryId;
-      debugger;
       const countryId = this.validateForm.value.countryId?.split(",")?.[0];
       const benefits = this.validateForm.value.benefits;
       const benefitsImageUrl = this.validateForm.value.benefitsImageUrl;
       const lookingFor = this.validateForm.value.lookingFor;
       const youtubeUrl = this.validateForm.value.youtubeUrl;
+      const domain = this.validateForm.value.domain;
+      const logo = this.validateForm.value.logo;
+      const companyVisible = this.validateForm.value.companyVisible;
 
       this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
-        benefitsImageUrl, lookingFor, youtubeUrl)
+        benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible)
         .subscribe((res) => {
-          if (res.includes('Email sent')) {
-            this.isVisible = false;
-          } else {
-
-          }
+          this.onCancel.emit();
         });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
