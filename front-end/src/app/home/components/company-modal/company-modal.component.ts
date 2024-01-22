@@ -1,4 +1,5 @@
 import { ReadyListDownload } from './../../../shared/Models/ReadyListDownload-Model';
+import { DomSanitizer } from '@angular/platform-browser';
 import { BackEndService } from 'src/app/shared/services/back-end-service';
 import {
   Component,
@@ -26,7 +27,8 @@ export class CompanyModalComponent implements OnInit {
   constructor(
     private modal: NzModalService,
     private notification: NzNotificationService,
-    private api: BackEndService
+    private api: BackEndService,
+    private  _sanitizer: DomSanitizer
   ) {}
 
   // @Input() company: any;
@@ -36,11 +38,8 @@ export class CompanyModalComponent implements OnInit {
   }
   @Input() set company(value: any){
     this._company = value;
-    if(value){
-      debugger;
-      this.industryName = this.listOfIndustryOption.filter(x => x.value == this.company.industryId[0])?.[0]?.label;
-      this.countryName = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.label;
-    }
+    debugger;
+    this.company_youtubeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(value.youtubeUrl);
   }
   showSpinnerSample = false;
   showSpinner = false;
@@ -52,10 +51,24 @@ export class CompanyModalComponent implements OnInit {
 
   industryName: string = "";
   countryName: string = "";
+  company_youtubeUrl:any;
 
   email = false;
   ngOnInit(): void {
     this.getCRMConfig();
+
+    const $this = this;
+    this.returnPhotoURL().then(function(value){
+      const imgBenefitsImage = document.getElementById("imgBenefitsImage");
+      if(imgBenefitsImage == null)
+        return;
+      if (value) {
+        imgBenefitsImage.style.backgroundImage = "url('" + value + "')";
+        imgBenefitsImage.style.height = `${$this.benefitsImageHeight}px`;
+      } else {
+        imgBenefitsImage.style.display = 'none';
+      }
+    });
   }
 
   isVisiblePaymentSuccess = false;
@@ -69,6 +82,7 @@ export class CompanyModalComponent implements OnInit {
   }
 
   isVisibleSample = false;
+  benefitsImageHeight: any;
 
   handleCancel(): void {
     this.isVisible = false;
@@ -121,6 +135,9 @@ export class CompanyModalComponent implements OnInit {
       return 0;
     });
     this.countryName = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.label;
+    if(this.countryName){
+      this.countryName = this.countryName.substring(0, this.countryName.lastIndexOf(","));
+    }
   }
 
   getIndustries(model: any) {
@@ -137,5 +154,24 @@ export class CompanyModalComponent implements OnInit {
     });
 
     this.industryName = this.listOfIndustryOption.filter(x => x.value == this.company.industryId[0])?.[0]?.label;
+  }
+
+
+  returnPhotoURL(){
+    const $this = this;
+    return new Promise(function(resolve, reject){
+      var img = new Image();
+      //if the user does not have a photoURL let's try and get one from gravatar
+      if ($this.company.benefitsImage) {
+        img.addEventListener('load', function() {
+          $this.benefitsImageHeight = (422 * img.height / img.width);
+          resolve ($this.company.benefitsImage);
+        }, false);
+        img.addEventListener('error', function() {
+          resolve (null);
+        }, false);
+        img.src = $this.company.benefitsImage;
+      }
+    });
   }
 }
