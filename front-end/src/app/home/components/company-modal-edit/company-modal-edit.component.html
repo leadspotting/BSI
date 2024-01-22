@@ -37,6 +37,23 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo" nzRequired>
+              <span>Company logo</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company logo!"
+            >
+              <input
+                nz-input
+                id="logo"
+                formControlName="logo"
+                placeholder="company logo URL"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
             <nz-form-label [nzSm]="24"
                            [nzXs]="24"
                            nzFor="description"
@@ -225,8 +242,8 @@
           alt="example"
           onerror="this.onerror=null;this.src='/assets/small-logo.png'"
           [src]="
-        company!.url
-          ? company!.url
+        company!.logo
+          ? company!.logo
           : '/assets/small-logo.png'
       "
         />

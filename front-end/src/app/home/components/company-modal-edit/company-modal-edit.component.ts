@@ -31,6 +31,7 @@ export class CompanyModalEditComponent implements OnInit {
     if(this._isVisible){
       this.validateForm = this.fb.group({
         name: [this.company.name, [Validators.required]],
+        logo: [this.company.logo, [Validators.required]],
         description: [this.company.description, [Validators.required]],
         industryId: [this.company.industryId, [Validators.required]],
         countryId: [this.company.countryId, [Validators.required]],

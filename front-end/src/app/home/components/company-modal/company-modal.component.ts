@@ -38,7 +38,6 @@ export class CompanyModalComponent implements OnInit {
   }
   @Input() set company(value: any){
     this._company = value;
-    debugger;
     this.company_youtubeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(value.youtubeUrl);
   }
   showSpinnerSample = false;
