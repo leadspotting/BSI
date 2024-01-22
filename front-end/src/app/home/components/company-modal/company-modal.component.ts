@@ -64,7 +64,7 @@ export class CompanyModalComponent implements OnInit {
   showModal(): void {
     this.isVisible = true;
     this.showSpinner = true;
-
+    window.alert("I am here");
     // this.isVisible ? this.paypal() : true;
   }
 

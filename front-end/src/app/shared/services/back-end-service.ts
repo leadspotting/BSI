@@ -57,7 +57,7 @@ export class BackEndService {
 
   getCrmConfig() {
     return this.http.get(
-      environment.BASE_URL2 + 'Command=CRMConfigs&ClientId=1468',
+      environment.BASE_URL2 + 'Command=CRMConfigs&ClientId=1468&Narrow=1',
       {
         responseType: 'text',
       }
