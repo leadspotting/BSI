@@ -43,9 +43,8 @@ export class ListContainerComponent implements OnInit {
   listOfLocationOptionBackup: Array<{ value: string; label: string }> = [];
   currentPage = 1;
   currentPageSize = 9;
-  totalPages = -1;
   totalLists = 0;
-  finalList: CompanyListModel[] = [];
+  originalList: CompanyListModel[] = [];
   filteredList: CompanyListModel[] = [];
   options: any[] = [];
   firstTime = true;
@@ -114,8 +113,9 @@ export class ListContainerComponent implements OnInit {
         }
         console.log('lists', result);
 
-        this.finalList = result.LSResponse.BsiCompany;
-        this.filteredList = this.finalList;
+        this.originalList = result.LSResponse.BsiCompany;
+        this.currentPage = 1;
+        this._paginate(this.originalList);
         this.loadingFinalListss = false;
       });
     });
@@ -183,13 +183,8 @@ export class ListContainerComponent implements OnInit {
     }, 1000);
   }
 
-  CompaniesType = true;
   CompaniesFromOversea = true;
   CompaniesFromIsrael = true;
-  companiesTypeClicked() {
-    this.CompaniesType = !this.CompaniesType;
-    this.filter();
-  }
   companiesFromOverseaClicked() {
     this.CompaniesFromOversea = !this.CompaniesFromOversea;
     this.filter();
@@ -197,6 +192,16 @@ export class ListContainerComponent implements OnInit {
   companiesFromIsraelClicked() {
     this.CompaniesFromIsrael = !this.CompaniesFromIsrael;
     this.filter();
+  }
+
+  getCountryNameFromId(countryId: any){
+    if(Array.isArray(countryId))
+      countryId = countryId[0];
+    let r = this.listOfLocationOptionBackup.filter(x => x.value.split(",")[0] == countryId)?.[0]?.label;
+    if(r){
+      r = r.substring(0, r.lastIndexOf(","));
+    }
+    return r;
   }
 
   parseLocationIdToListName(locationId: any) {
@@ -317,33 +322,28 @@ export class ListContainerComponent implements OnInit {
 
   onPageIndexChange(event: any) {
     this.currentPage = event;
-    this.filteredList = this.getList(
-      this.currentPage,
-      this.currentPageSize,
-      this.finalList
-    );
+    this._paginate(this.originalList)
   }
   onPageSizeChange(event: any) {
     this.currentPageSize = event;
-    this.filteredList = this.getList(
-      this.currentPage,
-      this.currentPageSize,
-      this.finalList
-    );
-    this.totalLists = this.filteredList.length - this.currentPageSize;
+    this._paginate(this.originalList);
   }
 
   getList(currentPage: any, currentPageSize: any, arr: CompanyListModel[]) {
     let list: CompanyListModel[];
-    currentPage == 1
-      ? (list = arr.slice(0, currentPageSize))
-      : (list = arr.slice(
-          currentPage * currentPageSize,
-          currentPage * currentPageSize + currentPageSize
-        ));
+    list = arr.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize);
     return list;
   }
 
+  _paginate(list:CompanyListModel[]){
+    this.totalLists = list.length;
+    this.currentPage = Math.max(1, Math.min(Math.ceil(this.totalLists/this.currentPageSize), this.currentPage));
+    this.filteredList = this.getList(
+      this.currentPage,
+      this.currentPageSize,
+      list
+    );
+  }
   inputValue: string = '';
   // options: Array<{ value: string; category: string; count: number }> = [];
   empty: boolean = false;
@@ -390,8 +390,8 @@ export class ListContainerComponent implements OnInit {
   onOptionClicked(e: string) {
     if (e != '') {
       let list: CompanyListModel[];
-      list = this.finalList.filter((company) => {
-        return company.name.toLowerCase() == e.toLowerCase();
+      list = this.originalList.filter((company) => {
+        return company.name[0].toLowerCase() == e[0].toLowerCase();
       });
       this.filteredList = list;
       this.currentPage = 1;
@@ -410,7 +410,7 @@ export class ListContainerComponent implements OnInit {
       this.filteredList = this.getList(
         1,
         this.currentPageSize,
-        this.finalList
+        this.originalList
       );
       this.totalLists = this.filteredList.length;
     }
@@ -454,90 +454,58 @@ export class ListContainerComponent implements OnInit {
    */
 
   filter() {
-    this.filteredList = this.finalList;
+    this.filteredList = this.originalList;
+    this.listOfLocationOption = this.listOfLocationOptionBackup;
+    this.listOfIndustryOption = this.listOfIndustryOptionBackup;
     let list: any[] = [];
     if (
       this.selectedIndustryValue?.length > 0 ||
       this.selectedLocationValue?.length > 0 ||
       this.inputValue.length > 0 ||
-      this.CompaniesType == true ||
-      this.CompaniesType == false ||
-      this.CompaniesFromOversea == true ||
-      this.CompaniesFromOversea == false ||
-      this.CompaniesFromIsrael == true ||
-      this.CompaniesFromIsrael == false
+      this.CompaniesFromOversea === false ||
+      this.CompaniesFromIsrael === false
     ) {
-      list = this.finalList.filter(
-        (item: any) =>
-          (this.inputValue.length > 0
-            ? item.originReadyList.name
-                .toLowerCase()
-                .includes(this.inputValue.toLowerCase())
+      const filterInputValue: any = this.inputValue ? (Array.isArray(this.inputValue) ? this.inputValue[0]?.toLowerCase()
+        : this.inputValue?.toLowerCase()) : null;
+      list = this.originalList.filter(
+        (item: any) => {
+          const c = this.getCountryNameFromId(item.countryId);
+          return (filterInputValue?.length > 0
+            ? item.name[0]
+              .toLowerCase()
+              .includes(filterInputValue)
             : true) &&
           (this.selectedIndustryValue.length > 0
             ? this.selectedIndustryValue.some((name: string) => {
-                // return item.originReadyList.industryId == name;
-                return item.originReadyList.industryId
-                  .split(',')
-                  .some((i: any) => {
-                    return i == name;
-                  });
-              })
+              // return item.originReadyList.industryId == name;
+              return item.industryId?.[0]
+                ?.split(',')
+                ?.some((i: any) => {
+                  return i == name;
+                });
+            })
             : true) &&
           (this.selectedLocationValue.length > 0
             ? this.selectedLocationValue.some((name: string) => {
-                return (
-                  item.location?.regionId == name.split(',')[1] &&
-                  item.location?.id == name.split(',')[0]
-                );
-              })
+              return (
+                item.countryId[0] == name.split(',')[0]
+              );
+            })
             : true) &&
-          (this.CompaniesType == true &&
-          this.CompaniesFromOversea == false &&
-          this.CompaniesFromIsrael == false
-            ? item.type == 'companies'
+          (!(!this.CompaniesFromOversea && !this.CompaniesFromIsrael)) &&
+          (!this.CompaniesFromOversea && this.CompaniesFromIsrael
+            ? this.getCountryNameFromId(item.countryId) == "Israel"
             : true) &&
-          (this.CompaniesType == false &&
-          this.CompaniesFromOversea == true &&
-          this.CompaniesFromIsrael == false
-            ? item.type == 'leads'
-            : true) &&
-          (this.CompaniesType == true &&
-          this.CompaniesFromOversea == true &&
-          this.CompaniesFromIsrael == true
-            ? true
-            : true) &&
-          (this.CompaniesType == false &&
-          this.CompaniesFromOversea == false &&
-          this.CompaniesFromIsrael == false
-            ? false
-            : true) &&
-          (this.CompaniesType == false &&
-          this.CompaniesFromOversea == false &&
-          this.CompaniesFromIsrael == true
-            ? item.type == 'opportunities'
-            : true) &&
-          (this.CompaniesType == false &&
-          this.CompaniesFromOversea == true &&
-          this.CompaniesFromIsrael == true
-            ? item.type == 'opportunities' || item.type == 'leads'
-            : true) &&
-          (this.CompaniesType == true &&
-          this.CompaniesFromOversea == false &&
-          this.CompaniesFromIsrael == true
-            ? item.type == 'opportunities' || item.type == 'leads'
-            : true) &&
-          (this.CompaniesType == true &&
-          this.CompaniesFromOversea == true &&
-          this.CompaniesFromIsrael == false
-            ? item.type != 'opportunities'
-            : true)
+          (this.CompaniesFromOversea && !this.CompaniesFromIsrael
+            ? this.getCountryNameFromId(item.countryId) != "Israel"
+            : true);
+        }
       );
-      let loc: Array<{ value: string; label: string }> =
-        this.listOfLocationOptionBackup;
+      let loc: Array<{ value: string; label: string }> = this.listOfLocationOptionBackup;
+
       let filteredLocations = loc.filter((location) => {
-        for (let list1 of list) {
-          if (list1.location?.id == location.value.split(',')[0]) {
+        for (let company of list) {
+          if (company.countryId[0] == location.value.split(',')[0]) {
             return true;
           }
         }
@@ -550,7 +518,7 @@ export class ListContainerComponent implements OnInit {
         this.listOfIndustryOptionBackup;
       let filteredIndustries = ind.filter((Industry) => {
         for (let list1 of list) {
-          if (list1.originReadyList.industryId == Industry.value) {
+          if (list1.industryId == Industry.value) {
             return true;
           }
         }
@@ -559,32 +527,13 @@ export class ListContainerComponent implements OnInit {
       if (filteredIndustries.length > 0) {
         this.listOfIndustryOption = filteredIndustries;
       }
-
-      // this.backUpListss = list;
-      // this.currentPage = 1;
-      // this.finalListss = this.getList(1, this.currentPageSize, list);
-      // if (list.length < this.currentPageSize) {
-      //   this.totalLists = list.length;
-      // } else {
-      //   this.totalLists = list.length - this.currentPageSize;
-      // }
-      // this.options = this.finalListss;
-      // if (this.finalListss.length == 0) {
-      //   this.empty = true;
-      // } else {
-      //   this.empty = false;
-      // }
+      this._paginate(list);
     } else {
-      this.empty = false;
-
       this.currentPage = 1;
-      this.filteredList = this.getList(
-        1,
-        this.currentPageSize,
-        this.finalList
-      );
-      this.totalLists = this.filteredList.length - this.currentPageSize;
+      this._paginate(this.originalList);
     }
+    this.options = this.filteredList;
+    this.empty = this.filteredList.length == 0;
   }
   addToCart(listItem: any) {
     this.addToCartEvent.emit(listItem);

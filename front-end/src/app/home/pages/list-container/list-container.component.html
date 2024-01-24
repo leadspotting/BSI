@@ -141,19 +141,19 @@
           <nz-auto-option
             class="global-search-item"
             *ngFor="let option of options"
-            [nzValue]="option.originReadyList?.name"
-            (click)="onOptionClicked(option.originReadyList.name)"
+            [nzValue]="option.name"
+            (click)="filter()"
             nz-tooltip
             [nzTooltipTitle]="titleTemplate"
             [nzTooltipTitleContext]="{ $implicit: 'Icon' }"
             nzTooltipColor="var(--primaryLight)"
             nzTooltipPlacement="right"
           >
-            ={{ option.originReadyList.name }}=
+            {{ option.name }}
             <ng-template #titleTemplate let-thing>
               <span>
                 <span nz-icon nzType="file" style="vertical-align: 2px"></span>
-                {{ option.originReadyList.name }}</span
+                {{ option.name }}</span
               >
             </ng-template>
           </nz-auto-option>
@@ -272,7 +272,7 @@
       ></app-list-card>
       <!-- (firstTimeEvent)="changeFirstTime($event)" -->
     </div>
-    <div class="col center" *ngIf="!filteredList || filteredList?.length == 0">
+    <div class="col center" *ngIf="(!originalList || originalList.length == 0) && (!filteredList || filteredList?.length == 0)">
       <h3>Your account will be approved soon and you will be able to contact other parties</h3>
     </div>
   </div>
@@ -291,7 +291,7 @@
     </div>
   </div>
   <div
-    style="display: flex !important; justify-content: center !important; border: 1px solid black; padding: 2px"
+    style="display: flex !important; justify-content: center !important;"
     class="mt-4"
     *ngIf="(filteredList || []).length > 0"
   >

@@ -140,3 +140,12 @@ nz-header {
 .danger {
   box-shadow: 0 0 0 0.2rem rgba(197, 8, 18, 0.5);
 }
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100% !important;
+  border-radius: 5px;
+  width: 100% !important;
+}

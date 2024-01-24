@@ -111,6 +111,18 @@ export class BackEndService {
     );
   }
 
+  makeIntroduction(userId: string, companyId: string, message: string) {
+    return this.http.get(
+      `${environment.BASE_URL2}Command=BSUIetIntroduction`
+            + `&UserId=${userId}`
+            + `&CompanyId=${companyId}`
+            + `&Message=${message}`,
+      {
+        responseType: 'text',
+      }
+    );
+  }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   getReadyLists() {

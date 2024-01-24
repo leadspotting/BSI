@@ -1,22 +1,13 @@
-import { ReadyListDownload } from './../../../shared/Models/ReadyListDownload-Model';
-import { DomSanitizer } from '@angular/platform-browser';
-import { BackEndService } from 'src/app/shared/services/back-end-service';
-import {
-  Component,
-  Input,
-  OnInit,
-  Output,
-  TemplateRef,
-  EventEmitter,
-} from '@angular/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { first } from 'rxjs';
-import { FinalList } from 'src/app/shared/Models/FinalList-Model';
+import {DomSanitizer} from '@angular/platform-browser';
+import {BackEndService} from 'src/app/shared/services/back-end-service';
+import {Component, Input, OnInit,} from '@angular/core';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzNotificationService} from 'ng-zorro-antd/notification';
 import {Country} from "../../../shared/Models/Country-Model";
 import {Region} from "../../../shared/Models/Region-Model";
 import {Industry} from "../../../shared/Models/Industry-Model";
-import {Validators} from "@angular/forms";
+import {UserServiceService} from "../../../shared/services/user.service.service";
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'company-modal',
@@ -28,22 +19,66 @@ export class CompanyModalComponent implements OnInit {
     private modal: NzModalService,
     private notification: NzNotificationService,
     private api: BackEndService,
-    private  _sanitizer: DomSanitizer
+    private  _sanitizer: DomSanitizer,
+    private userService: UserServiceService,
+    private fb: UntypedFormBuilder
   ) {}
+
+  validateForm!: UntypedFormGroup;
 
   // @Input() company: any;
   private _company:any;
   get company(): any {
     return this._company;
   }
-  @Input() set company(value: any){
+
+  @Input() set company(value: any) {
     this._company = value;
-    this.company_youtubeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(value.youtubeUrl);
+    this.company_youtubeUrl = null;
+    if (value) {
+      this.validateForm = this.fb.group({
+        message: ["", [Validators.required]]
+      });
+      if(value.url) {
+        let url = value.url[0];
+        if(url?.indexOf("://") < 0
+          && url.indexOf("http") < 0)
+          url = `https://${url}`;
+        this.company_url = url;
+      } else {
+        this.company_url = null;
+      }
+
+      if (value.youtubeUrl) {
+        let url = value.youtubeUrl;
+        if (Array.isArray(url)) {
+          url = url[0];
+        }
+        try {
+          url = new URL(url);
+          const hostname = url.hostname.toLowerCase();
+          const v = url.searchParams.get("v");
+
+          if ((hostname.indexOf("www.youtube.") == 0
+              || hostname.indexOf("youtube.") == 0
+              || hostname.indexOf("www.youtu.be") == 0
+              || hostname.indexOf("youtu.be") == 0)
+            && v != null) {
+            url = `https://${hostname}/embed/${v}`
+          }
+          this.company_youtubeUrl = this._sanitizer.bypassSecurityTrustResourceUrl(url);
+        } catch (e) {
+          this.company_youtubeUrl = null;
+        }
+      }
+    }
   }
   showSpinnerSample = false;
   showSpinner = false;
   xml2js = require('xml2js');
   firstTime:boolean = false;
+  showMessageForIntroduction: boolean = false;
+  messageSendSuccessfully: boolean = false;
 
   listOfIndustryOption: Array<{ value: string; label: string }> = [];
   listOfLocationOption: Array<{ value: string; label: string }> = [];
@@ -51,6 +86,7 @@ export class CompanyModalComponent implements OnInit {
   industryName: string = "";
   countryName: string = "";
   company_youtubeUrl:any;
+  company_url:any;
 
   email = false;
   ngOnInit(): void {
@@ -76,18 +112,12 @@ export class CompanyModalComponent implements OnInit {
   showModal(): void {
     this.isVisible = true;
     this.showSpinner = true;
-    window.alert("I am here");
-    // this.isVisible ? this.paypal() : true;
+    this.showMessageForIntroduction = true;
+
   }
 
   isVisibleSample = false;
   benefitsImageHeight: any;
-
-  handleCancel(): void {
-    this.isVisible = false;
-    this.isVisibleSample = false;
-    this.isVisiblePaymentSuccess = false;
-  }
 
   openCompanyDetails($event: any){
     this.firstTime = !this.firstTime;
@@ -172,5 +202,27 @@ export class CompanyModalComponent implements OnInit {
         img.src = $this.company.benefitsImage;
       }
     });
+  }
+
+  submitForm() {
+    const message = this.validateForm.value.message;
+
+    this.api.makeIntroduction(this.userService.getUserId(), this.company.id, message)
+      .subscribe((res) => {
+        this.showMessageForIntroduction = false;
+        this.messageSendSuccessfully = true;
+        setTimeout(() => {
+          this.messageSendSuccessfully = false
+        }, 3000);
+      });
+  }
+
+  cancel() {
+
+    this.showMessageForIntroduction = false;
+  }
+
+  openCompanyUrl() {
+    window.open(this.company_url, "_blank");
   }
 }
