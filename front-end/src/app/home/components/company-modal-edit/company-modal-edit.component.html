@@ -20,6 +20,29 @@
           <nz-card-meta nzTitle="{{ company.name }}"></nz-card-meta>
           <br/>
           <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="companyVisible"
+            >Company visible</nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Make your compant visible in the portal"
+            >
+              <nz-switch
+                [(ngModel)]="companyVisible"
+                formControlName="companyVisible"
+                [nzCheckedChildren]="checkedTemplate"
+                [nzUnCheckedChildren]="unCheckedTemplate"
+              ></nz-switch>
+              <ng-template #checkedTemplate
+              ><span nz-icon nzType="check"></span
+              ></ng-template>
+              <ng-template #unCheckedTemplate
+              ><span nz-icon nzType="close"></span
+              ></ng-template>
+
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="name" nzRequired>
               <span>Company name</span>
             </nz-form-label>
@@ -206,29 +229,7 @@
             </nz-form-control>
           </nz-form-item>
         
-          <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="companyVisible"
-            >Company visible</nz-form-label>
-            <nz-form-control
-              [nzSm]="24"
-              [nzXs]="24"
-              nzErrorTip="Make your compant visible in the portal"
-            >
-              <nz-switch
-                [(ngModel)]="companyVisible"
-                formControlName="companyVisible"
-                [nzCheckedChildren]="checkedTemplate"
-                [nzUnCheckedChildren]="unCheckedTemplate"
-              ></nz-switch>
-              <ng-template #checkedTemplate
-              ><span nz-icon nzType="check"></span
-              ></ng-template>
-              <ng-template #unCheckedTemplate
-              ><span nz-icon nzType="close"></span
-              ></ng-template>
-
-            </nz-form-control>
-          </nz-form-item>
+         
         </form>
       </div>
     </nz-card>
