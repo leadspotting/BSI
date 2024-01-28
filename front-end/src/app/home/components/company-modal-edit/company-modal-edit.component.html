@@ -37,19 +37,36 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo" nzRequired>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
               <span>Company logo</span>
             </nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please enter company logo!"
+              nzErrorTip="Please enter company logo url"
             >
               <input
                 nz-input
                 id="logo"
                 formControlName="logo"
                 placeholder="company logo URL"
+              />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="domain" nzRequired>
+              <span>Company URL</span>
+            </nz-form-label>
+            <nz-form-control
+              [nzSm]="24"
+              [nzXs]="24"
+              nzErrorTip="Please enter company url!"
+            >
+              <input
+                nz-input
+                id="domain"
+                formControlName="domain"
+                placeholder="domain"
               />
             </nz-form-control>
           </nz-form-item>
@@ -83,7 +100,7 @@
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please input industry!"
+              nzErrorTip="Please input industry from the list"
             >
               <nz-select
                 nzShowSearch
@@ -122,13 +139,13 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-              <span>Benefits</span>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl">
+              <span>Benefits for other companies you can give</span>
             </nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please search companies"
+              nzErrorTip="Please descrbie benefits you can give to other companies in the portal"
             >
               <input
                 nz-input
@@ -139,7 +156,7 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl">
               <span>Benefits image URL</span>
             </nz-form-label>
             <nz-form-control
@@ -157,7 +174,7 @@
           </nz-form-item>
           <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
-              <span>Looking for</span>
+              <span>We are looking for</span>
             </nz-form-label>
             <nz-form-control
               [nzSm]="24"
@@ -173,12 +190,12 @@
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="industryId"
+            <nz-form-label [nzSm]="24" [nzXs]="24"  nzFor="industryId"
             >youtube url</nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please enter youtube URL!"
+              nzErrorTip="Please enter youtube video URL that describes your offerings!"
             >
               <input
                 nz-input
@@ -188,30 +205,14 @@
               />
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="domain" nzRequired>
-              <span>Domain</span>
-            </nz-form-label>
-            <nz-form-control
-              [nzSm]="24"
-              [nzXs]="24"
-              nzErrorTip="Please enter company domain!"
-            >
-              <input
-                nz-input
-                id="domain"
-                formControlName="domain"
-                placeholder="domain"
-              />
-            </nz-form-control>
-          </nz-form-item>
+        
           <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzRequired nzFor="companyVisible"
             >Company visible</nz-form-label>
             <nz-form-control
               [nzSm]="24"
               [nzXs]="24"
-              nzErrorTip="Please enter youtube URL!"
+              nzErrorTip="Make your compant visible in the portal"
             >
               <nz-switch
                 [(ngModel)]="companyVisible"

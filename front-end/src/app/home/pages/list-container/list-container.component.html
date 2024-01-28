@@ -19,34 +19,8 @@
         data-aos-easing="ease-in-sine"
         data-aos-once="true"
       >
-        <div class="title-question">
-          <h4 nz-typography class="title">Type</h4>
-          <span
-            nz-tooltip
-            [nzTooltipColor]="'var(--primaryLight)'"
-            nzTooltipTitle="Select the type of leads you are searching for. Options include customers lists or email lists."
-            color="primary"
-            nz-icon
-            nzType="question-circle"
-            nzTheme="twotone"
-          ></span>
-        </div>
-        <button
-          nzSize="large"
-          nz-button
-          nz-dropdown
-          [nzDropdownMenu]="isAuthorized() ? menu : null"
-          style="display: flex; justify-content: space-between; width: 100%"
-          (click)="preventUnauthorized($event)"
-        >
-          <!-- class="width-100 alignLeft placeholder" -->
-
-          <!-- <div style="display: flex; justify-content: space-between"> -->
-          Select a type <span nz-icon nzType="down"></span>
-          <!-- </div> -->
-          <!-- Select...
-          <span nz-icon nzType="down"></span> -->
-        </button>
+       
+      
         <nz-dropdown-menu #menu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item class="li-type" (click)="companiesFromIsraelClicked()">
