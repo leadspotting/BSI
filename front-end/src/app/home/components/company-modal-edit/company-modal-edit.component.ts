@@ -44,6 +44,7 @@ export class CompanyModalEditComponent implements OnInit {
       });
       this.selectedIndustryId = this.company.industryId[0];
       this.selectedCountryId = this.listOfLocationOption.filter(x => x.value.split(",")[0] == this.company.countryId[0])?.[0]?.value;
+      this.companyVisible = this.company.visible[0] === "1";
     }
   }
   @Input() company: any;
