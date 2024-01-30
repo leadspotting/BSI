@@ -470,11 +470,27 @@ export class ListContainerComponent implements OnInit {
       list = this.originalList.filter(
         (item: any) => {
           const c = this.getCountryNameFromId(item.countryId);
-          return (filterInputValue?.length > 0
-            ? item.name[0]
+          return ((filterInputValue?.length > 0
+            ? item.benefits[0]
               .toLowerCase()
               .includes(filterInputValue)
-            : true) &&
+            : true) ||
+            (filterInputValue?.length > 0
+              ? item.description[0]
+                .toLowerCase()
+                .includes(filterInputValue)
+              : true)
+              ||
+            (filterInputValue?.length > 0
+              ? item.lookingFor[0]
+                .toLowerCase()
+                .includes(filterInputValue)
+              : true) ||
+            (filterInputValue?.length > 0
+              ? item.name[0]
+                .toLowerCase()
+                .includes(filterInputValue)
+              : true)) &&
           (this.selectedIndustryValue.length > 0
             ? this.selectedIndustryValue.some((name: string) => {
               // return item.originReadyList.industryId == name;
