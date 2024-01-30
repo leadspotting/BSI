@@ -11,8 +11,9 @@
   <nz-card-meta
     *ngIf="firstTime == false"
     nzTitle="{{ list.name }}"
-    nzDescription="{{ list.description }}"
+    nzDescription=""
   ></nz-card-meta>
+  <div class="ant-card-meta-description">{{list.description }}</div>
 
   <div class="row">
     <nz-skeleton

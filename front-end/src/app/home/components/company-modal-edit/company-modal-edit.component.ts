@@ -83,7 +83,7 @@ export class CompanyModalEditComponent implements OnInit {
       const companyVisible = this.validateForm.value.companyVisible;
 
       this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
-        benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible)
+        benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
         .subscribe((res) => {
           this.onCancel.emit();
         });

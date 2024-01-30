@@ -139,3 +139,10 @@
   }
 }
 
+.ant-card-meta-description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 14;
+  -webkit-box-orient: vertical;
+  margin-top: 12px;
+}

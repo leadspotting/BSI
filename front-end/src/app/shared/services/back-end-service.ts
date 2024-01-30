@@ -90,7 +90,7 @@ export class BackEndService {
 
   updateUserInfo(clientId: string, description: string, industryId: string, countryId: string, benefits: string,
                  benefitsImageUrl: string, lookingFor: string, youtubeUrl: string, logo: string, name: string,
-                 domain: string, visible: boolean) {
+                 domain: string, visible: boolean, token:string) {
     return this.http.get(
       `${environment.BASE_URL2}Command=BSIUpdateUserInfo`
             + `&ClientId=${clientId}`
@@ -104,7 +104,8 @@ export class BackEndService {
             + `&Logo=${logo}`
             + `&Name=${name}`
             + `&Domain=${domain}`
-            + `&Visible=${visible ? "1" : "0"}`,
+            + `&Visible=${visible ? "1" : "0"}`
+            + `&Token=${token}`,
       {
         responseType: 'text',
       }

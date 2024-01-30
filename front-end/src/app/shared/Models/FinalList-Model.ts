@@ -54,6 +54,8 @@ export interface CompanyListModel {
   benefits: string;
   description: string;
   benefitsImage: string;
+  visible: string;
+  youtubeUrl: string;
 }
 export interface FinalLocation2 {
   id: string;
