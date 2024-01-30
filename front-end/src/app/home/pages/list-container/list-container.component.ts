@@ -469,11 +469,15 @@ export class ListContainerComponent implements OnInit {
         : this.inputValue?.toLowerCase()) : null;
       list = this.originalList.filter(
         (item: any) => {
-          const c = this.getCountryNameFromId(item.countryId);
+
           return (filterInputValue?.length > 0
-            ? item.name[0]
-              .toLowerCase()
-              .includes(filterInputValue)
+            ? (item.name[0]
+                  .toLowerCase()
+                  .includes(filterInputValue)
+              || item.description?.[0]
+                  ?.toLowerCase()
+                  ?.includes(filterInputValue)
+              )
             : true) &&
           (this.selectedIndustryValue.length > 0
             ? this.selectedIndustryValue.some((name: string) => {

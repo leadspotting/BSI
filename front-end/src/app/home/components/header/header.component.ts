@@ -269,6 +269,9 @@ export class HeaderComponent implements OnInit {
 
     this.isLoggedIn = this.userService.isUserLoggedIn();
     this.username = this.userService.getUserData()?.Username || "";
+
+    // if(this.isLoggedIn)
+    //   this.showModalAccount(true);
   }
   submitForm(): void {
     this.register_success = false;
@@ -320,6 +323,7 @@ export class HeaderComponent implements OnInit {
           this.isLoggedIn = true;
           this.login_isVisible = false;
           this.username = successful.Username;
+          this.showModalAccount(true);
         } else {
           this.login_errorMessage = 'Please try again or click "Forgot password"';
         }
@@ -721,7 +725,7 @@ export class HeaderComponent implements OnInit {
     this.isVisibleAccount = false;
   }
 
-  showModalAccount(): void {
+  showModalAccount(initial: boolean = false): void {
     this.register_isVisible = false;
     this.login_isVisible = false;
     this.isVisibleResetPassword = false;
@@ -729,7 +733,13 @@ export class HeaderComponent implements OnInit {
       this.xml2js.parseString(res, (err: any, result: any) => {
         if(result?.LSResponse?.BsiCompany?.length > 0)
           this.company = result.LSResponse.BsiCompany[0];
-        this.isVisibleAccount = true;
+        if (initial && this.company) {
+          if ((!this.company.name || !this.company.name[0]) && (!this.company.visible || this.company.visible[0] == "0")) {
+            this.isVisibleAccount = true;
+          }
+        } else {
+          this.isVisibleAccount = true;
+        }
       })
     });
   }
