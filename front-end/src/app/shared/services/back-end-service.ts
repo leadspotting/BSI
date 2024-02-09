@@ -248,4 +248,14 @@ export class BackEndService {
   //     responseType: 'text',
   //   });
   // }
+
+  UploadImageToPost(PostId: any, WatchListId: any, formData: FormData) {
+    return this.http.post(
+      `${environment.BASE_URL}Command=UploadImageToPost&PostId=${PostId}&WatchListId=${WatchListId}`,
+      formData,
+      {
+        responseType: 'text',
+      }
+    );
+  }
 }

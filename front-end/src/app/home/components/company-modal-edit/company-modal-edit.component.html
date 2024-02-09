@@ -59,21 +59,58 @@
               />
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
+
+          <input (change)="customFileUpload($event)"
+                 style="display: none"
+                 type="file"
+                 #logoFile />
+
+          <nz-form-item *ngIf="!fileName">
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
               <span>Company logo</span>
             </nz-form-label>
-            <nz-form-control
-              [nzSm]="24"
-              [nzXs]="24"
-              nzErrorTip="Please enter company logo url"
-            >
-              <input
-                nz-input
-                id="logo"
-                formControlName="logo"
-                placeholder="company logo URL"
-              />
+            <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please enter company logo URL">
+              <div style="display: flex; align-items: center;">
+                <input nz-input id="txtLogoUrl" formControlName="logo" placeholder="Company logo URL" style="flex: 1;" />
+                <button
+                  id="upload-file-btn action-btn"
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  (click)="logoFile.click();"
+                  style="background-color: var(--secondary); border-color: var(--secondary);width: 65px !important;height: 32px;padding: 0;"
+                  nz-tooltip
+                  [nzTooltipColor]="'var(--secondaryLight)'"
+                  nzTooltipTitle="Upload an image"
+                  type="button"
+                >
+                  <span nz-icon nzType="cloud-upload"></span>
+                </button>
+              </div>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="fileName">
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
+              <span>Company logo</span>
+            </nz-form-label>
+            <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please enter company logo URL">
+              <div style="display: flex; align-items: center;">
+                <span style="flex: 1; border: 1px solid #D9D9D9; padding: 4px;">{{fileName}}</span>
+                <button
+                  id="clear-upload-file-btn action-btn"
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  (click)="clearLogoFile()"
+                  style="background-color: var(--secondary); border-color: var(--secondary);width: 65px !important;height: 32px;padding: 0;"
+                  nz-tooltip
+                  [nzTooltipColor]="'var(--secondaryLight)'"
+                  nzTooltipTitle="Clear"
+                  type="button"
+                >
+                  <span nz-icon nzType="close"></span>
+                </button>
+              </div>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>

@@ -60,6 +60,10 @@ export class CompanyModalEditComponent implements OnInit {
 
   selectedIndustryId:string = "";
   selectedCountryId:string = "";
+
+  logoFile: any;
+  fileName: string = "";
+
   ngOnInit(): void {
     this.getCRMConfig();
   }
@@ -82,11 +86,37 @@ export class CompanyModalEditComponent implements OnInit {
       const logo = this.validateForm.value.logo;
       const companyVisible = this.validateForm.value.companyVisible;
 
-      this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
-        benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
-        .subscribe((res) => {
-          this.onCancel.emit();
-        });
+      if(this.logoFile){
+        const formData = new FormData();
+        formData.append('file', this.logoFile, this.getUniqueImageName());
+        this.api
+          .UploadImageToPost(
+            null,
+            1303,
+            formData
+          )
+          .subscribe((res) => {
+            this.xml2js.parseString(res, (err: any, result: any) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              this.clearLogoFile();
+              let logoUrl = result.LSResponse.Response[0];
+              this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
+                benefitsImageUrl, lookingFor, youtubeUrl, logoUrl, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
+                .subscribe((res) => {
+                  this.onCancel.emit();
+                });
+            });
+          });
+      } else {
+        this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
+          benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
+          .subscribe((res) => {
+            this.onCancel.emit();
+          });
+      }
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -151,5 +181,37 @@ export class CompanyModalEditComponent implements OnInit {
       if (a.label > b.label) return 1;
       return 0;
     });
+  }
+
+  getUniqueImageName(): string {
+    const str = `${this.company.id}|${this.company.name}`;
+    const parts = this.fileName.split(".");
+    const ext = parts[parts.length - 1];
+    let hash = 0;
+    let i = 0;
+    let chr;
+    if (str.length === 0) {
+      return `${hash}.${ext}`;
+    }
+    for (i = 0; i < str.length; i++) {
+      chr = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return `${hash}.${ext}`;
+  }
+
+  customFileUpload(event: any) {
+    const file:File = event.target.files[0];
+    if (file) {
+      this.fileName = file.name;
+      this.logoFile = event.target.files[0];
+    }
+    return 0;
+  }
+
+  clearLogoFile() {
+    this.fileName = "";
+    this.logoFile = "";
   }
 }
