@@ -1,6 +1,8 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from 'src/environments/environment';
 import {Injectable} from '@angular/core';
+import { lastValueFrom } from 'rxjs';
+
 
 const md5 = require('md5');
 
@@ -257,5 +259,17 @@ export class BackEndService {
         responseType: 'text',
       }
     );
+  }
+
+  async UploadImageToPostAsync(PostId: any, WatchListId: any, formData: FormData): Promise<string> {
+    try {
+      const url = `${environment.BASE_URL}Command=UploadImageToPost&PostId=${PostId}&WatchListId=${WatchListId}`;
+      // const response = await this.http.post(url, formData, { responseType: 'text' }).toPromise();
+      const response = await lastValueFrom(this.http.post(url, formData, { responseType: 'text' }));
+      return response as string;
+    } catch (error) {
+      // Handle errors as needed
+      throw error;
+    }
   }
 }

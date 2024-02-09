@@ -60,12 +60,12 @@
             </nz-form-control>
           </nz-form-item>
 
-          <input (change)="customFileUpload($event)"
+          <input (change)="logoFileUpload($event)"
                  style="display: none"
                  type="file"
                  #logoFile />
 
-          <nz-form-item *ngIf="!fileName">
+          <nz-form-item *ngIf="!logoFileName">
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
               <span>Company logo</span>
             </nz-form-label>
@@ -89,19 +89,19 @@
               </div>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item *ngIf="fileName">
+          <nz-form-item *ngIf="logoFileName">
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
               <span>Company logo</span>
             </nz-form-label>
             <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please enter company logo URL">
               <div style="display: flex; align-items: center;">
-                <span style="flex: 1; border: 1px solid #D9D9D9; padding: 4px;">{{fileName}}</span>
+                <span style="flex: 1; border: 1px solid #D9D9D9; padding: 4px;">{{logoFileName}}</span>
                 <button
                   id="clear-upload-file-btn action-btn"
                   nz-button
                   nzType="primary"
                   nzSize="large"
-                  (click)="clearLogoFile()"
+                  (click)="logoFileClear()"
                   style="background-color: var(--secondary); border-color: var(--secondary);width: 65px !important;height: 32px;padding: 0;"
                   nz-tooltip
                   [nzTooltipColor]="'var(--secondaryLight)'"
@@ -215,23 +215,61 @@
               />
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl">
-              <span>Benefits image URL</span>
+
+          <input (change)="benefitsImageFileUpload($event)"
+                 style="display: none"
+                 type="file"
+                 #benefitsImageFile />
+
+          <nz-form-item *ngIf="!benefitsImageFileName">
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
+              <span>Benefits image URL logo</span>
             </nz-form-label>
-            <nz-form-control
-              [nzSm]="24"
-              [nzXs]="24"
-              nzErrorTip="Please enter company benefits image URL!"
-            >
-              <input
-                nz-input
-                id="benefitsImageUrl"
-                formControlName="benefitsImageUrl"
-                placeholder="benefits image Url"
-              />
+            <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please enter company logo URL">
+              <div style="display: flex; align-items: center;">
+                <input nz-input id="benefitsImageUrl" formControlName="benefitsImageUrl" placeholder="benefits image Url" style="flex: 1;" />
+                <button
+                  id="upload-benefits-image-btn action-btn"
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  (click)="benefitsImageFile.click();"
+                  style="background-color: var(--secondary); border-color: var(--secondary);width: 65px !important;height: 32px;padding: 0;"
+                  nz-tooltip
+                  [nzTooltipColor]="'var(--secondaryLight)'"
+                  nzTooltipTitle="Upload an image"
+                  type="button"
+                >
+                  <span nz-icon nzType="cloud-upload"></span>
+                </button>
+              </div>
             </nz-form-control>
           </nz-form-item>
+          <nz-form-item *ngIf="benefitsImageFileName">
+            <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logo">
+              <span>Benefits image URL</span>
+            </nz-form-label>
+            <nz-form-control [nzSm]="24" [nzXs]="24" nzErrorTip="Please enter company logo URL">
+              <div style="display: flex; align-items: center;">
+                <span style="flex: 1; border: 1px solid #D9D9D9; padding: 4px;">{{benefitsImageFileName}}</span>
+                <button
+                  id="clear-bebefits-image-file-btn action-btn"
+                  nz-button
+                  nzType="primary"
+                  nzSize="large"
+                  (click)="benefitsImageFileClear()"
+                  style="background-color: var(--secondary); border-color: var(--secondary);width: 65px !important;height: 32px;padding: 0;"
+                  nz-tooltip
+                  [nzTooltipColor]="'var(--secondaryLight)'"
+                  nzTooltipTitle="Clear"
+                  type="button"
+                >
+                  <span nz-icon nzType="close"></span>
+                </button>
+              </div>
+            </nz-form-control>
+          </nz-form-item>
+
           <nz-form-item>
             <nz-form-label [nzSm]="24" [nzXs]="24" nzFor="logoUrl" nzRequired>
               <span>We are looking for</span>

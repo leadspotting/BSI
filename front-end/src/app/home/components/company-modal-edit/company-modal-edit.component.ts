@@ -8,6 +8,11 @@ import {Industry} from "../../../shared/Models/Industry-Model";
 import {Country} from "../../../shared/Models/Country-Model";
 import {Region} from "../../../shared/Models/Region-Model";
 
+enum ImageType {
+  logo = 0,
+  benefitsImage = 1,
+}
+
 @Component({
   selector: 'company-modal-edit',
   templateUrl: './company-modal-edit.component.html',
@@ -62,7 +67,10 @@ export class CompanyModalEditComponent implements OnInit {
   selectedCountryId:string = "";
 
   logoFile: any;
-  fileName: string = "";
+  logoFileName: string = "";
+
+  benefitsImageFile: any;
+  benefitsImageFileName: string = "";
 
   ngOnInit(): void {
     this.getCRMConfig();
@@ -70,7 +78,7 @@ export class CompanyModalEditComponent implements OnInit {
 
   validateForm!: UntypedFormGroup;
 
-  submitForm(): void {
+  async submitForm(): Promise<void> {
     if (this.validateForm.valid) {
       console.log('submit', this.validateForm.value);
 
@@ -79,44 +87,42 @@ export class CompanyModalEditComponent implements OnInit {
       const industryId = this.validateForm.value.industryId;
       const countryId = this.validateForm.value.countryId?.split(",")?.[0];
       const benefits = this.validateForm.value.benefits;
-      const benefitsImageUrl = this.validateForm.value.benefitsImageUrl;
+      const benefitsImage = this.validateForm.value.benefitsImageUrl;
       const lookingFor = this.validateForm.value.lookingFor;
       const youtubeUrl = this.validateForm.value.youtubeUrl;
       const domain = this.validateForm.value.domain;
       const logo = this.validateForm.value.logo;
       const companyVisible = this.validateForm.value.companyVisible;
 
-      if(this.logoFile){
+      let logoUrl = logo;
+      let benefitsImageUrl = benefitsImage;
+
+      if(this.logoFile) {
         const formData = new FormData();
-        formData.append('file', this.logoFile, this.getUniqueImageName());
-        this.api
-          .UploadImageToPost(
-            null,
-            1303,
-            formData
-          )
-          .subscribe((res) => {
-            this.xml2js.parseString(res, (err: any, result: any) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              this.clearLogoFile();
-              let logoUrl = result.LSResponse.Response[0];
-              this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
-                benefitsImageUrl, lookingFor, youtubeUrl, logoUrl, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
-                .subscribe((res) => {
-                  this.onCancel.emit();
-                });
-            });
-          });
-      } else {
-        this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
-          benefitsImageUrl, lookingFor, youtubeUrl, logo, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
-          .subscribe((res) => {
-            this.onCancel.emit();
-          });
+        formData.append('file', this.logoFile, this.getUniqueImageName(ImageType.logo));
+        logoUrl = await this.api.UploadImageToPostAsync(null, 1303, formData).then(res => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(res,"text/xml");
+          return xmlDoc.getElementsByTagName("LSResponse")?.[0]?.getElementsByTagName("Response")?.[0]?.textContent;
+        });
+        this.logoFileClear();
       }
+      if(this.benefitsImageFile) {
+        const formData = new FormData();
+        formData.append('file', this.benefitsImageFile, this.getUniqueImageName(ImageType.benefitsImage));
+        benefitsImageUrl = await this.api.UploadImageToPostAsync(null, 1303, formData).then(res => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(res,"text/xml");
+           return xmlDoc.getElementsByTagName("LSResponse")?.[0]?.getElementsByTagName("Response")?.[0]?.textContent;
+        });
+        this.benefitsImageFileClear();
+      }
+
+      this.api.updateUserInfo(this.userService.getUserId(), description, industryId, countryId, benefits,
+        benefitsImageUrl, lookingFor, youtubeUrl, logoUrl, name, domain, companyVisible, this.userService.getUserData().UserInfo[0].CSRFToken[0])
+        .subscribe((res) => {
+          this.onCancel.emit();
+        });
     } else {
       Object.values(this.validateForm.controls).forEach((control) => {
         if (control.invalid) {
@@ -183,16 +189,13 @@ export class CompanyModalEditComponent implements OnInit {
     });
   }
 
-  getUniqueImageName(): string {
-    const str = `${this.company.id}|${this.company.name}`;
-    const parts = this.fileName.split(".");
+  getUniqueImageName(type:ImageType): string {
+    const str = `${this.company.id}|${type}|${this.company.name}`;
+    const parts = type == ImageType.logo ? this.logoFileName.split("."): this.benefitsImageFileName.split(".");
     const ext = parts[parts.length - 1];
     let hash = 0;
     let i = 0;
     let chr;
-    if (str.length === 0) {
-      return `${hash}.${ext}`;
-    }
     for (i = 0; i < str.length; i++) {
       chr = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + chr;
@@ -201,17 +204,31 @@ export class CompanyModalEditComponent implements OnInit {
     return `${hash}.${ext}`;
   }
 
-  customFileUpload(event: any) {
+  logoFileUpload(event: any) {
     const file:File = event.target.files[0];
     if (file) {
-      this.fileName = file.name;
+      this.logoFileName = file.name;
       this.logoFile = event.target.files[0];
     }
     return 0;
   }
 
-  clearLogoFile() {
-    this.fileName = "";
+  logoFileClear() {
+    this.logoFileName = "";
     this.logoFile = "";
+  }
+
+  benefitsImageFileUpload(event: any) {
+    const file:File = event.target.files[0];
+    if (file) {
+      this.benefitsImageFileName = file.name;
+      this.benefitsImageFile = event.target.files[0];
+    }
+    return 0;
+  }
+
+  benefitsImageFileClear() {
+    this.benefitsImageFileName = "";
+    this.benefitsImageFile = "";
   }
 }
