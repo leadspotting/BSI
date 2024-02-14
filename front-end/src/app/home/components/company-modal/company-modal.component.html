@@ -37,21 +37,24 @@
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          justify-content: space-between;
-        "
+          gap: 15px;"
       *ngIf="countryName"
     >
-        <span
-          class="list-leads-title downloadsTitle"
-          style="white-space: nowrap"
-          id="countryTitle"
-        >Country</span>
-      <nz-statistic
-        id="Down{{ company?.id }}"
-        class="statistics downloadsTitle"
-        [nzValue]="countryName"
+      <span
+        class="list-leads-title downloadsTitle"
+        style="white-space: nowrap"
+        id="countryTitle"
+      >Country</span>
+      <nz-image
+        id="countryFlagImage"
+        [nzSrc]="getFlagUrl(countryName)"
+        [nzDisablePreview]="true"
+        [nzWidth]="60"
+        [nzHeight]="50"
+        [nzAlt]="countryName"
+        style="align-items: center; justify-content: center"
       >
-      </nz-statistic>
+      </nz-image>
     </div>
   </div>
   <br/>
