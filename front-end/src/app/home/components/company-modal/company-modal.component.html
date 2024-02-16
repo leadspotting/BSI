@@ -49,10 +49,12 @@
         id="countryFlagImage"
         [nzSrc]="getFlagUrl(countryName)"
         [nzDisablePreview]="true"
-        [nzWidth]="60"
+        [nzWidth]="75"
         [nzHeight]="50"
         [nzAlt]="countryName"
-        style="align-items: center; justify-content: center"
+        style="align-items: center;
+               justify-content: center;
+               box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"
       >
       </nz-image>
     </div>
