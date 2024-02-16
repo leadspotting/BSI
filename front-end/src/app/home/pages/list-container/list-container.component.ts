@@ -39,6 +39,7 @@ export class ListContainerComponent implements OnInit {
   industryPhrases = [];
   industries = [];
   selectedLocationValue = [];
+  listOfUnusedLocationOptions: Array<{ value: string; label: string }> = [];
   listOfLocationOption: Array<{ value: string; label: string }> = [];
   listOfLocationOptionBackup: Array<{ value: string; label: string }> = [];
   currentPage = 1;
@@ -111,7 +112,7 @@ export class ListContainerComponent implements OnInit {
           console.error(err);
           return;
         }
-        console.log('lists', result);
+        this.hideUnusedLocationAndIndustryFromOptions(result)
 
         this.originalList = result.LSResponse.BsiCompany;
         this.currentPage = 1;
@@ -119,6 +120,25 @@ export class ListContainerComponent implements OnInit {
         this.loadingFinalListss = false;
       });
     });
+  }
+
+  hideUnusedLocationAndIndustryFromOptions(data: any)  {
+    let locationOptionsArray = this.listOfLocationOption.map((location) => location.value.split(",")[0])
+    let countryIdsPresentInData: string[] = [...new Set(data.LSResponse.BsiCompany.map((company: any) => company.countryId[0])) as Set<string>]
+    let usedLocationOptions = locationOptionsArray.filter(countryId => countryIdsPresentInData.includes(countryId))
+    this.listOfLocationOption = this.listOfLocationOption.filter(location => {
+      return usedLocationOptions.includes(location.value.split(',')[0]);
+    });
+    this.listOfLocationOptionBackup = this.listOfLocationOption;
+
+
+    let industryOptionsArray = this.listOfIndustryOption.map((industry) => industry.value)
+    let industryIdsPresentInData: string[] = [...new Set(data.LSResponse.BsiCompany.map((company: any) => company.industryId[0])) as Set<string>]
+    let usedIndustryOptions = industryOptionsArray.filter(industryId => industryIdsPresentInData.includes(industryId))
+    this.listOfIndustryOption = this.listOfIndustryOption.filter(industry => {
+      return usedIndustryOptions.includes(industry.value);
+    });
+    this.listOfIndustryOptionBackup = this.listOfIndustryOption;
   }
 
   getIndustries(model: any) {
@@ -155,7 +175,6 @@ export class ListContainerComponent implements OnInit {
   getLocations(model: any, postId: string | null = null) {
     let countries: Country[] = model.countries[0].countries;
     let regions: Region[] = model.regions[0].regions;
-
     let newArr = countries.map(
       ({ id: [id], name: [name], regionId: [regionId] }) => {
         let region = regions.find(({ id: [id] }) => id === regionId);
