@@ -8,6 +8,8 @@ import {Region} from "../../../shared/Models/Region-Model";
 import {Industry} from "../../../shared/Models/Industry-Model";
 import {UserServiceService} from "../../../shared/services/user.service.service";
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
+// @ts-ignore - no typescript in this module, therefore the ts-ignore annotation.
+import {findFlagUrlByCountryName} from 'country-flags-svg';
 
 @Component({
   selector: 'company-modal',
@@ -167,6 +169,11 @@ export class CompanyModalComponent implements OnInit {
     if(this.countryName){
       this.countryName = this.countryName.substring(0, this.countryName.lastIndexOf(","));
     }
+  }
+
+  getFlagUrl(countryName: string) {
+    const flagUrl = findFlagUrlByCountryName(countryName);
+    return flagUrl ? flagUrl : null;
   }
 
   getIndustries(model: any) {

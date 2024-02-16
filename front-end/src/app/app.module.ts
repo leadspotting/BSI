@@ -24,6 +24,7 @@ import { CartItemCardComponent } from './home/components/cart-item-card/cart-ite
 import { BookademoDialogComponent } from './home/components/bookademo-dialog/bookademo-dialog.component';
 import {CompanyModalComponent} from "./home/components/company-modal/company-modal.component";
 import {CompanyModalEditComponent} from "./home/components/company-modal-edit/company-modal-edit.component";
+import {NzImageModule} from "ng-zorro-antd/experimental/image";
 
 registerLocaleData(en);
 
@@ -51,6 +52,7 @@ registerLocaleData(en);
     BrowserAnimationsModule,
     AntdModule,
     ReactiveFormsModule,
+    NzImageModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],
